@@ -1,8 +1,8 @@
 aid: lakefs
 name: lakeFS
 description: >-
-  Manage your data as code using Git-like operations and achieve reproducible,
-  high-quality data pipelines. Start locally, run on-prem or in the cloud. 
+  Manage your data as code using Git-like operations and achieve reproducible, high-quality
+  data pipelines. Start locally, run on-prem or in the cloud.
 type: Index
 position: Consumer
 access: 3rd-Party
@@ -18,9 +18,8 @@ apis:
   - aid: lakefs:lakefs
     name: lakeFS
     description: >-
-      Manage your data as code using Git-like operations and achieve
-      reproducible, high-quality data pipelines. Start locally, run on-prem or
-      in the cloud. 
+      Manage your data as code using Git-like operations and achieve reproducible,
+      high-quality data pipelines. Start locally, run on-prem or in the cloud.
     humanURL: ' https://lakefs.io/'
     tags:
       - API
