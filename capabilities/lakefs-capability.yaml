@@ -1,0 +1,1894 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API
+  description: lakeFS HTTP API
+  tags:
+  - Lakefs
+  - API
+  created: '2026-05-06'
+  modified: '2026-05-06'
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs
+    baseUri: /api/v1
+    description: lakeFS API HTTP API.
+    authentication:
+      type: basic
+      username: '{{LAKEFS_USERNAME}}'
+      password: '{{LAKEFS_PASSWORD}}'
+    resources:
+    - name: setup-comm-prefs
+      path: /setup_comm_prefs
+      operations:
+      - name: setupcommprefs
+        method: POST
+        description: setup communications preferences
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: setup-lakefs
+      path: /setup_lakefs
+      operations:
+      - name: getsetupstate
+        method: GET
+        description: check if the lakeFS installation is already set up
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: setup
+        method: POST
+        description: setup lakeFS and create a first user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: user
+      path: /user
+      operations:
+      - name: getcurrentuser
+        method: GET
+        description: get current user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-login
+      path: /auth/login
+      operations:
+      - name: login
+        method: POST
+        description: perform a login
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-external-principal-login
+      path: /auth/external/principal/login
+      operations:
+      - name: externalprincipallogin
+        method: POST
+        description: perform a login using an external authenticator
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: sts-login
+      path: /sts/login
+      operations:
+      - name: stslogin
+        method: POST
+        description: perform a login with STS
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-capabilities
+      path: /auth/capabilities
+      operations:
+      - name: getauthcapabilities
+        method: GET
+        description: list authentication capabilities supported
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users
+      path: /auth/users
+      operations:
+      - name: listusers
+        method: GET
+        description: list users
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createuser
+        method: POST
+        description: create user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid
+      path: /auth/users/{userId}
+      operations:
+      - name: getuser
+        method: GET
+        description: get user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleteuser
+        method: DELETE
+        description: delete user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-groups
+      path: /auth/groups
+      operations:
+      - name: listgroups
+        method: GET
+        description: list groups
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: creategroup
+        method: POST
+        description: create group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-groups-groupid
+      path: /auth/groups/{groupId}
+      operations:
+      - name: getgroup
+        method: GET
+        description: get group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deletegroup
+        method: DELETE
+        description: delete group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-policies
+      path: /auth/policies
+      operations:
+      - name: listpolicies
+        method: GET
+        description: list policies
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createpolicy
+        method: POST
+        description: create policy
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-policies-policyid
+      path: /auth/policies/{policyId}
+      operations:
+      - name: getpolicy
+        method: GET
+        description: get policy
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatepolicy
+        method: PUT
+        description: update policy
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deletepolicy
+        method: DELETE
+        description: delete policy
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-groups-groupid-members
+      path: /auth/groups/{groupId}/members
+      operations:
+      - name: listgroupmembers
+        method: GET
+        description: list group members
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-groups-groupid-members-userid
+      path: /auth/groups/{groupId}/members/{userId}
+      operations:
+      - name: addgroupmembership
+        method: PUT
+        description: add group membership
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deletegroupmembership
+        method: DELETE
+        description: delete group membership
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid-credentials
+      path: /auth/users/{userId}/credentials
+      operations:
+      - name: listusercredentials
+        method: GET
+        description: list user credentials
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createcredentials
+        method: POST
+        description: create credentials
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid-credentials-accesskeyid
+      path: /auth/users/{userId}/credentials/{accessKeyId}
+      operations:
+      - name: deletecredentials
+        method: DELETE
+        description: delete credentials
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getcredentials
+        method: GET
+        description: get credentials
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid-groups
+      path: /auth/users/{userId}/groups
+      operations:
+      - name: listusergroups
+        method: GET
+        description: list user groups
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid-policies
+      path: /auth/users/{userId}/policies
+      operations:
+      - name: listuserpolicies
+        method: GET
+        description: list user policies
+        inputParameters:
+        - name: effective
+          in: query
+          type: boolean
+          description: will return all distinct policies attached to the user or any of its groups
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid-policies-policyid
+      path: /auth/users/{userId}/policies/{policyId}
+      operations:
+      - name: attachpolicytouser
+        method: PUT
+        description: attach policy to user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: detachpolicyfromuser
+        method: DELETE
+        description: detach policy from user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid-external-principals
+      path: /auth/users/{userId}/external/principals
+      operations:
+      - name: createuserexternalprincipal
+        method: POST
+        description: attach external principal to user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleteuserexternalprincipal
+        method: DELETE
+        description: delete external principal from user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-users-userid-external-principals-ls
+      path: /auth/users/{userId}/external/principals/ls
+      operations:
+      - name: listuserexternalprincipals
+        method: GET
+        description: list user external policies attached to a user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-external-principals
+      path: /auth/external/principals
+      operations:
+      - name: getexternalprincipal
+        method: GET
+        description: describe external principal by id
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-groups-groupid-policies
+      path: /auth/groups/{groupId}/policies
+      operations:
+      - name: listgrouppolicies
+        method: GET
+        description: list group policies
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-groups-groupid-policies-policyid
+      path: /auth/groups/{groupId}/policies/{policyId}
+      operations:
+      - name: attachpolicytogroup
+        method: PUT
+        description: attach policy to group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: detachpolicyfromgroup
+        method: DELETE
+        description: detach policy from group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: auth-groups-groupid-acl
+      path: /auth/groups/{groupId}/acl
+      operations:
+      - name: setgroupacl
+        method: POST
+        description: set ACL of group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getgroupacl
+        method: GET
+        description: get ACL of group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories
+      path: /repositories
+      operations:
+      - name: listrepositories
+        method: GET
+        description: list repositories
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createrepository
+        method: POST
+        description: create repository
+        inputParameters:
+        - name: bare
+          in: query
+          type: boolean
+          description: If true, create a bare repository with no initial commit and branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository
+      path: /repositories/{repository}
+      operations:
+      - name: getrepository
+        method: GET
+        description: get repository
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleterepository
+        method: DELETE
+        description: delete repository
+        inputParameters:
+        - name: force
+          in: query
+          type: boolean
+          description: Bypass read-only protection and delete the repository
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-metadata
+      path: /repositories/{repository}/metadata
+      operations:
+      - name: getrepositorymetadata
+        method: GET
+        description: get repository metadata
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: setrepositorymetadata
+        method: POST
+        description: set repository metadata
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleterepositorymetadata
+        method: DELETE
+        description: delete repository metadata
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-settings-gc-rules
+      path: /repositories/{repository}/settings/gc_rules
+      operations:
+      - name: getgcrules
+        method: GET
+        description: get repository GC rules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: setgcrules
+        method: PUT
+        description: PUT /repositories/{repository}/settings/gc_rules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deletegcrules
+        method: DELETE
+        description: DELETE /repositories/{repository}/settings/gc_rules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-settings-branch-protecti
+      path: /repositories/{repository}/settings/branch_protection
+      operations:
+      - name: getbranchprotectionrules
+        method: GET
+        description: get branch protection rules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: setbranchprotectionrules
+        method: PUT
+        description: PUT /repositories/{repository}/settings/branch_protection
+        inputParameters:
+        - name: If-Match
+          in: header
+          type: string
+          description: if provided, the branch protection rules will be updated only if the current ETag match the provided
+            value
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-refs-dump
+      path: /repositories/{repository}/refs/dump
+      operations:
+      - name: dumprefs
+        method: PUT
+        description: 'Dump repository refs (tags, commits, branches) to object store Deprecated: a new API will introduce
+          long running operations'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-refs-restore
+      path: /repositories/{repository}/refs/restore
+      operations:
+      - name: restorerefs
+        method: PUT
+        description: 'Restore repository refs (tags, commits, branches) from object store. Deprecated: a new API will introduce
+          long running operations'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-dump
+      path: /repositories/{repository}/dump
+      operations:
+      - name: dumpsubmit
+        method: POST
+        description: Backup the repository metadata (tags, commits, branches) and save the backup to the object store.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: dumpstatus
+        method: GET
+        description: Status of a repository dump task
+        inputParameters:
+        - name: task_id
+          in: query
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-restore
+      path: /repositories/{repository}/restore
+      operations:
+      - name: restoresubmit
+        method: POST
+        description: Restore repository from a dump in the object store
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: restorestatus
+        method: GET
+        description: Status of a restore request
+        inputParameters:
+        - name: task_id
+          in: query
+          type: string
+          required: true
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-tags
+      path: /repositories/{repository}/tags
+      operations:
+      - name: listtags
+        method: GET
+        description: list tags
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: lakefs-rest
+    description: REST adapter for lakeFS API.
+    resources:
+    - path: /setup_comm_prefs
+      name: setupcommprefs
+      operations:
+      - method: POST
+        name: setupcommprefs
+        description: setup communications preferences
+        call: lakefs.setupcommprefs
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /setup_lakefs
+      name: getsetupstate
+      operations:
+      - method: GET
+        name: getsetupstate
+        description: check if the lakeFS installation is already set up
+        call: lakefs.getsetupstate
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /setup_lakefs
+      name: setup
+      operations:
+      - method: POST
+        name: setup
+        description: setup lakeFS and create a first user
+        call: lakefs.setup
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /user
+      name: getcurrentuser
+      operations:
+      - method: GET
+        name: getcurrentuser
+        description: get current user
+        call: lakefs.getcurrentuser
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/login
+      name: login
+      operations:
+      - method: POST
+        name: login
+        description: perform a login
+        call: lakefs.login
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/external/principal/login
+      name: externalprincipallogin
+      operations:
+      - method: POST
+        name: externalprincipallogin
+        description: perform a login using an external authenticator
+        call: lakefs.externalprincipallogin
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /sts/login
+      name: stslogin
+      operations:
+      - method: POST
+        name: stslogin
+        description: perform a login with STS
+        call: lakefs.stslogin
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/capabilities
+      name: getauthcapabilities
+      operations:
+      - method: GET
+        name: getauthcapabilities
+        description: list authentication capabilities supported
+        call: lakefs.getauthcapabilities
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users
+      name: listusers
+      operations:
+      - method: GET
+        name: listusers
+        description: list users
+        call: lakefs.listusers
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users
+      name: createuser
+      operations:
+      - method: POST
+        name: createuser
+        description: create user
+        call: lakefs.createuser
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}
+      name: getuser
+      operations:
+      - method: GET
+        name: getuser
+        description: get user
+        call: lakefs.getuser
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}
+      name: deleteuser
+      operations:
+      - method: DELETE
+        name: deleteuser
+        description: delete user
+        call: lakefs.deleteuser
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups
+      name: listgroups
+      operations:
+      - method: GET
+        name: listgroups
+        description: list groups
+        call: lakefs.listgroups
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups
+      name: creategroup
+      operations:
+      - method: POST
+        name: creategroup
+        description: create group
+        call: lakefs.creategroup
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}
+      name: getgroup
+      operations:
+      - method: GET
+        name: getgroup
+        description: get group
+        call: lakefs.getgroup
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}
+      name: deletegroup
+      operations:
+      - method: DELETE
+        name: deletegroup
+        description: delete group
+        call: lakefs.deletegroup
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/policies
+      name: listpolicies
+      operations:
+      - method: GET
+        name: listpolicies
+        description: list policies
+        call: lakefs.listpolicies
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/policies
+      name: createpolicy
+      operations:
+      - method: POST
+        name: createpolicy
+        description: create policy
+        call: lakefs.createpolicy
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/policies/{policyId}
+      name: getpolicy
+      operations:
+      - method: GET
+        name: getpolicy
+        description: get policy
+        call: lakefs.getpolicy
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/policies/{policyId}
+      name: updatepolicy
+      operations:
+      - method: PUT
+        name: updatepolicy
+        description: update policy
+        call: lakefs.updatepolicy
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/policies/{policyId}
+      name: deletepolicy
+      operations:
+      - method: DELETE
+        name: deletepolicy
+        description: delete policy
+        call: lakefs.deletepolicy
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/members
+      name: listgroupmembers
+      operations:
+      - method: GET
+        name: listgroupmembers
+        description: list group members
+        call: lakefs.listgroupmembers
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/members/{userId}
+      name: addgroupmembership
+      operations:
+      - method: PUT
+        name: addgroupmembership
+        description: add group membership
+        call: lakefs.addgroupmembership
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/members/{userId}
+      name: deletegroupmembership
+      operations:
+      - method: DELETE
+        name: deletegroupmembership
+        description: delete group membership
+        call: lakefs.deletegroupmembership
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/credentials
+      name: listusercredentials
+      operations:
+      - method: GET
+        name: listusercredentials
+        description: list user credentials
+        call: lakefs.listusercredentials
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/credentials
+      name: createcredentials
+      operations:
+      - method: POST
+        name: createcredentials
+        description: create credentials
+        call: lakefs.createcredentials
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/credentials/{accessKeyId}
+      name: deletecredentials
+      operations:
+      - method: DELETE
+        name: deletecredentials
+        description: delete credentials
+        call: lakefs.deletecredentials
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/credentials/{accessKeyId}
+      name: getcredentials
+      operations:
+      - method: GET
+        name: getcredentials
+        description: get credentials
+        call: lakefs.getcredentials
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/groups
+      name: listusergroups
+      operations:
+      - method: GET
+        name: listusergroups
+        description: list user groups
+        call: lakefs.listusergroups
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/policies
+      name: listuserpolicies
+      operations:
+      - method: GET
+        name: listuserpolicies
+        description: list user policies
+        call: lakefs.listuserpolicies
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/policies/{policyId}
+      name: attachpolicytouser
+      operations:
+      - method: PUT
+        name: attachpolicytouser
+        description: attach policy to user
+        call: lakefs.attachpolicytouser
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/policies/{policyId}
+      name: detachpolicyfromuser
+      operations:
+      - method: DELETE
+        name: detachpolicyfromuser
+        description: detach policy from user
+        call: lakefs.detachpolicyfromuser
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/external/principals
+      name: createuserexternalprincipal
+      operations:
+      - method: POST
+        name: createuserexternalprincipal
+        description: attach external principal to user
+        call: lakefs.createuserexternalprincipal
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/external/principals
+      name: deleteuserexternalprincipal
+      operations:
+      - method: DELETE
+        name: deleteuserexternalprincipal
+        description: delete external principal from user
+        call: lakefs.deleteuserexternalprincipal
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/users/{userId}/external/principals/ls
+      name: listuserexternalprincipals
+      operations:
+      - method: GET
+        name: listuserexternalprincipals
+        description: list user external policies attached to a user
+        call: lakefs.listuserexternalprincipals
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/external/principals
+      name: getexternalprincipal
+      operations:
+      - method: GET
+        name: getexternalprincipal
+        description: describe external principal by id
+        call: lakefs.getexternalprincipal
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/policies
+      name: listgrouppolicies
+      operations:
+      - method: GET
+        name: listgrouppolicies
+        description: list group policies
+        call: lakefs.listgrouppolicies
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/policies/{policyId}
+      name: attachpolicytogroup
+      operations:
+      - method: PUT
+        name: attachpolicytogroup
+        description: attach policy to group
+        call: lakefs.attachpolicytogroup
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/policies/{policyId}
+      name: detachpolicyfromgroup
+      operations:
+      - method: DELETE
+        name: detachpolicyfromgroup
+        description: detach policy from group
+        call: lakefs.detachpolicyfromgroup
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/acl
+      name: setgroupacl
+      operations:
+      - method: POST
+        name: setgroupacl
+        description: set ACL of group
+        call: lakefs.setgroupacl
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /auth/groups/{groupId}/acl
+      name: getgroupacl
+      operations:
+      - method: GET
+        name: getgroupacl
+        description: get ACL of group
+        call: lakefs.getgroupacl
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories
+      name: listrepositories
+      operations:
+      - method: GET
+        name: listrepositories
+        description: list repositories
+        call: lakefs.listrepositories
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories
+      name: createrepository
+      operations:
+      - method: POST
+        name: createrepository
+        description: create repository
+        call: lakefs.createrepository
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}
+      name: getrepository
+      operations:
+      - method: GET
+        name: getrepository
+        description: get repository
+        call: lakefs.getrepository
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}
+      name: deleterepository
+      operations:
+      - method: DELETE
+        name: deleterepository
+        description: delete repository
+        call: lakefs.deleterepository
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/metadata
+      name: getrepositorymetadata
+      operations:
+      - method: GET
+        name: getrepositorymetadata
+        description: get repository metadata
+        call: lakefs.getrepositorymetadata
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/metadata
+      name: setrepositorymetadata
+      operations:
+      - method: POST
+        name: setrepositorymetadata
+        description: set repository metadata
+        call: lakefs.setrepositorymetadata
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/metadata
+      name: deleterepositorymetadata
+      operations:
+      - method: DELETE
+        name: deleterepositorymetadata
+        description: delete repository metadata
+        call: lakefs.deleterepositorymetadata
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/settings/gc_rules
+      name: getgcrules
+      operations:
+      - method: GET
+        name: getgcrules
+        description: get repository GC rules
+        call: lakefs.getgcrules
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/settings/gc_rules
+      name: setgcrules
+      operations:
+      - method: PUT
+        name: setgcrules
+        description: PUT /repositories/{repository}/settings/gc_rules
+        call: lakefs.setgcrules
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/settings/gc_rules
+      name: deletegcrules
+      operations:
+      - method: DELETE
+        name: deletegcrules
+        description: DELETE /repositories/{repository}/settings/gc_rules
+        call: lakefs.deletegcrules
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/settings/branch_protection
+      name: getbranchprotectionrules
+      operations:
+      - method: GET
+        name: getbranchprotectionrules
+        description: get branch protection rules
+        call: lakefs.getbranchprotectionrules
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/settings/branch_protection
+      name: setbranchprotectionrules
+      operations:
+      - method: PUT
+        name: setbranchprotectionrules
+        description: PUT /repositories/{repository}/settings/branch_protection
+        call: lakefs.setbranchprotectionrules
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/refs/dump
+      name: dumprefs
+      operations:
+      - method: PUT
+        name: dumprefs
+        description: 'Dump repository refs (tags, commits, branches) to object store Deprecated: a new API will introduce
+          long running operations'
+        call: lakefs.dumprefs
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/refs/restore
+      name: restorerefs
+      operations:
+      - method: PUT
+        name: restorerefs
+        description: 'Restore repository refs (tags, commits, branches) from object store. Deprecated: a new API will introduce
+          long running operations'
+        call: lakefs.restorerefs
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/dump
+      name: dumpsubmit
+      operations:
+      - method: POST
+        name: dumpsubmit
+        description: Backup the repository metadata (tags, commits, branches) and save the backup to the object store.
+        call: lakefs.dumpsubmit
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/dump
+      name: dumpstatus
+      operations:
+      - method: GET
+        name: dumpstatus
+        description: Status of a repository dump task
+        call: lakefs.dumpstatus
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/restore
+      name: restoresubmit
+      operations:
+      - method: POST
+        name: restoresubmit
+        description: Restore repository from a dump in the object store
+        call: lakefs.restoresubmit
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/restore
+      name: restorestatus
+      operations:
+      - method: GET
+        name: restorestatus
+        description: Status of a restore request
+        call: lakefs.restorestatus
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /repositories/{repository}/tags
+      name: listtags
+      operations:
+      - method: GET
+        name: listtags
+        description: list tags
+        call: lakefs.listtags
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: lakefs-mcp
+    transport: http
+    description: MCP adapter for lakeFS API for AI agent use.
+    tools:
+    - name: setupcommprefs
+      description: setup communications preferences
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.setupcommprefs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getsetupstate
+      description: check if the lakeFS installation is already set up
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getsetupstate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setup
+      description: setup lakeFS and create a first user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.setup
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getcurrentuser
+      description: get current user
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getcurrentuser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: login
+      description: perform a login
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.login
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: externalprincipallogin
+      description: perform a login using an external authenticator
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.externalprincipallogin
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stslogin
+      description: perform a login with STS
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.stslogin
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getauthcapabilities
+      description: list authentication capabilities supported
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getauthcapabilities
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listusers
+      description: list users
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listusers
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createuser
+      description: create user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.createuser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getuser
+      description: get user
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getuser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleteuser
+      description: delete user
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deleteuser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listgroups
+      description: list groups
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listgroups
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: creategroup
+      description: create group
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.creategroup
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getgroup
+      description: get group
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getgroup
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletegroup
+      description: delete group
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deletegroup
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listpolicies
+      description: list policies
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listpolicies
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createpolicy
+      description: create policy
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.createpolicy
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getpolicy
+      description: get policy
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getpolicy
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: updatepolicy
+      description: update policy
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.updatepolicy
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletepolicy
+      description: delete policy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deletepolicy
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listgroupmembers
+      description: list group members
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listgroupmembers
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: addgroupmembership
+      description: add group membership
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.addgroupmembership
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletegroupmembership
+      description: delete group membership
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deletegroupmembership
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listusercredentials
+      description: list user credentials
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listusercredentials
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createcredentials
+      description: create credentials
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.createcredentials
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletecredentials
+      description: delete credentials
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deletecredentials
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getcredentials
+      description: get credentials
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getcredentials
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listusergroups
+      description: list user groups
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listusergroups
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listuserpolicies
+      description: list user policies
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listuserpolicies
+      with:
+        effective: tools.effective
+      inputParameters:
+      - name: effective
+        type: boolean
+        description: will return all distinct policies attached to the user or any of its groups
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: attachpolicytouser
+      description: attach policy to user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.attachpolicytouser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: detachpolicyfromuser
+      description: detach policy from user
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.detachpolicyfromuser
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createuserexternalprincipal
+      description: attach external principal to user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.createuserexternalprincipal
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleteuserexternalprincipal
+      description: delete external principal from user
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deleteuserexternalprincipal
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listuserexternalprincipals
+      description: list user external policies attached to a user
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listuserexternalprincipals
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getexternalprincipal
+      description: describe external principal by id
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getexternalprincipal
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listgrouppolicies
+      description: list group policies
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listgrouppolicies
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: attachpolicytogroup
+      description: attach policy to group
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.attachpolicytogroup
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: detachpolicyfromgroup
+      description: detach policy from group
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.detachpolicyfromgroup
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setgroupacl
+      description: set ACL of group
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.setgroupacl
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getgroupacl
+      description: get ACL of group
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getgroupacl
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listrepositories
+      description: list repositories
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listrepositories
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createrepository
+      description: create repository
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.createrepository
+      with:
+        bare: tools.bare
+      inputParameters:
+      - name: bare
+        type: boolean
+        description: If true, create a bare repository with no initial commit and branch
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getrepository
+      description: get repository
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getrepository
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleterepository
+      description: delete repository
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deleterepository
+      with:
+        force: tools.force
+      inputParameters:
+      - name: force
+        type: boolean
+        description: Bypass read-only protection and delete the repository
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getrepositorymetadata
+      description: get repository metadata
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getrepositorymetadata
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setrepositorymetadata
+      description: set repository metadata
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.setrepositorymetadata
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleterepositorymetadata
+      description: delete repository metadata
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deleterepositorymetadata
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getgcrules
+      description: get repository GC rules
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getgcrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setgcrules
+      description: PUT /repositories/{repository}/settings/gc_rules
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.setgcrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletegcrules
+      description: DELETE /repositories/{repository}/settings/gc_rules
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs.deletegcrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getbranchprotectionrules
+      description: get branch protection rules
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.getbranchprotectionrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setbranchprotectionrules
+      description: PUT /repositories/{repository}/settings/branch_protection
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.setbranchprotectionrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dumprefs
+      description: 'Dump repository refs (tags, commits, branches) to object store Deprecated: a new API will introduce long
+        running operations'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.dumprefs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: restorerefs
+      description: 'Restore repository refs (tags, commits, branches) from object store. Deprecated: a new API will introduce
+        long running operations'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs.restorerefs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dumpsubmit
+      description: Backup the repository metadata (tags, commits, branches) and save the backup to the object store.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.dumpsubmit
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dumpstatus
+      description: Status of a repository dump task
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.dumpstatus
+      with:
+        task_id: tools.task_id
+      inputParameters:
+      - name: task_id
+        type: string
+        description: task_id
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: restoresubmit
+      description: Restore repository from a dump in the object store
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs.restoresubmit
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: restorestatus
+      description: Status of a restore request
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.restorestatus
+      with:
+        task_id: tools.task_id
+      inputParameters:
+      - name: task_id
+        type: string
+        description: task_id
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listtags
+      description: list tags
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs.listtags
+      outputParameters:
+      - type: object
+        mapping: $.
+binds:
+- namespace: env
+  keys:
+    LAKEFS_USERNAME: LAKEFS_USERNAME
+    LAKEFS_PASSWORD: LAKEFS_PASSWORD
