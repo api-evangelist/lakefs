@@ -39,7 +39,7 @@ common:
     url: https://lakefs.io/
   - type: Documentation
     url: https://docs.lakefs.io/
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/treeverse/lakeFS
 maintainers:
   - FN: Kin Lane
