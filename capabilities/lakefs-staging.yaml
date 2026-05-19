@@ -1,0 +1,113 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API — staging
+  description: 'lakeFS API — staging. 2 operations. Lead operation: generate an address to which the client can upload an
+    object. Self-contained Naftiko capability covering one Lakefs business surface.'
+  tags:
+  - Lakefs
+  - staging
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAKEFS_API_KEY: LAKEFS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs-staging
+    baseUri: ''
+    description: lakeFS API — staging business capability. Self-contained, no shared references.
+    resources:
+    - name: repositories-repository-branches-branch-staging-backing
+      path: /repositories/{repository}/branches/{branch}/staging/backing
+      operations:
+      - name: getphysicaladdress
+        method: GET
+        description: generate an address to which the client can upload an object
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: presign
+          in: query
+          type: boolean
+      - name: linkphysicaladdress
+        method: PUT
+        description: associate staging on this physical address with a path
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAKEFS_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: lakefs-staging-rest
+    port: 8080
+    description: REST adapter for lakeFS API — staging. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/repositories/{repository}/branches/{branch}/staging/backing
+      name: repositories-repository-branches-branch-staging-backing
+      description: REST surface for repositories-repository-branches-branch-staging-backing.
+      operations:
+      - method: GET
+        name: getphysicaladdress
+        description: generate an address to which the client can upload an object
+        call: lakefs-staging.getphysicaladdress
+        with:
+          presign: rest.presign
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: linkphysicaladdress
+        description: associate staging on this physical address with a path
+        call: lakefs-staging.linkphysicaladdress
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: lakefs-staging-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for lakeFS API — staging. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: generate-address-which-client-can
+      description: generate an address to which the client can upload an object
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-staging.getphysicaladdress
+      with:
+        presign: tools.presign
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: associate-staging-this-physical-address
+      description: associate staging on this physical address with a path
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs-staging.linkphysicaladdress
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

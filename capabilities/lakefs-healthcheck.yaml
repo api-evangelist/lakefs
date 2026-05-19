@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API — healthCheck
+  description: 'lakeFS API — healthCheck. 1 operations. Lead operation: healthCheck. Self-contained Naftiko capability covering
+    one Lakefs business surface.'
+  tags:
+  - Lakefs
+  - healthCheck
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAKEFS_API_KEY: LAKEFS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs-healthcheck
+    baseUri: ''
+    description: lakeFS API — healthCheck business capability. Self-contained, no shared references.
+    resources:
+    - name: healthcheck
+      path: /healthcheck
+      operations:
+      - name: healthcheck
+        method: GET
+        description: check that the API server is up and running
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.LAKEFS_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: lakefs-healthcheck-rest
+    port: 8080
+    description: REST adapter for lakeFS API — healthCheck. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/healthcheck
+      name: healthcheck
+      description: REST surface for healthcheck.
+      operations:
+      - method: GET
+        name: healthcheck
+        description: check that the API server is up and running
+        call: lakefs-healthcheck.healthcheck
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: lakefs-healthcheck-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for lakeFS API — healthCheck. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: check-that-api-server-is
+      description: check that the API server is up and running
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-healthcheck.healthcheck
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,210 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API — refs
+  description: 'lakeFS API — refs. 4 operations. Lead operation: diff references. Self-contained Naftiko capability covering
+    one Lakefs business surface.'
+  tags:
+  - Lakefs
+  - refs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAKEFS_API_KEY: LAKEFS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs-refs
+    baseUri: ''
+    description: lakeFS API — refs business capability. Self-contained, no shared references.
+    resources:
+    - name: repositories-repository-refs-leftRef-diff-rightRef
+      path: /repositories/{repository}/refs/{leftRef}/diff/{rightRef}
+      operations:
+      - name: diffrefs
+        method: GET
+        description: diff references
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-refs-ref-commits
+      path: /repositories/{repository}/refs/{ref}/commits
+      operations:
+      - name: logcommits
+        method: GET
+        description: get commit log from ref. If both objects and prefixes are empty, return all commits.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: objects
+          in: query
+          type: array
+          description: list of paths, each element is a path of a specific object
+        - name: prefixes
+          in: query
+          type: array
+          description: list of paths, each element is a path of a prefix
+        - name: limit
+          in: query
+          type: boolean
+          description: limit the number of items in return to 'amount'. Without further indication on actual number of items.
+        - name: first_parent
+          in: query
+          type: boolean
+          description: if set to true, follow only the first parent upon reaching a merge commit
+        - name: since
+          in: query
+          type: string
+          description: Show commits more recent than a specific date-time. In case used with stop_at parameter, will stop
+            at the first commit that meets any of the conditions.
+        - name: stop_at
+          in: query
+          type: string
+          description: A reference to stop at. In case used with since parameter, will stop at the first commit that meets
+            any of the conditions.
+    - name: repositories-repository-refs-sourceRef-merge-destinationBranch
+      path: /repositories/{repository}/refs/{sourceRef}/merge/{destinationBranch}
+      operations:
+      - name: mergeintobranch
+        method: POST
+        description: merge references
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: findmergebase
+        method: GET
+        description: find the merge base for 2 references
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.LAKEFS_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: lakefs-refs-rest
+    port: 8080
+    description: REST adapter for lakeFS API — refs. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/repositories/{repository}/refs/{leftref}/diff/{rightref}
+      name: repositories-repository-refs-leftref-diff-rightref
+      description: REST surface for repositories-repository-refs-leftRef-diff-rightRef.
+      operations:
+      - method: GET
+        name: diffrefs
+        description: diff references
+        call: lakefs-refs.diffrefs
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/refs/{ref}/commits
+      name: repositories-repository-refs-ref-commits
+      description: REST surface for repositories-repository-refs-ref-commits.
+      operations:
+      - method: GET
+        name: logcommits
+        description: get commit log from ref. If both objects and prefixes are empty, return all commits.
+        call: lakefs-refs.logcommits
+        with:
+          objects: rest.objects
+          prefixes: rest.prefixes
+          limit: rest.limit
+          first_parent: rest.first_parent
+          since: rest.since
+          stop_at: rest.stop_at
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/refs/{sourceref}/merge/{destinationbranch}
+      name: repositories-repository-refs-sourceref-merge-destinationbranch
+      description: REST surface for repositories-repository-refs-sourceRef-merge-destinationBranch.
+      operations:
+      - method: POST
+        name: mergeintobranch
+        description: merge references
+        call: lakefs-refs.mergeintobranch
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: findmergebase
+        description: find the merge base for 2 references
+        call: lakefs-refs.findmergebase
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: lakefs-refs-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for lakeFS API — refs. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: diff-references
+      description: diff references
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-refs.diffrefs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-commit-log-ref-if
+      description: get commit log from ref. If both objects and prefixes are empty, return all commits.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-refs.logcommits
+      with:
+        objects: tools.objects
+        prefixes: tools.prefixes
+        limit: tools.limit
+        first_parent: tools.first_parent
+        since: tools.since
+        stop_at: tools.stop_at
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: merge-references
+      description: merge references
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-refs.mergeintobranch
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: find-merge-base-2-references
+      description: find the merge base for 2 references
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-refs.findmergebase
+      outputParameters:
+      - type: object
+        mapping: $.

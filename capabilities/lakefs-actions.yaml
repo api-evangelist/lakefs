@@ -1,0 +1,236 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API — actions
+  description: 'lakeFS API — actions. 4 operations. Lead operation: list runs. Self-contained Naftiko capability covering
+    one Lakefs business surface.'
+  tags:
+  - Lakefs
+  - actions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAKEFS_API_KEY: LAKEFS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs-actions
+    baseUri: ''
+    description: lakeFS API — actions business capability. Self-contained, no shared references.
+    resources:
+    - name: repositories-repository-actions-runs
+      path: /repositories/{repository}/actions/runs
+      operations:
+      - name: listrepositoryruns
+        method: GET
+        description: list runs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: repository
+          in: path
+          type: string
+          required: true
+        - name: branch
+          in: query
+          type: string
+        - name: commit
+          in: query
+          type: string
+    - name: repositories-repository-actions-runs-run_id
+      path: /repositories/{repository}/actions/runs/{run_id}
+      operations:
+      - name: getrun
+        method: GET
+        description: get a run
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: repository
+          in: path
+          type: string
+          required: true
+        - name: run_id
+          in: path
+          type: string
+          required: true
+    - name: repositories-repository-actions-runs-run_id-hooks
+      path: /repositories/{repository}/actions/runs/{run_id}/hooks
+      operations:
+      - name: listrunhooks
+        method: GET
+        description: list run hooks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: repository
+          in: path
+          type: string
+          required: true
+        - name: run_id
+          in: path
+          type: string
+          required: true
+    - name: repositories-repository-actions-runs-run_id-hooks-hook_run_id-output
+      path: /repositories/{repository}/actions/runs/{run_id}/hooks/{hook_run_id}/output
+      operations:
+      - name: getrunhookoutput
+        method: GET
+        description: get run hook output
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: repository
+          in: path
+          type: string
+          required: true
+        - name: run_id
+          in: path
+          type: string
+          required: true
+        - name: hook_run_id
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAKEFS_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: lakefs-actions-rest
+    port: 8080
+    description: REST adapter for lakeFS API — actions. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/repositories/{repository}/actions/runs
+      name: repositories-repository-actions-runs
+      description: REST surface for repositories-repository-actions-runs.
+      operations:
+      - method: GET
+        name: listrepositoryruns
+        description: list runs
+        call: lakefs-actions.listrepositoryruns
+        with:
+          repository: rest.repository
+          branch: rest.branch
+          commit: rest.commit
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/actions/runs/{run-id}
+      name: repositories-repository-actions-runs-run-id
+      description: REST surface for repositories-repository-actions-runs-run_id.
+      operations:
+      - method: GET
+        name: getrun
+        description: get a run
+        call: lakefs-actions.getrun
+        with:
+          repository: rest.repository
+          run_id: rest.run_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/actions/runs/{run-id}/hooks
+      name: repositories-repository-actions-runs-run-id-hooks
+      description: REST surface for repositories-repository-actions-runs-run_id-hooks.
+      operations:
+      - method: GET
+        name: listrunhooks
+        description: list run hooks
+        call: lakefs-actions.listrunhooks
+        with:
+          repository: rest.repository
+          run_id: rest.run_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/actions/runs/{run-id}/hooks/{hook-run-id}/output
+      name: repositories-repository-actions-runs-run-id-hooks-hook-run-id-output
+      description: REST surface for repositories-repository-actions-runs-run_id-hooks-hook_run_id-output.
+      operations:
+      - method: GET
+        name: getrunhookoutput
+        description: get run hook output
+        call: lakefs-actions.getrunhookoutput
+        with:
+          repository: rest.repository
+          run_id: rest.run_id
+          hook_run_id: rest.hook_run_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: lakefs-actions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for lakeFS API — actions. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-runs
+      description: list runs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-actions.listrepositoryruns
+      with:
+        repository: tools.repository
+        branch: tools.branch
+        commit: tools.commit
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-run
+      description: get a run
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-actions.getrun
+      with:
+        repository: tools.repository
+        run_id: tools.run_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-run-hooks
+      description: list run hooks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-actions.listrunhooks
+      with:
+        repository: tools.repository
+        run_id: tools.run_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-run-hook-output
+      description: get run hook output
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-actions.getrunhookoutput
+      with:
+        repository: tools.repository
+        run_id: tools.run_id
+        hook_run_id: tools.hook_run_id
+      outputParameters:
+      - type: object
+        mapping: $.

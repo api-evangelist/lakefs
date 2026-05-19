@@ -1,0 +1,1094 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API — internal
+  description: 'lakeFS API — internal. 30 operations. Lead operation: list authentication capabilities supported. Self-contained
+    Naftiko capability covering one Lakefs business surface.'
+  tags:
+  - Lakefs
+  - internal
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAKEFS_API_KEY: LAKEFS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs-internal
+    baseUri: ''
+    description: lakeFS API — internal business capability. Self-contained, no shared references.
+    resources:
+    - name: auth-capabilities
+      path: /auth/capabilities
+      operations:
+      - name: getauthcapabilities
+        method: GET
+        description: list authentication capabilities supported
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: config-garbage-collection
+      path: /config/garbage-collection
+      operations:
+      - name: getgarbagecollectionconfig
+        method: GET
+        description: get information of gc settings
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: config-storage
+      path: /config/storage
+      operations:
+      - name: getstorageconfig
+        method: GET
+        description: retrieve lakeFS storage configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: config-version
+      path: /config/version
+      operations:
+      - name: getlakefsversion
+        method: GET
+        description: get version of lakeFS server
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-branch_protection
+      path: /repositories/{repository}/branch_protection
+      operations:
+      - name: internalgetbranchprotectionrules
+        method: GET
+        description: get branch protection rules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: internalcreatebranchprotectionrule
+        method: POST
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: internaldeletebranchprotectionrule
+        method: DELETE
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-branch_protection-set_allowed
+      path: /repositories/{repository}/branch_protection/set_allowed
+      operations:
+      - name: createbranchprotectionrulepreflight
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-branches-branch-objects
+      path: /repositories/{repository}/branches/{branch}/objects
+      operations:
+      - name: stageobject
+        method: PUT
+        description: stage an object's metadata for the given branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-branches-branch-objects-stage_allowed
+      path: /repositories/{repository}/branches/{branch}/objects/stage_allowed
+      operations:
+      - name: uploadobjectpreflight
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-commits
+      path: /repositories/{repository}/commits
+      operations:
+      - name: createcommitrecord
+        method: POST
+        description: create commit record
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-gc-prepare_commits
+      path: /repositories/{repository}/gc/prepare_commits
+      operations:
+      - name: preparegarbagecollectioncommits
+        method: POST
+        description: save lists of active commits for garbage collection
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-gc-prepare_commits-async
+      path: /repositories/{repository}/gc/prepare_commits/async
+      operations:
+      - name: preparegarbagecollectioncommitsasync
+        method: POST
+        description: prepare gc commits
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-gc-prepare_commits-status
+      path: /repositories/{repository}/gc/prepare_commits/status
+      operations:
+      - name: preparegarbagecollectioncommitsstatus
+        method: GET
+        description: get status of prepare gc commits operation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: query
+          type: string
+          description: Unique identifier of the prepare GC commits task
+          required: true
+    - name: repositories-repository-gc-prepare_uncommited
+      path: /repositories/{repository}/gc/prepare_uncommited
+      operations:
+      - name: preparegarbagecollectionuncommitted
+        method: POST
+        description: save repository uncommitted metadata for garbage collection
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: repositories-repository-gc-rules
+      path: /repositories/{repository}/gc/rules
+      operations:
+      - name: internalgetgarbagecollectionrules
+        method: GET
+        description: Deprecated; use getGCRules.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: internalsetgarbagecollectionrules
+        method: POST
+        description: Deprecated; use setGCRules.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: internaldeletegarbagecollectionrules
+        method: DELETE
+        description: Deprecated; use deleteGCRules.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-gc-rules-set_allowed
+      path: /repositories/{repository}/gc/rules/set_allowed
+      operations:
+      - name: setgarbagecollectionrulespreflight
+        method: GET
+        description: ''
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-metadata
+      path: /repositories/{repository}/metadata
+      operations:
+      - name: setrepositorymetadata
+        method: POST
+        description: set repository metadata
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deleterepositorymetadata
+        method: DELETE
+        description: delete repository metadata
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-metadata-object-type-object_id
+      path: /repositories/{repository}/metadata/object/{type}/{object_id}
+      operations:
+      - name: getmetadataobject
+        method: GET
+        description: return a lakeFS metadata object by ID
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: presign
+          in: query
+          type: boolean
+    - name: repositories-repository-refs-dump
+      path: /repositories/{repository}/refs/dump
+      operations:
+      - name: dumprefs
+        method: PUT
+        description: Dump repository refs (tags, commits, branches) to object store
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-refs-restore
+      path: /repositories/{repository}/refs/restore
+      operations:
+      - name: restorerefs
+        method: PUT
+        description: Restore repository refs (tags, commits, branches) from object store.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-refs-branch-symlink
+      path: /repositories/{repository}/refs/{branch}/symlink
+      operations:
+      - name: createsymlinkfile
+        method: POST
+        description: creates symlink files corresponding to the given directory
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: setup_comm_prefs
+      path: /setup_comm_prefs
+      operations:
+      - name: setupcommprefs
+        method: POST
+        description: setup communications preferences
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: setup_lakefs
+      path: /setup_lakefs
+      operations:
+      - name: getsetupstate
+        method: GET
+        description: check if the lakeFS installation is already set up
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: setup
+        method: POST
+        description: setup lakeFS and create a first user
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: statistics
+      path: /statistics
+      operations:
+      - name: poststatsevents
+        method: POST
+        description: post stats events, this endpoint is meant for internal use only
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: usage-report-summary
+      path: /usage-report/summary
+      operations:
+      - name: getusagereportsummary
+        method: GET
+        description: get usage report summary
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.LAKEFS_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: lakefs-internal-rest
+    port: 8080
+    description: REST adapter for lakeFS API — internal. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/auth/capabilities
+      name: auth-capabilities
+      description: REST surface for auth-capabilities.
+      operations:
+      - method: GET
+        name: getauthcapabilities
+        description: list authentication capabilities supported
+        call: lakefs-internal.getauthcapabilities
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/config/garbage-collection
+      name: config-garbage-collection
+      description: REST surface for config-garbage-collection.
+      operations:
+      - method: GET
+        name: getgarbagecollectionconfig
+        description: get information of gc settings
+        call: lakefs-internal.getgarbagecollectionconfig
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/config/storage
+      name: config-storage
+      description: REST surface for config-storage.
+      operations:
+      - method: GET
+        name: getstorageconfig
+        description: retrieve lakeFS storage configuration
+        call: lakefs-internal.getstorageconfig
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/config/version
+      name: config-version
+      description: REST surface for config-version.
+      operations:
+      - method: GET
+        name: getlakefsversion
+        description: get version of lakeFS server
+        call: lakefs-internal.getlakefsversion
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branch-protection
+      name: repositories-repository-branch-protection
+      description: REST surface for repositories-repository-branch_protection.
+      operations:
+      - method: GET
+        name: internalgetbranchprotectionrules
+        description: get branch protection rules
+        call: lakefs-internal.internalgetbranchprotectionrules
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: internalcreatebranchprotectionrule
+        description: internalcreatebranchprotectionrule
+        call: lakefs-internal.internalcreatebranchprotectionrule
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: internaldeletebranchprotectionrule
+        description: internaldeletebranchprotectionrule
+        call: lakefs-internal.internaldeletebranchprotectionrule
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branch-protection/set-allowed
+      name: repositories-repository-branch-protection-set-allowed
+      description: REST surface for repositories-repository-branch_protection-set_allowed.
+      operations:
+      - method: GET
+        name: createbranchprotectionrulepreflight
+        description: createbranchprotectionrulepreflight
+        call: lakefs-internal.createbranchprotectionrulepreflight
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branches/{branch}/objects
+      name: repositories-repository-branches-branch-objects
+      description: REST surface for repositories-repository-branches-branch-objects.
+      operations:
+      - method: PUT
+        name: stageobject
+        description: stage an object's metadata for the given branch
+        call: lakefs-internal.stageobject
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branches/{branch}/objects/stage-allowed
+      name: repositories-repository-branches-branch-objects-stage-allowed
+      description: REST surface for repositories-repository-branches-branch-objects-stage_allowed.
+      operations:
+      - method: GET
+        name: uploadobjectpreflight
+        description: uploadobjectpreflight
+        call: lakefs-internal.uploadobjectpreflight
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/commits
+      name: repositories-repository-commits
+      description: REST surface for repositories-repository-commits.
+      operations:
+      - method: POST
+        name: createcommitrecord
+        description: create commit record
+        call: lakefs-internal.createcommitrecord
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/gc/prepare-commits
+      name: repositories-repository-gc-prepare-commits
+      description: REST surface for repositories-repository-gc-prepare_commits.
+      operations:
+      - method: POST
+        name: preparegarbagecollectioncommits
+        description: save lists of active commits for garbage collection
+        call: lakefs-internal.preparegarbagecollectioncommits
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/gc/prepare-commits/async
+      name: repositories-repository-gc-prepare-commits-async
+      description: REST surface for repositories-repository-gc-prepare_commits-async.
+      operations:
+      - method: POST
+        name: preparegarbagecollectioncommitsasync
+        description: prepare gc commits
+        call: lakefs-internal.preparegarbagecollectioncommitsasync
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/gc/prepare-commits/status
+      name: repositories-repository-gc-prepare-commits-status
+      description: REST surface for repositories-repository-gc-prepare_commits-status.
+      operations:
+      - method: GET
+        name: preparegarbagecollectioncommitsstatus
+        description: get status of prepare gc commits operation
+        call: lakefs-internal.preparegarbagecollectioncommitsstatus
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/gc/prepare-uncommited
+      name: repositories-repository-gc-prepare-uncommited
+      description: REST surface for repositories-repository-gc-prepare_uncommited.
+      operations:
+      - method: POST
+        name: preparegarbagecollectionuncommitted
+        description: save repository uncommitted metadata for garbage collection
+        call: lakefs-internal.preparegarbagecollectionuncommitted
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/gc/rules
+      name: repositories-repository-gc-rules
+      description: REST surface for repositories-repository-gc-rules.
+      operations:
+      - method: GET
+        name: internalgetgarbagecollectionrules
+        description: Deprecated; use getGCRules.
+        call: lakefs-internal.internalgetgarbagecollectionrules
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: internalsetgarbagecollectionrules
+        description: Deprecated; use setGCRules.
+        call: lakefs-internal.internalsetgarbagecollectionrules
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: internaldeletegarbagecollectionrules
+        description: Deprecated; use deleteGCRules.
+        call: lakefs-internal.internaldeletegarbagecollectionrules
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/gc/rules/set-allowed
+      name: repositories-repository-gc-rules-set-allowed
+      description: REST surface for repositories-repository-gc-rules-set_allowed.
+      operations:
+      - method: GET
+        name: setgarbagecollectionrulespreflight
+        description: setgarbagecollectionrulespreflight
+        call: lakefs-internal.setgarbagecollectionrulespreflight
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/metadata
+      name: repositories-repository-metadata
+      description: REST surface for repositories-repository-metadata.
+      operations:
+      - method: POST
+        name: setrepositorymetadata
+        description: set repository metadata
+        call: lakefs-internal.setrepositorymetadata
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleterepositorymetadata
+        description: delete repository metadata
+        call: lakefs-internal.deleterepositorymetadata
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/metadata/object/{type}/{object-id}
+      name: repositories-repository-metadata-object-type-object-id
+      description: REST surface for repositories-repository-metadata-object-type-object_id.
+      operations:
+      - method: GET
+        name: getmetadataobject
+        description: return a lakeFS metadata object by ID
+        call: lakefs-internal.getmetadataobject
+        with:
+          presign: rest.presign
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/refs/dump
+      name: repositories-repository-refs-dump
+      description: REST surface for repositories-repository-refs-dump.
+      operations:
+      - method: PUT
+        name: dumprefs
+        description: Dump repository refs (tags, commits, branches) to object store
+        call: lakefs-internal.dumprefs
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/refs/restore
+      name: repositories-repository-refs-restore
+      description: REST surface for repositories-repository-refs-restore.
+      operations:
+      - method: PUT
+        name: restorerefs
+        description: Restore repository refs (tags, commits, branches) from object store.
+        call: lakefs-internal.restorerefs
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/refs/{branch}/symlink
+      name: repositories-repository-refs-branch-symlink
+      description: REST surface for repositories-repository-refs-branch-symlink.
+      operations:
+      - method: POST
+        name: createsymlinkfile
+        description: creates symlink files corresponding to the given directory
+        call: lakefs-internal.createsymlinkfile
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/setup-comm-prefs
+      name: setup-comm-prefs
+      description: REST surface for setup_comm_prefs.
+      operations:
+      - method: POST
+        name: setupcommprefs
+        description: setup communications preferences
+        call: lakefs-internal.setupcommprefs
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/setup-lakefs
+      name: setup-lakefs
+      description: REST surface for setup_lakefs.
+      operations:
+      - method: GET
+        name: getsetupstate
+        description: check if the lakeFS installation is already set up
+        call: lakefs-internal.getsetupstate
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: setup
+        description: setup lakeFS and create a first user
+        call: lakefs-internal.setup
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/statistics
+      name: statistics
+      description: REST surface for statistics.
+      operations:
+      - method: POST
+        name: poststatsevents
+        description: post stats events, this endpoint is meant for internal use only
+        call: lakefs-internal.poststatsevents
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/usage-report/summary
+      name: usage-report-summary
+      description: REST surface for usage-report-summary.
+      operations:
+      - method: GET
+        name: getusagereportsummary
+        description: get usage report summary
+        call: lakefs-internal.getusagereportsummary
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: lakefs-internal-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for lakeFS API — internal. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-authentication-capabilities-supported
+      description: list authentication capabilities supported
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.getauthcapabilities
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-information-gc-settings
+      description: get information of gc settings
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.getgarbagecollectionconfig
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-lakefs-storage-configuration
+      description: retrieve lakeFS storage configuration
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.getstorageconfig
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-version-lakefs-server
+      description: get version of lakeFS server
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.getlakefsversion
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-branch-protection-rules
+      description: get branch protection rules
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.internalgetbranchprotectionrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: internalcreatebranchprotectionrule
+      description: internalcreatebranchprotectionrule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.internalcreatebranchprotectionrule
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: internaldeletebranchprotectionrule
+      description: internaldeletebranchprotectionrule
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs-internal.internaldeletebranchprotectionrule
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createbranchprotectionrulepreflight
+      description: createbranchprotectionrulepreflight
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.createbranchprotectionrulepreflight
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stage-object-s-metadata-given-branch
+      description: stage an object's metadata for the given branch
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.stageobject
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: uploadobjectpreflight
+      description: uploadobjectpreflight
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.uploadobjectpreflight
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-commit-record
+      description: create commit record
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.createcommitrecord
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: save-lists-active-commits-garbage
+      description: save lists of active commits for garbage collection
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.preparegarbagecollectioncommits
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: prepare-gc-commits
+      description: prepare gc commits
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.preparegarbagecollectioncommitsasync
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-status-prepare-gc-commits
+      description: get status of prepare gc commits operation
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.preparegarbagecollectioncommitsstatus
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: save-repository-uncommitted-metadata-garbage
+      description: save repository uncommitted metadata for garbage collection
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.preparegarbagecollectionuncommitted
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deprecated-use-getgcrules
+      description: Deprecated; use getGCRules.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.internalgetgarbagecollectionrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deprecated-use-setgcrules
+      description: Deprecated; use setGCRules.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.internalsetgarbagecollectionrules
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deprecated-use-deletegcrules
+      description: Deprecated; use deleteGCRules.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs-internal.internaldeletegarbagecollectionrules
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setgarbagecollectionrulespreflight
+      description: setgarbagecollectionrulespreflight
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.setgarbagecollectionrulespreflight
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-repository-metadata
+      description: set repository metadata
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.setrepositorymetadata
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-repository-metadata
+      description: delete repository metadata
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs-internal.deleterepositorymetadata
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: return-lakefs-metadata-object-id
+      description: return a lakeFS metadata object by ID
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.getmetadataobject
+      with:
+        presign: tools.presign
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: dump-repository-refs-tags-commits
+      description: Dump repository refs (tags, commits, branches) to object store
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.dumprefs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: restore-repository-refs-tags-commits
+      description: Restore repository refs (tags, commits, branches) from object store.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.restorerefs
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: creates-symlink-files-corresponding-given
+      description: creates symlink files corresponding to the given directory
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.createsymlinkfile
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setup-communications-preferences
+      description: setup communications preferences
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.setupcommprefs
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: check-if-lakefs-installation-is
+      description: check if the lakeFS installation is already set up
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.getsetupstate
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: setup-lakefs-and-create-first
+      description: setup lakeFS and create a first user
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.setup
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: post-stats-events-this-endpoint
+      description: post stats events, this endpoint is meant for internal use only
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-internal.poststatsevents
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-usage-report-summary
+      description: get usage report summary
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-internal.getusagereportsummary
+      outputParameters:
+      - type: object
+        mapping: $.

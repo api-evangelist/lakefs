@@ -1,0 +1,329 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API — branches
+  description: 'lakeFS API — branches. 8 operations. Lead operation: list branches. Self-contained Naftiko capability covering
+    one Lakefs business surface.'
+  tags:
+  - Lakefs
+  - branches
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAKEFS_API_KEY: LAKEFS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs-branches
+    baseUri: ''
+    description: lakeFS API — branches business capability. Self-contained, no shared references.
+    resources:
+    - name: repositories-repository-branches
+      path: /repositories/{repository}/branches
+      operations:
+      - name: listbranches
+        method: GET
+        description: list branches
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: show_hidden
+          in: query
+          type: boolean
+      - name: createbranch
+        method: POST
+        description: create branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-branches-branch
+      path: /repositories/{repository}/branches/{branch}
+      operations:
+      - name: getbranch
+        method: GET
+        description: get branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deletebranch
+        method: DELETE
+        description: delete branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: force
+          in: query
+          type: boolean
+      - name: resetbranch
+        method: PUT
+        description: reset branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-branches-branch-cherry-pick
+      path: /repositories/{repository}/branches/{branch}/cherry-pick
+      operations:
+      - name: cherrypick
+        method: POST
+        description: Replay the changes from the given commit on the branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: repositories-repository-branches-branch-diff
+      path: /repositories/{repository}/branches/{branch}/diff
+      operations:
+      - name: diffbranch
+        method: GET
+        description: diff branch
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: repositories-repository-branches-branch-revert
+      path: /repositories/{repository}/branches/{branch}/revert
+      operations:
+      - name: revertbranch
+        method: POST
+        description: revert
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAKEFS_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: lakefs-branches-rest
+    port: 8080
+    description: REST adapter for lakeFS API — branches. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/repositories/{repository}/branches
+      name: repositories-repository-branches
+      description: REST surface for repositories-repository-branches.
+      operations:
+      - method: GET
+        name: listbranches
+        description: list branches
+        call: lakefs-branches.listbranches
+        with:
+          show_hidden: rest.show_hidden
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createbranch
+        description: create branch
+        call: lakefs-branches.createbranch
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branches/{branch}
+      name: repositories-repository-branches-branch
+      description: REST surface for repositories-repository-branches-branch.
+      operations:
+      - method: GET
+        name: getbranch
+        description: get branch
+        call: lakefs-branches.getbranch
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletebranch
+        description: delete branch
+        call: lakefs-branches.deletebranch
+        with:
+          force: rest.force
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: resetbranch
+        description: reset branch
+        call: lakefs-branches.resetbranch
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branches/{branch}/cherry-pick
+      name: repositories-repository-branches-branch-cherry-pick
+      description: REST surface for repositories-repository-branches-branch-cherry-pick.
+      operations:
+      - method: POST
+        name: cherrypick
+        description: Replay the changes from the given commit on the branch
+        call: lakefs-branches.cherrypick
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branches/{branch}/diff
+      name: repositories-repository-branches-branch-diff
+      description: REST surface for repositories-repository-branches-branch-diff.
+      operations:
+      - method: GET
+        name: diffbranch
+        description: diff branch
+        call: lakefs-branches.diffbranch
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/repositories/{repository}/branches/{branch}/revert
+      name: repositories-repository-branches-branch-revert
+      description: REST surface for repositories-repository-branches-branch-revert.
+      operations:
+      - method: POST
+        name: revertbranch
+        description: revert
+        call: lakefs-branches.revertbranch
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: lakefs-branches-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for lakeFS API — branches. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-branches
+      description: list branches
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-branches.listbranches
+      with:
+        show_hidden: tools.show_hidden
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-branch
+      description: create branch
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-branches.createbranch
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-branch
+      description: get branch
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-branches.getbranch
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-branch
+      description: delete branch
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs-branches.deletebranch
+      with:
+        force: tools.force
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: reset-branch
+      description: reset branch
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: lakefs-branches.resetbranch
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: replay-changes-given-commit-branch
+      description: Replay the changes from the given commit on the branch
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-branches.cherrypick
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: diff-branch
+      description: diff branch
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-branches.diffbranch
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: revert
+      description: revert
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-branches.revertbranch
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,150 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: lakeFS API — import
+  description: 'lakeFS API — import. 3 operations. Lead operation: get import status. Self-contained Naftiko capability covering
+    one Lakefs business surface.'
+  tags:
+  - Lakefs
+  - import
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAKEFS_API_KEY: LAKEFS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: lakefs-import
+    baseUri: ''
+    description: lakeFS API — import business capability. Self-contained, no shared references.
+    resources:
+    - name: repositories-repository-branches-branch-import
+      path: /repositories/{repository}/branches/{branch}/import
+      operations:
+      - name: importstatus
+        method: GET
+        description: get import status
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: query
+          type: string
+          description: Unique identifier of the import process
+          required: true
+      - name: importstart
+        method: POST
+        description: import data from object store
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: importcancel
+        method: DELETE
+        description: cancel ongoing import
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: id
+          in: query
+          type: string
+          description: Unique identifier of the import process
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAKEFS_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: lakefs-import-rest
+    port: 8080
+    description: REST adapter for lakeFS API — import. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/repositories/{repository}/branches/{branch}/import
+      name: repositories-repository-branches-branch-import
+      description: REST surface for repositories-repository-branches-branch-import.
+      operations:
+      - method: GET
+        name: importstatus
+        description: get import status
+        call: lakefs-import.importstatus
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: importstart
+        description: import data from object store
+        call: lakefs-import.importstart
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: importcancel
+        description: cancel ongoing import
+        call: lakefs-import.importcancel
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: lakefs-import-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for lakeFS API — import. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: get-import-status
+      description: get import status
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: lakefs-import.importstatus
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: import-data-object-store
+      description: import data from object store
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: lakefs-import.importstart
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-ongoing-import
+      description: cancel ongoing import
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: lakefs-import.importcancel
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
