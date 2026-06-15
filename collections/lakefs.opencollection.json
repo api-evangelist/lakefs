@@ -1,0 +1,3644 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "internal",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "setup communications preferences",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/setup_comm_prefs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "setup communications preferences"
+        },
+        {
+          "info": {
+            "name": "check if the lakeFS installation is already set up",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/setup_lakefs"
+          },
+          "docs": "check if the lakeFS installation is already set up"
+        },
+        {
+          "info": {
+            "name": "setup lakeFS and create a first user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/setup_lakefs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "setup lakeFS and create a first user"
+        },
+        {
+          "info": {
+            "name": "list authentication capabilities supported",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/capabilities"
+          },
+          "docs": "list authentication capabilities supported"
+        },
+        {
+          "info": {
+            "name": "set repository metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set repository metadata. This will only add or update the provided keys, and will not remove any existing keys.\n"
+        },
+        {
+          "info": {
+            "name": "delete repository metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Delete specified keys from the repository's metadata.\n"
+        },
+        {
+          "info": {
+            "name": "Dump repository refs (tags, commits, branches) to object store\nDeprecated: a new API will introduce long running operations\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/refs/dump",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Dump repository refs (tags, commits, branches) to object store\nDeprecated: a new API will introduce long running operations\n"
+        },
+        {
+          "info": {
+            "name": "Restore repository refs (tags, commits, branches) from object store.\nDeprecated: a new API will introduce long running operations\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/refs/restore",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Restore repository refs (tags, commits, branches) from object store.\nDeprecated: a new API will introduce long running operations\n"
+        },
+        {
+          "info": {
+            "name": "create commit record",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create commit record"
+        },
+        {
+          "info": {
+            "name": "uploadObjectPreflight",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/stage_allowed",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "stage an object's metadata for the given branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "stage an object's metadata for the given branch"
+        },
+        {
+          "info": {
+            "name": "creates symlink files corresponding to the given directory",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/refs/:branch/symlink",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "location",
+                "value": "",
+                "type": "query",
+                "description": "path to the table data"
+              }
+            ]
+          },
+          "docs": "creates symlink files corresponding to the given directory"
+        },
+        {
+          "info": {
+            "name": "return a lakeFS metadata object by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/metadata/object/:type/:object_id",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "object_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "return a lakeFS metadata object by ID"
+        },
+        {
+          "info": {
+            "name": "setGarbageCollectionRulesPreflight",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/gc/rules/set_allowed",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "internalGetGarbageCollectionRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/gc/rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deprecated; use getGCRules."
+        },
+        {
+          "info": {
+            "name": "internalSetGarbageCollectionRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deprecated; use setGCRules."
+        },
+        {
+          "info": {
+            "name": "internalDeleteGarbageCollectionRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/gc/rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deprecated; use deleteGCRules."
+        },
+        {
+          "info": {
+            "name": "save lists of active commits for garbage collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/prepare_commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "save lists of active commits for garbage collection"
+        },
+        {
+          "info": {
+            "name": "prepare gc commits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/prepare_commits/async",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "prepare gc commits"
+        },
+        {
+          "info": {
+            "name": "get status of prepare gc commits operation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/gc/prepare_commits/status",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Unique identifier of the prepare GC commits task"
+              }
+            ]
+          },
+          "docs": "get status of prepare gc commits operation"
+        },
+        {
+          "info": {
+            "name": "save repository uncommitted metadata for garbage collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/prepare_uncommited",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "save repository uncommitted metadata for garbage collection"
+        },
+        {
+          "info": {
+            "name": "createBranchProtectionRulePreflight",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branch_protection/set_allowed",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "get branch protection rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branch_protection",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get branch protection rules"
+        },
+        {
+          "info": {
+            "name": "internalCreateBranchProtectionRule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branch_protection",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "internalDeleteBranchProtectionRule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branch_protection",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "getLakeFSVersion",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/config/version"
+          },
+          "docs": "get version of lakeFS server"
+        },
+        {
+          "info": {
+            "name": "getStorageConfig",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/config/storage"
+          },
+          "docs": "retrieve lakeFS storage configuration"
+        },
+        {
+          "info": {
+            "name": "getGarbageCollectionConfig",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/config/garbage-collection"
+          },
+          "docs": "get information of gc settings"
+        },
+        {
+          "info": {
+            "name": "post stats events, this endpoint is meant for internal use only",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/statistics",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "post stats events, this endpoint is meant for internal use only"
+        },
+        {
+          "info": {
+            "name": "get usage report summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/usage-report/summary"
+          },
+          "docs": "get usage report summary"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/user"
+          },
+          "docs": "get current user"
+        },
+        {
+          "info": {
+            "name": "perform a login",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login"
+        },
+        {
+          "info": {
+            "name": "list users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users",
+            "params": [
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list users"
+        },
+        {
+          "info": {
+            "name": "create user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create user"
+        },
+        {
+          "info": {
+            "name": "get user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get user"
+        },
+        {
+          "info": {
+            "name": "delete user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete user"
+        },
+        {
+          "info": {
+            "name": "list groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups",
+            "params": [
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list groups"
+        },
+        {
+          "info": {
+            "name": "create group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/groups",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create group"
+        },
+        {
+          "info": {
+            "name": "get group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get group"
+        },
+        {
+          "info": {
+            "name": "delete group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/groups/:groupId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete group"
+        },
+        {
+          "info": {
+            "name": "list policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/policies",
+            "params": [
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list policies"
+        },
+        {
+          "info": {
+            "name": "create policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/policies",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create policy"
+        },
+        {
+          "info": {
+            "name": "get policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get policy"
+        },
+        {
+          "info": {
+            "name": "update policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "update policy"
+        },
+        {
+          "info": {
+            "name": "delete policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete policy"
+        },
+        {
+          "info": {
+            "name": "list group members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId/members",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list group members"
+        },
+        {
+          "info": {
+            "name": "add group membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/groups/:groupId/members/:userId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "add group membership"
+        },
+        {
+          "info": {
+            "name": "delete group membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/groups/:groupId/members/:userId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete group membership"
+        },
+        {
+          "info": {
+            "name": "list user credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/credentials",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user credentials"
+        },
+        {
+          "info": {
+            "name": "create credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users/:userId/credentials",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "create credentials"
+        },
+        {
+          "info": {
+            "name": "get credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/credentials/:accessKeyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "accessKeyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get credentials"
+        },
+        {
+          "info": {
+            "name": "delete credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/credentials/:accessKeyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "accessKeyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete credentials"
+        },
+        {
+          "info": {
+            "name": "list user groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/groups",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user groups"
+        },
+        {
+          "info": {
+            "name": "list user policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/policies",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "effective",
+                "value": "",
+                "type": "query",
+                "description": "will return all distinct policies attached to the user or any of its groups"
+              }
+            ]
+          },
+          "docs": "list user policies"
+        },
+        {
+          "info": {
+            "name": "attach policy to user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/users/:userId/policies/:policyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "attach policy to user"
+        },
+        {
+          "info": {
+            "name": "detach policy from user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/policies/:policyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "detach policy from user"
+        },
+        {
+          "info": {
+            "name": "attach external principal to user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "attach external principal to user"
+        },
+        {
+          "info": {
+            "name": "delete external principal from user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete external principal from user"
+        },
+        {
+          "info": {
+            "name": "list user external policies attached to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/external/principals/ls",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user external policies attached to a user"
+        },
+        {
+          "info": {
+            "name": "describe external principal by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/external/principals",
+            "params": [
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "describe external principal by id"
+        },
+        {
+          "info": {
+            "name": "list group policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId/policies",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list group policies"
+        },
+        {
+          "info": {
+            "name": "attach policy to group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/groups/:groupId/policies/:policyId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "attach policy to group"
+        },
+        {
+          "info": {
+            "name": "detach policy from group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/groups/:groupId/policies/:policyId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "detach policy from group"
+        },
+        {
+          "info": {
+            "name": "get ACL of group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId/acl",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get ACL of group"
+        },
+        {
+          "info": {
+            "name": "set ACL of group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/groups/:groupId/acl",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "set ACL of group"
+        },
+        {
+          "info": {
+            "name": "oauthCallback",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/oidc/callback"
+          }
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "external",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "perform a login using an external authenticator",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/external/principal/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login using an external authenticator"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "experimental",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "perform a login with STS",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/sts/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login with STS"
+        },
+        {
+          "info": {
+            "name": "hard reset branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/hard_reset",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "query",
+                "description": "After reset, branch will point at this reference."
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Relocate branch to refer to ref.  Branch must not contain uncommitted data."
+        },
+        {
+          "info": {
+            "name": "Initiate a multipart upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "parts",
+                "value": "",
+                "type": "query",
+                "description": "number of presigned URL parts required to upload"
+              }
+            ]
+          },
+          "docs": "Initiates a multipart upload and returns an upload ID with presigned URLs for each part (optional).\nPart numbers starts with 1. Each part except the last one has minimum size depends on the underlying blockstore implementation.\nFor example working with S3 blockstore, minimum size is 5MB (excluding the last part).\n"
+        },
+        {
+          "info": {
+            "name": "Complete a presign multipart upload request",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Completes a presign multipart upload by assembling the uploaded parts."
+        },
+        {
+          "info": {
+            "name": "Abort a presign multipart upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Aborts a presign multipart upload."
+        },
+        {
+          "info": {
+            "name": "uploadPart",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId/parts/:partNumber",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "partNumber",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Return a presigned URL to upload into a presigned multipart upload."
+        },
+        {
+          "info": {
+            "name": "uploadPartCopy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId/parts/:partNumber/copy",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "partNumber",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Upload a part by copying part of another object."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "repositories",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list repositories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories",
+            "params": [
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "string for searching relevant entries"
+              }
+            ]
+          },
+          "docs": "list repositories"
+        },
+        {
+          "info": {
+            "name": "create repository",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories",
+            "params": [
+              {
+                "name": "bare",
+                "value": "",
+                "type": "query",
+                "description": "If true, create a bare repository with no initial commit and branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create repository"
+        },
+        {
+          "info": {
+            "name": "get repository",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get repository"
+        },
+        {
+          "info": {
+            "name": "delete repository",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "Bypass read-only protection and delete the repository"
+              }
+            ]
+          },
+          "docs": "delete repository"
+        },
+        {
+          "info": {
+            "name": "get repository metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get repository metadata"
+        },
+        {
+          "info": {
+            "name": "get repository GC rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/settings/gc_rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get repository GC rules"
+        },
+        {
+          "info": {
+            "name": "setGCRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/settings/gc_rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "deleteGCRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/settings/gc_rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "get branch protection rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/settings/branch_protection",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get branch protection rules"
+        },
+        {
+          "info": {
+            "name": "setBranchProtectionRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/settings/branch_protection",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "Status of a repository dump task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/dump",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Status of a repository dump task"
+        },
+        {
+          "info": {
+            "name": "Backup the repository metadata (tags, commits, branches) and save the backup to the object store.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/dump",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Backup the repository metadata (tags, commits, branches) and save the backup to the object store."
+        },
+        {
+          "info": {
+            "name": "Status of a restore request",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/restore",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "task_id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Status of a restore request"
+        },
+        {
+          "info": {
+            "name": "Restore repository from a dump in the object store",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/restore",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Restore repository from a dump in the object store"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "tags",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/tags",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list tags"
+        },
+        {
+          "info": {
+            "name": "create tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/tags",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create tag"
+        },
+        {
+          "info": {
+            "name": "get tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/tags/:tag",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get tag"
+        },
+        {
+          "info": {
+            "name": "delete tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/tags/:tag",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete tag"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "branches",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list branches",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "show_hidden",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "list branches"
+        },
+        {
+          "info": {
+            "name": "create branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create branch"
+        },
+        {
+          "info": {
+            "name": "get branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get branch"
+        },
+        {
+          "info": {
+            "name": "reset branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "reset branch"
+        },
+        {
+          "info": {
+            "name": "delete branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branches/:branch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete branch"
+        },
+        {
+          "info": {
+            "name": "revert",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/revert",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "revert"
+        },
+        {
+          "info": {
+            "name": "Replay the changes from the given commit on the branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/cherry-pick",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replay the changes from the given commit on the branch"
+        },
+        {
+          "info": {
+            "name": "diff branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch/diff",
+            "params": [
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query",
+                "description": "delimiter used to group common prefixes by"
+              },
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "diff branch"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "refs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get commit log from ref. If both objects and prefixes are empty, return all commits.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "objects",
+                "value": "",
+                "type": "query",
+                "description": "list of paths, each element is a path of a specific object"
+              },
+              {
+                "name": "prefixes",
+                "value": "",
+                "type": "query",
+                "description": "list of paths, each element is a path of a prefix"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "limit the number of items in return to 'amount'. Without further indication on actual number of items."
+              },
+              {
+                "name": "first_parent",
+                "value": "",
+                "type": "query",
+                "description": "if set to true, follow only the first parent upon reaching a merge commit"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Show commits more recent than a specific date-time. In case used with stop_at parameter, will stop at the first commit that meets any of the conditions."
+              },
+              {
+                "name": "stop_at",
+                "value": "",
+                "type": "query",
+                "description": "A reference to stop at. In case used with since parameter, will stop at the first commit that meets any of the conditions."
+              }
+            ]
+          },
+          "docs": "get commit log from ref. If both objects and prefixes are empty, return all commits."
+        },
+        {
+          "info": {
+            "name": "find the merge base for 2 references",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:sourceRef/merge/:destinationBranch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "sourceRef",
+                "value": "",
+                "type": "path",
+                "description": "source ref"
+              },
+              {
+                "name": "destinationBranch",
+                "value": "",
+                "type": "path",
+                "description": "destination branch name"
+              }
+            ]
+          },
+          "docs": "find the merge base for 2 references"
+        },
+        {
+          "info": {
+            "name": "merge references",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/refs/:sourceRef/merge/:destinationBranch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "sourceRef",
+                "value": "",
+                "type": "path",
+                "description": "source ref"
+              },
+              {
+                "name": "destinationBranch",
+                "value": "",
+                "type": "path",
+                "description": "destination branch name"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "merge references"
+        },
+        {
+          "info": {
+            "name": "diff references",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:leftRef/diff/:rightRef",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "leftRef",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "rightRef",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID) to compare against"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query",
+                "description": "delimiter used to group common prefixes by"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "include_right_stats",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the diff will include right-side object stats. *EXPERIMENTAL*"
+              }
+            ]
+          },
+          "docs": "diff references"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "commits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "create commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "source_metarange",
+                "value": "",
+                "type": "query",
+                "description": "The source metarange to commit. Branch must not have uncommitted changes."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create commit"
+        },
+        {
+          "info": {
+            "name": "get commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/commits/:commitId",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "commitId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get commit"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "objects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get object content",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects",
+            "headers": [
+              {
+                "name": "Range",
+                "value": "bytes=0-1023"
+              },
+              {
+                "name": "If-None-Match",
+                "value": "33a64df551425fcc55e4d42a148795d9f25f89d4"
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the ref"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "get object content"
+        },
+        {
+          "info": {
+            "name": "check if object exists",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects",
+            "headers": [
+              {
+                "name": "Range",
+                "value": "bytes=0-1023"
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the ref"
+              }
+            ]
+          },
+          "docs": "check if object exists"
+        },
+        {
+          "info": {
+            "name": "uploadObject",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": "*"
+              },
+              {
+                "name": "If-Match",
+                "value": "2e9ec317e197e02e4264d128c2e7e681"
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "storageClass",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated, this capability will not be supported in future releases."
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "content",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "delete object. Missing objects will not return a NotFound error.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "no_tombstone",
+                "value": "",
+                "type": "query",
+                "description": "delete entry without tombstone when possible *EXPERIMENTAL*"
+              }
+            ]
+          },
+          "docs": "delete object. Missing objects will not return a NotFound error."
+        },
+        {
+          "info": {
+            "name": "delete objects. Missing objects will not return a NotFound error.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/delete",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "no_tombstone",
+                "value": "",
+                "type": "query",
+                "description": "delete entry without tombstone when possible *EXPERIMENTAL*"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "delete objects. Missing objects will not return a NotFound error."
+        },
+        {
+          "info": {
+            "name": "create a copy of an object",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/copy",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path",
+                "description": "destination branch for the copy"
+              },
+              {
+                "name": "dest_path",
+                "value": "",
+                "type": "query",
+                "description": "destination path relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create a copy of an object"
+        },
+        {
+          "info": {
+            "name": "get object metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects/stat",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "user_metadata",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "get object metadata"
+        },
+        {
+          "info": {
+            "name": "rewrite (all) object metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/stat/user_metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path",
+                "description": "branch to update"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "path to object relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "rewrite (all) object metadata"
+        },
+        {
+          "info": {
+            "name": "get object properties on underlying storage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects/underlyingProperties",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ]
+          },
+          "docs": "get object properties on underlying storage"
+        },
+        {
+          "info": {
+            "name": "list objects under a given prefix",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects/ls",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "user_metadata",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query",
+                "description": "delimiter used to group common prefixes by"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              }
+            ]
+          },
+          "docs": "list objects under a given prefix"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "staging",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "generate an address to which the client can upload an object",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/backing",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "generate an address to which the client can upload an object"
+        },
+        {
+          "info": {
+            "name": "associate staging on this physical address with a path",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/backing",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": "*"
+              },
+              {
+                "name": "If-Match",
+                "value": "2e9ec317e197e02e4264d128c2e7e681"
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Link the physical address with the path in lakeFS, creating an uncommitted change.\nThe given address can be one generated by getPhysicalAddress, or an address outside the repository's storage namespace.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "import",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get import status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch/import",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Unique identifier of the import process"
+              }
+            ]
+          },
+          "docs": "get import status"
+        },
+        {
+          "info": {
+            "name": "import data from object store",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/import",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "import data from object store"
+        },
+        {
+          "info": {
+            "name": "cancel ongoing import",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branches/:branch/import",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Unique identifier of the import process"
+              }
+            ]
+          },
+          "docs": "cancel ongoing import"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "actions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list runs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/actions/runs",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "commit",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "list runs"
+        },
+        {
+          "info": {
+            "name": "get a run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/actions/runs/:run_id",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get a run"
+        },
+        {
+          "info": {
+            "name": "list run hooks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/actions/runs/:run_id/hooks",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list run hooks"
+        },
+        {
+          "info": {
+            "name": "get run hook output",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/actions/runs/:run_id/hooks/:hook_run_id/output",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "hook_run_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get run hook output"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "metadata",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "return URI to a meta-range file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/metadata/meta_range/:meta_range",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "meta_range",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "return URI to a meta-range file"
+        },
+        {
+          "info": {
+            "name": "return URI to a range file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/metadata/range/:range",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "range",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "return URI to a range file"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "pulls",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list pull requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/pulls",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "list pull requests"
+        },
+        {
+          "info": {
+            "name": "create pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/pulls",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create pull request"
+        },
+        {
+          "info": {
+            "name": "get pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/pulls/:pull_request",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pull_request",
+                "value": "",
+                "type": "path",
+                "description": "pull request id"
+              }
+            ]
+          },
+          "docs": "get pull request"
+        },
+        {
+          "info": {
+            "name": "update pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/repositories/:repository/pulls/:pull_request",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pull_request",
+                "value": "",
+                "type": "path",
+                "description": "pull request id"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "update pull request"
+        },
+        {
+          "info": {
+            "name": "merge pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/pulls/:pull_request/merge",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pull_request",
+                "value": "",
+                "type": "path",
+                "description": "pull request id"
+              }
+            ]
+          },
+          "docs": "merge pull request"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "healthCheck",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "healthCheck",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/healthcheck"
+          },
+          "docs": "check that the API server is up and running"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "config",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getConfig",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/config"
+          },
+          "docs": "retrieve lakeFS configuration"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
