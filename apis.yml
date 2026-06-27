@@ -41,7 +41,7 @@ common:
     url: https://docs.lakefs.io/
   - type: GitHubOrganization
     url: https://github.com/treeverse/lakeFS
-  - type: LLMsTxt
+  - type: LlmsText
     url: https://lakefs.io/llms.txt
 maintainers:
   - FN: Kin Lane
