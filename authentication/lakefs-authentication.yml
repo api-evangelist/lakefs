@@ -1,0 +1,39 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/lakefs-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - cookie
+schemes:
+- name: basic_auth
+  type: http
+  scheme: basic
+  sources:
+  - openapi/lakefs-openapi.yml
+- name: jwt_token
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  sources:
+  - openapi/lakefs-openapi.yml
+- name: cookie_auth
+  type: apiKey
+  in: cookie
+  parameter: internal_auth_session
+  sources:
+  - openapi/lakefs-openapi.yml
+- name: oidc_auth
+  type: apiKey
+  in: cookie
+  parameter: oidc_auth_session
+  sources:
+  - openapi/lakefs-openapi.yml
+- name: saml_auth
+  type: apiKey
+  in: cookie
+  parameter: saml_auth_session
+  sources:
+  - openapi/lakefs-openapi.yml

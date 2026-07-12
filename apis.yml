@@ -33,6 +33,10 @@ apis:
       - type: OpenAPI
         url: https://raw.githubusercontent.com/api-evangelist/lakefs/refs/heads/main/openapi/lakefs-openapi.yml
 common:
+  - type: DomainSecurity
+    url: security/lakefs-domain-security.yml
+  - type: Authentication
+    url: authentication/lakefs-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/lakefs-treeverse
   - type: Website
@@ -43,6 +47,8 @@ common:
     url: https://github.com/treeverse/lakeFS
   - type: LlmsText
     url: https://lakefs.io/llms.txt
+  - url: https://lakefs.io/feed
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
