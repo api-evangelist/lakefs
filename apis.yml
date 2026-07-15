@@ -33,6 +33,8 @@ apis:
       - type: OpenAPI
         url: https://raw.githubusercontent.com/api-evangelist/lakefs/refs/heads/main/openapi/lakefs-openapi.yml
 common:
+  - type: AgenticAccess
+    url: agentic-access/lakefs-agentic-access.yml
   - type: DomainSecurity
     url: security/lakefs-domain-security.yml
   - type: Authentication
