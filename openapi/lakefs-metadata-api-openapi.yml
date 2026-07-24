@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions metadata API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: metadata
+paths:
+  /repositories/{repository}/metadata/meta_range/{meta_range}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: meta_range
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - metadata
+      operationId: getMetaRange
+      summary: return URI to a meta-range file
+      responses:
+        200:
+          description: meta-range URI
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageURI'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: redirect to S3
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/metadata/range/{range}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: range
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - metadata
+      operationId: getRange
+      summary: return URI to a range file
+      responses:
+        200:
+          description: range URI
+          headers:
+            Location:
+              schema:
+                type: string
+              description: redirect to S3
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageURI'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    StorageURI:
+      description: URI to a path in a storage provider (e.g. "s3://bucket1/path/to/object")
+      required:
+      - location
+      type: object
+      properties:
+        location:
+          type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

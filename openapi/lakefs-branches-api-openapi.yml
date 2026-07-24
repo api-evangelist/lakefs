@@ -1,0 +1,642 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions branches API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: branches
+paths:
+  /repositories/{repository}/branches:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - branches
+      operationId: listBranches
+      summary: list branches
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      - in: query
+        name: show_hidden
+        schema:
+          type: boolean
+          default: false
+          description: When set - list all branches including hidden branches. *EXPERIMENTAL*
+      responses:
+        200:
+          description: branch list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - branches
+      operationId: createBranch
+      summary: create branch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BranchCreation'
+      responses:
+        201:
+          description: reference
+          content:
+            text/html:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - branches
+      operationId: getBranch
+      summary: get branch
+      responses:
+        200:
+          description: branch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ref'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - branches
+      operationId: deleteBranch
+      summary: delete branch
+      parameters:
+      - in: query
+        name: force
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        204:
+          description: branch deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+      - branches
+      operationId: resetBranch
+      summary: reset branch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetCreation'
+      responses:
+        204:
+          description: reset successful
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/revert:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - branches
+      operationId: revertBranch
+      summary: revert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevertCreation'
+      responses:
+        204:
+          description: revert successful
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Conflict Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/cherry-pick:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - branches
+      operationId: cherryPick
+      summary: Replay the changes from the given commit on the branch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CherryPickCreation'
+      responses:
+        201:
+          description: the cherry-pick commit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Commit'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Conflict Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/diff:
+    parameters:
+    - $ref: '#/components/parameters/PaginationAfter'
+    - $ref: '#/components/parameters/PaginationAmount'
+    - $ref: '#/components/parameters/PaginationPrefix'
+    - $ref: '#/components/parameters/PaginationDelimiter'
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - branches
+      operationId: diffBranch
+      summary: diff branch
+      responses:
+        200:
+          description: diff of branch uncommitted changes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiffList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Diff:
+      type: object
+      required:
+      - type
+      - path
+      - path_type
+      properties:
+        type:
+          type: string
+          enum:
+          - added
+          - removed
+          - changed
+          - conflict
+          - prefix_changed
+        path:
+          type: string
+        path_type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+        size_bytes:
+          type: integer
+          description: represents the size of the added/changed/deleted entry
+          format: int64
+        right:
+          $ref: '#/components/schemas/DiffObjectStat'
+          description: ObjectStats of the right side of the diff.
+    CommitOverrides:
+      type: object
+      properties:
+        message:
+          type: string
+          description: replace the commit message
+        metadata:
+          type: object
+          description: replace the metadata of the commit
+          additionalProperties:
+            type: string
+    ResetCreation:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - object
+          - common_prefix
+          - reset
+          description: What to reset according to path.
+        path:
+          type: string
+        force:
+          type: boolean
+          default: false
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    DiffList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Diff'
+    RefList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ref'
+    BranchCreation:
+      type: object
+      required:
+      - name
+      - source
+      properties:
+        name:
+          type: string
+        source:
+          type: string
+        force:
+          type: boolean
+          default: false
+        hidden:
+          type: boolean
+          description: When set, branch will not show up when listing branches by default. *EXPERIMENTAL*
+          default: false
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    DiffObjectStat:
+      type: object
+      required:
+      - checksum
+      - mtime
+      - content_type
+      properties:
+        checksum:
+          type: string
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        content_type:
+          type: string
+          description: Object media type
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    Ref:
+      type: object
+      required:
+      - id
+      - commit_id
+      properties:
+        id:
+          type: string
+        commit_id:
+          type: string
+    RevertCreation:
+      type: object
+      required:
+      - parent_number
+      - ref
+      properties:
+        ref:
+          type: string
+          description: the commit to revert, given by a ref
+        commit_overrides:
+          $ref: '#/components/schemas/CommitOverrides'
+        parent_number:
+          type: integer
+          description: when reverting a merge commit, the parent number (starting from 1) relative to which to perform the revert.
+        force:
+          type: boolean
+          default: false
+        allow_empty:
+          type: boolean
+          default: false
+          description: allow empty commit (revert without changes)
+    Commit:
+      type: object
+      required:
+      - id
+      - parents
+      - committer
+      - message
+      - creation_date
+      - meta_range_id
+      properties:
+        id:
+          type: string
+        parents:
+          type: array
+          items:
+            type: string
+        committer:
+          type: string
+        message:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        meta_range_id:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        generation:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          minimum: 0
+          maximum: 1
+    CherryPickCreation:
+      type: object
+      required:
+      - ref
+      properties:
+        ref:
+          type: string
+          description: the commit to cherry-pick, given by a ref
+        parent_number:
+          type: integer
+          description: 'When cherry-picking a merge commit, the parent number (starting from 1) with which to perform the diff.
+
+            The default branch is parent 1.
+
+            '
+        commit_overrides:
+          $ref: '#/components/schemas/CommitOverrides'
+        force:
+          type: boolean
+          default: false
+  parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

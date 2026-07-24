@@ -1,0 +1,1410 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions auth API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: auth
+paths:
+  /user:
+    get:
+      tags:
+      - auth
+      operationId: getCurrentUser
+      summary: get current user
+      responses:
+        200:
+          description: user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+  /auth/login:
+    post:
+      tags:
+      - auth
+      operationId: login
+      summary: perform a login
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInformation'
+      responses:
+        200:
+          description: successful login
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: access_token=abcde12356; Path=/; HttpOnly
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationToken'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/external/principal/login:
+    post:
+      tags:
+      - auth
+      operationId: externalPrincipalLogin
+      summary: perform a login using an external authenticator
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalLoginInformation'
+      responses:
+        200:
+          description: successful external login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationToken'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users:
+    get:
+      tags:
+      - auth
+      operationId: listUsers
+      summary: list users
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      responses:
+        200:
+          description: user list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - auth
+      operationId: createUser
+      summary: create user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreation'
+      responses:
+        201:
+          description: user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      operationId: getUser
+      summary: get user
+      responses:
+        200:
+          description: user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - auth
+      operationId: deleteUser
+      summary: delete user
+      responses:
+        204:
+          description: user deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/groups:
+    get:
+      tags:
+      - auth
+      operationId: listGroups
+      summary: list groups
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      responses:
+        200:
+          description: group list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - auth
+      operationId: createGroup
+      summary: create group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreation'
+      responses:
+        201:
+          description: group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/groups/{groupId}:
+    parameters:
+    - in: path
+      name: groupId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      operationId: getGroup
+      summary: get group
+      responses:
+        200:
+          description: group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - auth
+      operationId: deleteGroup
+      summary: delete group
+      responses:
+        204:
+          description: group deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/policies:
+    get:
+      tags:
+      - auth
+      operationId: listPolicies
+      summary: list policies
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      responses:
+        200:
+          description: policy list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - auth
+      operationId: createPolicy
+      summary: create policy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Policy'
+      responses:
+        201:
+          description: policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/policies/{policyId}:
+    parameters:
+    - in: path
+      name: policyId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      operationId: getPolicy
+      summary: get policy
+      responses:
+        200:
+          description: policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+      - auth
+      operationId: updatePolicy
+      summary: update policy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Policy'
+      responses:
+        200:
+          description: policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - auth
+      operationId: deletePolicy
+      summary: delete policy
+      responses:
+        204:
+          description: policy deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/groups/{groupId}/members:
+    parameters:
+    - in: path
+      name: groupId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      operationId: listGroupMembers
+      summary: list group members
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      responses:
+        200:
+          description: group member list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/groups/{groupId}/members/{userId}:
+    parameters:
+    - in: path
+      name: groupId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - auth
+      operationId: addGroupMembership
+      summary: add group membership
+      responses:
+        201:
+          description: membership added successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - auth
+      operationId: deleteGroupMembership
+      summary: delete group membership
+      responses:
+        204:
+          description: membership deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/credentials:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      operationId: listUserCredentials
+      summary: list user credentials
+      responses:
+        200:
+          description: credential list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialsList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - auth
+      operationId: createCredentials
+      summary: create credentials
+      responses:
+        201:
+          description: credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialsWithSecret'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/credentials/{accessKeyId}:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: accessKeyId
+      required: true
+      schema:
+        type: string
+    delete:
+      tags:
+      - auth
+      operationId: deleteCredentials
+      summary: delete credentials
+      responses:
+        204:
+          description: credentials deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    get:
+      tags:
+      - auth
+      operationId: getCredentials
+      summary: get credentials
+      responses:
+        200:
+          description: credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Credentials'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/groups:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      operationId: listUserGroups
+      summary: list user groups
+      responses:
+        200:
+          description: group list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/policies:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      - in: query
+        name: effective
+        schema:
+          type: boolean
+          default: false
+        description: will return all distinct policies attached to the user or any of its groups
+      operationId: listUserPolicies
+      summary: list user policies
+      responses:
+        200:
+          description: policy list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/policies/{policyId}:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: policyId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - auth
+      operationId: attachPolicyToUser
+      summary: attach policy to user
+      responses:
+        201:
+          description: policy attached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - auth
+      operationId: detachPolicyFromUser
+      summary: detach policy from user
+      responses:
+        204:
+          description: policy detached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/external/principals:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: principalId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - auth
+      operationId: createUserExternalPrincipal
+      summary: attach external principal to user
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalPrincipalCreation'
+      responses:
+        201:
+          description: external principal attached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - auth
+      operationId: deleteUserExternalPrincipal
+      summary: delete external principal from user
+      responses:
+        204:
+          description: external principal detached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/external/principals/ls:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      operationId: listUserExternalPrincipals
+      summary: list user external policies attached to a user
+      responses:
+        200:
+          description: external principals list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalPrincipalList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/external/principals:
+    parameters:
+    - in: query
+      name: principalId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      operationId: getExternalPrincipal
+      summary: describe external principal by id
+      responses:
+        200:
+          description: external principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalPrincipal'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/groups/{groupId}/policies:
+    parameters:
+    - in: path
+      name: groupId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - auth
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      operationId: listGroupPolicies
+      summary: list group policies
+      responses:
+        200:
+          description: policy list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/groups/{groupId}/policies/{policyId}:
+    parameters:
+    - in: path
+      name: groupId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: policyId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - auth
+      operationId: attachPolicyToGroup
+      summary: attach policy to group
+      responses:
+        201:
+          description: policy attached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - auth
+      operationId: detachPolicyFromGroup
+      summary: detach policy from group
+      responses:
+        204:
+          description: policy detached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/groups/{groupId}/acl:
+    parameters:
+    - in: path
+      name: groupId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - auth
+      operationId: setGroupACL
+      summary: set ACL of group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ACL'
+      responses:
+        201:
+          description: ACL successfully changed
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    get:
+      tags:
+      - auth
+      operationId: getGroupACL
+      summary: get ACL of group
+      responses:
+        200:
+          description: ACL of group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ACL'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFoundOrNoACL'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /oidc/callback:
+    get:
+      tags:
+      - auth
+      operationId: oauthCallback
+      security: []
+      responses:
+        302:
+          description: successfully got token
+        401:
+          description: failed to exchange authorization code for token
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundOrNoACL:
+      description: Group not found, or group found but has no ACL
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorNoACL'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+  schemas:
+    Credentials:
+      type: object
+      required:
+      - creation_date
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    GroupCreation:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+    CurrentUser:
+      type: object
+      required:
+      - user
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+    ExternalPrincipal:
+      type: object
+      required:
+      - user_id
+      - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
+        user_id:
+          type: string
+          description: 'lakeFS user ID to associate with an external principal.
+
+            '
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    UserCreation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: a unique identifier for the user.
+        invite_user:
+          type: boolean
+      required:
+      - id
+    PolicyCondition:
+      type: object
+      description: Condition operator (e.g., IpAddress)
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      example:
+        IpAddress:
+        - 192.168.0.1/32
+        - 192.168.0.2/32
+    PolicyList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+    User:
+      type: object
+      required:
+      - id
+      - creation_date
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the user. Cannot be edited.
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        friendly_name:
+          type: string
+          description: 'A shorter name for the user than the id. Unlike id it does not identify the user (it
+
+            might not be unique). Used in some places in the UI.
+
+            '
+        email:
+          type: string
+          description: "The email address of the user. If API authentication is enabled, this field is mandatory and will be invited to login.\nIf API authentication is disabled, this field will be ignored. All current APIAuthenticators require the email to be \nlowercase and unique, although custom authenticators may not enforce this.\n"
+    UserList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    ExternalPrincipalCreation:
+      type: object
+      properties:
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    Group:
+      type: object
+      required:
+      - creation_date
+      - id
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    Statement:
+      type: object
+      required:
+      - effect
+      - resource
+      - action
+      properties:
+        effect:
+          type: string
+          enum:
+          - allow
+          - deny
+        resource:
+          type: string
+        action:
+          type: array
+          items:
+            type: string
+          minItems: 1
+        condition:
+          type: object
+          description: Optional conditions for when this statement applies.
+          additionalProperties:
+            $ref: '#/components/schemas/PolicyCondition'
+    CredentialsWithSecret:
+      type: object
+      required:
+      - access_key_id
+      - creation_date
+      - secret_access_key
+      properties:
+        access_key_id:
+          type: string
+        secret_access_key:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    LoginInformation:
+      type: object
+      required:
+      - access_key_id
+      - secret_access_key
+      properties:
+        access_key_id:
+          type: string
+        secret_access_key:
+          type: string
+    ACL:
+      type: object
+      required:
+      - permission
+      properties:
+        permission:
+          type: string
+          description: 'Permission level to give this ACL.  "Read", "Write", "Super" and
+
+            "Admin" are all supported.
+
+            '
+    ExternalPrincipalList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalPrincipal'
+    ExternalLoginInformation:
+      type: object
+      required:
+      - identityRequest
+      properties:
+        token_expiration_duration:
+          type: integer
+        identityRequest:
+          type: object
+    AuthenticationToken:
+      type: object
+      required:
+      - token
+      properties:
+        token:
+          description: a JWT token that could be used to authenticate requests
+          type: string
+        token_expiration:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    GroupList:
+      type: object
+      required:
+      - results
+      - pagination
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+    Policy:
+      type: object
+      required:
+      - id
+      - statement
+      properties:
+        id:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        statement:
+          type: array
+          items:
+            $ref: '#/components/schemas/Statement'
+          minItems: 1
+    CredentialsList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credentials'
+    ErrorNoACL:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+        no_acl:
+          description: true if the group exists but has no ACL
+          type: boolean
+    ExternalPrincipalSettings:
+      type: object
+      additionalProperties:
+        type: string
+      description: Additional settings to be consumed by the remote authenticator
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

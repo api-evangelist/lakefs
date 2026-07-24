@@ -1,0 +1,529 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions refs API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: refs
+paths:
+  /repositories/{repository}/refs/{ref}/commits:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: ref
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - refs
+      operationId: logCommits
+      summary: get commit log from ref. If both objects and prefixes are empty, return all commits.
+      parameters:
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      - in: query
+        name: objects
+        description: list of paths, each element is a path of a specific object
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: prefixes
+        description: list of paths, each element is a path of a prefix
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: limit
+        description: limit the number of items in return to 'amount'. Without further indication on actual number of items.
+        schema:
+          type: boolean
+      - in: query
+        name: first_parent
+        description: if set to true, follow only the first parent upon reaching a merge commit
+        schema:
+          type: boolean
+      - in: query
+        name: since
+        description: Show commits more recent than a specific date-time. In case used with stop_at parameter, will stop at the first commit that meets any of the conditions.
+        allowEmptyValue: true
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: stop_at
+        allowEmptyValue: true
+        description: A reference to stop at. In case used with since parameter, will stop at the first commit that meets any of the conditions.
+        schema:
+          type: string
+      responses:
+        200:
+          description: commit log
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommitList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/refs/{sourceRef}/merge/{destinationBranch}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: sourceRef
+      required: true
+      schema:
+        type: string
+      description: source ref
+    - in: path
+      name: destinationBranch
+      required: true
+      schema:
+        type: string
+      description: destination branch name
+    post:
+      tags:
+      - refs
+      operationId: mergeIntoBranch
+      summary: merge references
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Merge'
+      responses:
+        200:
+          description: merge completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MergeResult'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: 'Conflict
+
+            Deprecated: content schema will return Error format and not an empty MergeResult
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MergeResult'
+        412:
+          description: precondition failed (e.g. a pre-merge hook returned a failure)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    get:
+      tags:
+      - refs
+      operationId: findMergeBase
+      summary: find the merge base for 2 references
+      responses:
+        200:
+          description: Found the merge base
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindMergeBaseResult'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/refs/{leftRef}/diff/{rightRef}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: leftRef
+      required: true
+      schema:
+        type: string
+      description: a reference (could be either a branch or a commit ID)
+    - in: path
+      name: rightRef
+      required: true
+      schema:
+        type: string
+      description: a reference (could be either a branch or a commit ID) to compare against
+    - $ref: '#/components/parameters/PaginationAfter'
+    - $ref: '#/components/parameters/PaginationAmount'
+    - $ref: '#/components/parameters/PaginationPrefix'
+    - $ref: '#/components/parameters/PaginationDelimiter'
+    - in: query
+      name: type
+      schema:
+        type: string
+        enum:
+        - two_dot
+        - three_dot
+        default: three_dot
+    - in: query
+      name: include_right_stats
+      description: If set to true, the diff will include right-side object stats. *EXPERIMENTAL*
+      required: false
+      schema:
+        type: boolean
+        default: false
+    get:
+      tags:
+      - refs
+      operationId: diffRefs
+      summary: diff references
+      responses:
+        200:
+          description: diff between refs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiffList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Diff:
+      type: object
+      required:
+      - type
+      - path
+      - path_type
+      properties:
+        type:
+          type: string
+          enum:
+          - added
+          - removed
+          - changed
+          - conflict
+          - prefix_changed
+        path:
+          type: string
+        path_type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+        size_bytes:
+          type: integer
+          description: represents the size of the added/changed/deleted entry
+          format: int64
+        right:
+          $ref: '#/components/schemas/DiffObjectStat'
+          description: ObjectStats of the right side of the diff.
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    DiffList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Diff'
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
+          type: string
+    DiffObjectStat:
+      type: object
+      required:
+      - checksum
+      - mtime
+      - content_type
+      properties:
+        checksum:
+          type: string
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        content_type:
+          type: string
+          description: Object media type
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    Merge:
+      type: object
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        strategy:
+          description: In case of a merge conflict, this option will force the merge process to automatically favor changes from the dest branch ('dest-wins') or from the source branch('source-wins'). In case no selection is made, the merge process will fail in case of a conflict
+          type: string
+        force:
+          type: boolean
+          default: false
+          description: Allow merge into a read-only branch or into a branch with the same content
+        allow_empty:
+          type: boolean
+          default: false
+          description: Allow merge when the branches have the same content
+        squash_merge:
+          type: boolean
+          default: false
+          description: 'If set, set only the destination branch as a parent, which "squashes" the merge to
+
+            appear as a single commit on the destination branch.  The source commit is no longer
+
+            a part of the merge commit; consider adding it to the ''metadata'' or ''message''
+
+            fields.  This behaves like a GitHub or GitLab "squash merge", or in Git terms ''git
+
+            merge --squash; git commit ...''.
+
+            '
+    CommitList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Commit'
+    FindMergeBaseResult:
+      type: object
+      required:
+      - source_commit_id
+      - destination_commit_id
+      - base_commit_id
+      properties:
+        source_commit_id:
+          type: string
+          description: The commit ID of the merge source
+        destination_commit_id:
+          type: string
+          description: The commit ID of the merge destination
+        base_commit_id:
+          type: string
+          description: The commit ID of the merge base
+    Commit:
+      type: object
+      required:
+      - id
+      - parents
+      - committer
+      - message
+      - creation_date
+      - meta_range_id
+      properties:
+        id:
+          type: string
+        parents:
+          type: array
+          items:
+            type: string
+        committer:
+          type: string
+        message:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        meta_range_id:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        generation:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          minimum: 0
+          maximum: 1
+  parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

@@ -1,0 +1,344 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: actions
+paths:
+  /repositories/{repository}/actions/runs:
+    get:
+      tags:
+      - actions
+      operationId: listRepositoryRuns
+      summary: list runs
+      parameters:
+      - in: path
+        name: repository
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      - in: query
+        name: branch
+        allowEmptyValue: true
+        schema:
+          type: string
+      - in: query
+        name: commit
+        allowEmptyValue: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: list action runs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionRunList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/actions/runs/{run_id}:
+    get:
+      tags:
+      - actions
+      operationId: getRun
+      summary: get a run
+      parameters:
+      - in: path
+        name: repository
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: run_id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: action run result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionRun'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/actions/runs/{run_id}/hooks:
+    get:
+      tags:
+      - actions
+      operationId: listRunHooks
+      summary: list run hooks
+      parameters:
+      - in: path
+        name: repository
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: run_id
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      responses:
+        200:
+          description: list specific run hooks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HookRunList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/actions/runs/{run_id}/hooks/{hook_run_id}/output:
+    get:
+      tags:
+      - actions
+      operationId: getRunHookOutput
+      summary: get run hook output
+      parameters:
+      - in: path
+        name: repository
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: run_id
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: hook_run_id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: run hook output
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    ActionRunList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActionRun'
+    ActionRun:
+      type: object
+      required:
+      - run_id
+      - branch
+      - start_time
+      - commit_id
+      - event_type
+      - status
+      properties:
+        run_id:
+          type: string
+        branch:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        event_type:
+          type: string
+        status:
+          type: string
+          enum:
+          - failed
+          - completed
+        commit_id:
+          type: string
+    HookRunList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HookRun'
+    HookRun:
+      type: object
+      required:
+      - hook_run_id
+      - action
+      - hook_id
+      - start_time
+      - status
+      properties:
+        hook_run_id:
+          type: string
+        action:
+          type: string
+        hook_id:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - failed
+          - completed
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

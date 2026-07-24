@@ -1,0 +1,333 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions import API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: import
+paths:
+  /repositories/{repository}/branches/{branch}/import:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - import
+      operationId: importStatus
+      summary: get import status
+      parameters:
+      - in: query
+        name: id
+        description: Unique identifier of the import process
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: import status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportStatus'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - import
+      operationId: importStart
+      summary: import data from object store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportCreation'
+      responses:
+        202:
+          description: Import started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportCreationResponse'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - import
+      operationId: importCancel
+      summary: cancel ongoing import
+      parameters:
+      - in: query
+        name: id
+        description: Unique identifier of the import process
+        schema:
+          type: string
+        required: true
+      responses:
+        204:
+          description: import canceled successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    ImportStatus:
+      type: object
+      properties:
+        completed:
+          type: boolean
+        update_time:
+          type: string
+          format: date-time
+        ingested_objects:
+          description: Number of objects processed so far
+          type: integer
+          format: int64
+        metarange_id:
+          type: string
+        commit:
+          $ref: '#/components/schemas/Commit'
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - update_time
+      - completed
+    ImportLocation:
+      type: object
+      required:
+      - type
+      - path
+      - destination
+      properties:
+        type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+          description: Path type, can either be 'common_prefix' or 'object'
+        path:
+          type: string
+          description: A source location to a 'common_prefix' or to a single object. Must match the lakeFS installation blockstore type.
+          example: s3://my-bucket/production/collections/
+        destination:
+          type: string
+          description: 'Destination for the imported objects on the branch. Must be a relative path to the branch.
+
+            If the type is an ''object'', the destination is the exact object name under the branch.
+
+            If the type is a ''common_prefix'', the destination is the prefix under the branch.
+
+            '
+          example: collections/
+    CommitCreation:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        date:
+          description: set date to override creation date in the commit (Unix Epoch in seconds)
+          type: integer
+          format: int64
+        allow_empty:
+          description: sets whether a commit can contain no changes
+          type: boolean
+          default: false
+        force:
+          type: boolean
+          default: false
+    ImportCreation:
+      type: object
+      required:
+      - paths
+      - commit
+      properties:
+        paths:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportLocation'
+        commit:
+          $ref: '#/components/schemas/CommitCreation'
+        force:
+          type: boolean
+          default: false
+      example:
+        commit:
+          message: Importing collections from S3
+        paths:
+        - path: s3://my-bucket/production/collections/
+          destination: collections/
+          type: common_prefix
+        - path: s3://my-bucket/production/collections/file1
+          destination: collections/file1
+          type: object
+    Commit:
+      type: object
+      required:
+      - id
+      - parents
+      - committer
+      - message
+      - creation_date
+      - meta_range_id
+      properties:
+        id:
+          type: string
+        parents:
+          type: array
+          items:
+            type: string
+        committer:
+          type: string
+        message:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        meta_range_id:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        generation:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          minimum: 0
+          maximum: 1
+    ImportCreationResponse:
+      type: object
+      properties:
+        id:
+          description: The id of the import process
+          type: string
+      required:
+      - id
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

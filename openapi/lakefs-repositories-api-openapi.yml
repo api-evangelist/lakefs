@@ -1,0 +1,733 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions repositories API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: repositories
+paths:
+  /repositories:
+    get:
+      tags:
+      - repositories
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      - $ref: '#/components/parameters/SearchString'
+      operationId: listRepositories
+      summary: list repositories
+      responses:
+        200:
+          description: repository list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - repositories
+      operationId: createRepository
+      summary: create repository
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepositoryCreation'
+      parameters:
+      - in: query
+        name: bare
+        schema:
+          type: boolean
+          default: false
+        description: If true, create a bare repository with no initial commit and branch
+      responses:
+        201:
+          description: repository
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repository'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - repositories
+      operationId: getRepository
+      summary: get repository
+      responses:
+        200:
+          description: repository
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repository'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - repositories
+      operationId: deleteRepository
+      summary: delete repository
+      parameters:
+      - in: query
+        name: force
+        schema:
+          type: boolean
+          default: false
+        description: Bypass read-only protection and delete the repository
+      responses:
+        204:
+          description: repository deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/metadata:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - repositories
+      operationId: getRepositoryMetadata
+      summary: get repository metadata
+      responses:
+        200:
+          description: repository metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryMetadata'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/settings/gc_rules:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - repositories
+      operationId: getGCRules
+      summary: get repository GC rules
+      responses:
+        200:
+          description: repository GC rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GarbageCollectionRules'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+      - repositories
+      operationId: setGCRules
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GarbageCollectionRules'
+      responses:
+        204:
+          description: set garbage collection rules successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - repositories
+      operationId: deleteGCRules
+      responses:
+        204:
+          description: deleted garbage collection rules successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/settings/branch_protection:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - repositories
+      operationId: getBranchProtectionRules
+      summary: get branch protection rules
+      responses:
+        200:
+          description: branch protection rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BranchProtectionRule'
+          headers:
+            ETag:
+              schema:
+                type: string
+                description: ETag of the branch protection rules
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    put:
+      parameters:
+      - in: header
+        name: If-Match
+        schema:
+          type: string
+        description: if provided, the branch protection rules will be updated only if the current ETag match the provided value
+        allowEmptyValue: true
+      tags:
+      - repositories
+      operationId: setBranchProtectionRules
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/BranchProtectionRule'
+      responses:
+        204:
+          description: branch protection rule created successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        412:
+          $ref: '#/components/responses/PreconditionFailed'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/dump:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - repositories
+      operationId: dumpSubmit
+      summary: Backup the repository metadata (tags, commits, branches) and save the backup to the object store.
+      responses:
+        202:
+          description: dump task information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskInfo'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/ServerError'
+    get:
+      tags:
+      - repositories
+      operationId: dumpStatus
+      summary: Status of a repository dump task
+      parameters:
+      - in: query
+        name: task_id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: dump task status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryDumpStatus'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/restore:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - repositories
+      operationId: restoreSubmit
+      summary: Restore repository from a dump in the object store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefsRestore'
+      responses:
+        202:
+          description: restore task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskInfo'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/ServerError'
+    get:
+      tags:
+      - repositories
+      operationId: restoreStatus
+      summary: Status of a restore request
+      parameters:
+      - in: query
+        name: task_id
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: restore task status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryRestoreStatus'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    SearchString:
+      in: query
+      name: search
+      allowEmptyValue: true
+      description: string for searching relevant entries
+      schema:
+        type: string
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+  schemas:
+    RepositoryList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Repository'
+    RepositoryMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    GarbageCollectionRule:
+      type: object
+      properties:
+        branch_id:
+          type: string
+        retention_days:
+          type: integer
+      required:
+      - branch_id
+      - retention_days
+    GarbageCollectionRules:
+      type: object
+      properties:
+        default_retention_days:
+          type: integer
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/GarbageCollectionRule'
+      required:
+      - default_retention_days
+      - branches
+    RefsRestore:
+      type: object
+      required:
+      - branches_meta_range_id
+      - tags_meta_range_id
+      - commits_meta_range_id
+      properties:
+        commits_meta_range_id:
+          type: string
+        tags_meta_range_id:
+          type: string
+        branches_meta_range_id:
+          type: string
+        force:
+          type: boolean
+          default: false
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    RepositoryCreation:
+      type: object
+      required:
+      - name
+      - storage_namespace
+      properties:
+        name:
+          type: string
+          pattern: ^[a-z0-9][a-z0-9-]{2,62}$
+        storage_id:
+          type: string
+          description: Unique identifier of the underlying data store. *EXPERIMENTAL*
+        storage_namespace:
+          type: string
+          description: Filesystem URI to store the underlying data in (e.g. "s3://my-bucket/some/path/")
+          example: s3://example-bucket/
+          pattern: ^(s3|gs|https?|mem|local|transient)://.*$
+        default_branch:
+          type: string
+          example: main
+        sample_data:
+          type: boolean
+          default: false
+          example: true
+        read_only:
+          type: boolean
+          default: false
+          example: true
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    Repository:
+      type: object
+      required:
+      - creation_date
+      - id
+      - default_branch
+      - storage_namespace
+      properties:
+        id:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        default_branch:
+          type: string
+        storage_id:
+          type: string
+          description: Unique identifier of the underlying data store. *EXPERIMENTAL*
+        storage_namespace:
+          type: string
+          description: Filesystem URI to store the underlying data in (e.g. "s3://my-bucket/some/path/")
+        read_only:
+          type: boolean
+          description: Whether the repository is a read-only repository- not relevant for bare repositories
+    TaskInfo:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: ID of the task
+    RepositoryDumpStatus:
+      type: object
+      required:
+      - id
+      - done
+      - update_time
+      properties:
+        id:
+          type: string
+          description: ID of the task
+        done:
+          type: boolean
+        update_time:
+          type: string
+          format: date-time
+        error:
+          type: string
+        refs:
+          $ref: '#/components/schemas/RefsDump'
+    BranchProtectionRule:
+      type: object
+      properties:
+        pattern:
+          type: string
+          description: fnmatch pattern for the branch name, supporting * and ? wildcards
+          example: stable_*
+          minLength: 1
+      required:
+      - pattern
+    RepositoryRestoreStatus:
+      type: object
+      required:
+      - id
+      - done
+      - update_time
+      properties:
+        id:
+          type: string
+          description: ID of the task
+        done:
+          type: boolean
+        update_time:
+          type: string
+          format: date-time
+        error:
+          type: string
+    RefsDump:
+      type: object
+      required:
+      - branches_meta_range_id
+      - tags_meta_range_id
+      - commits_meta_range_id
+      properties:
+        commits_meta_range_id:
+          type: string
+        tags_meta_range_id:
+          type: string
+        branches_meta_range_id:
+          type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

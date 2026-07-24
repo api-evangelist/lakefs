@@ -1,0 +1,1208 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions experimental API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: experimental
+paths:
+  /auth/external/principal/login:
+    post:
+      tags:
+      - experimental
+      operationId: externalPrincipalLogin
+      summary: perform a login using an external authenticator
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalLoginInformation'
+      responses:
+        200:
+          description: successful external login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationToken'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /sts/login:
+    post:
+      tags:
+      - experimental
+      operationId: stsLogin
+      summary: perform a login with STS
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StsAuthRequest'
+      responses:
+        200:
+          description: successful STS login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationToken'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/external/principals:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: principalId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - experimental
+      operationId: createUserExternalPrincipal
+      summary: attach external principal to user
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalPrincipalCreation'
+      responses:
+        201:
+          description: external principal attached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - experimental
+      operationId: deleteUserExternalPrincipal
+      summary: delete external principal from user
+      responses:
+        204:
+          description: external principal detached successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/users/{userId}/external/principals/ls:
+    parameters:
+    - in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - experimental
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      operationId: listUserExternalPrincipals
+      summary: list user external policies attached to a user
+      responses:
+        200:
+          description: external principals list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalPrincipalList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /auth/external/principals:
+    parameters:
+    - in: query
+      name: principalId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - experimental
+      operationId: getExternalPrincipal
+      summary: describe external principal by id
+      responses:
+        200:
+          description: external principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalPrincipal'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/hard_reset:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - experimental
+      operationId: hardResetBranch
+      summary: hard reset branch
+      description: Relocate branch to refer to ref.  Branch must not contain uncommitted data.
+      parameters:
+      - in: query
+        name: ref
+        required: true
+        schema:
+          type: string
+        description: After reset, branch will point at this reference.
+      - in: query
+        name: force
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        204:
+          description: reset successful
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/staging/pmpu:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: path
+      description: relative to the branch
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: parts
+      description: number of presigned URL parts required to upload
+      schema:
+        type: integer
+    post:
+      tags:
+      - experimental
+      operationId: createPresignMultipartUpload
+      summary: Initiate a multipart upload
+      description: 'Initiates a multipart upload and returns an upload ID with presigned URLs for each part (optional).
+
+        Part numbers starts with 1. Each part except the last one has minimum size depends on the underlying blockstore implementation.
+
+        For example working with S3 blockstore, minimum size is 5MB (excluding the last part).
+
+        '
+      responses:
+        201:
+          description: Presign multipart upload initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignMultipartUpload'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/staging/pmpu/{uploadId}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: uploadId
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: path
+      description: relative to the branch
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - experimental
+      operationId: completePresignMultipartUpload
+      summary: Complete a presign multipart upload request
+      description: Completes a presign multipart upload by assembling the uploaded parts.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompletePresignMultipartUpload'
+      responses:
+        200:
+          description: Presign multipart upload completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectStats'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: conflict with a commit, try here
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StagingLocation'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - experimental
+      operationId: abortPresignMultipartUpload
+      summary: Abort a presign multipart upload
+      description: Aborts a presign multipart upload.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AbortPresignMultipartUpload'
+      responses:
+        204:
+          description: Presign multipart upload aborted
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/staging/pmpu/{uploadId}/parts/{partNumber}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: uploadId
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: path
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: partNumber
+      required: true
+      schema:
+        type: integer
+        maximum: 10000
+        minimum: 1
+    put:
+      tags:
+      - experimental
+      operationId: uploadPart
+      description: Return a presigned URL to upload into a presigned multipart upload.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadPartFrom'
+      responses:
+        200:
+          description: presigned URL to use for upload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadTo'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/staging/pmpu/{uploadId}/parts/{partNumber}/copy:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: uploadId
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: path
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: partNumber
+      required: true
+      schema:
+        type: integer
+        maximum: 10000
+        minimum: 1
+    put:
+      tags:
+      - experimental
+      operationId: uploadPartCopy
+      description: Upload a part by copying part of another object.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadPartCopyFrom'
+      responses:
+        204:
+          description: part copied
+          headers:
+            ETag:
+              schema:
+                type: string
+                description: ETag of the uploaded part, pass in completion
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/objects/stat/user_metadata:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+      description: branch to update
+    - in: query
+      name: path
+      description: path to object relative to the branch
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - experimental
+      operationId: updateObjectUserMetadata
+      summary: rewrite (all) object metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateObjectUserMetadata'
+      responses:
+        201:
+          description: User metadata updated
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/pulls:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - experimental
+      operationId: listPullRequests
+      summary: list pull requests
+      parameters:
+      - $ref: '#/components/parameters/PaginationPrefix'
+      - $ref: '#/components/parameters/PaginationAfter'
+      - $ref: '#/components/parameters/PaginationAmount'
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - open
+          - closed
+          - all
+          default: all
+          description: filter pull requests by status
+      responses:
+        200:
+          description: list of pull requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PullRequestsList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - experimental
+      operationId: createPullRequest
+      summary: create pull request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PullRequestCreation'
+      responses:
+        201:
+          description: pull request created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PullRequestCreationResponse'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/pulls/{pull_request}:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: pull_request
+      required: true
+      description: pull request id
+      schema:
+        type: string
+    get:
+      tags:
+      - experimental
+      operationId: getPullRequest
+      summary: get pull request
+      responses:
+        200:
+          description: pull request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PullRequest'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+      - experimental
+      operationId: updatePullRequest
+      summary: update pull request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PullRequestBasic'
+      responses:
+        200:
+          description: pull request updated successfully
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/pulls/{pull_request}/merge:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: pull_request
+      required: true
+      description: pull request id
+      schema:
+        type: string
+    put:
+      tags:
+      - experimental
+      operationId: mergePullRequest
+      summary: merge pull request
+      responses:
+        200:
+          description: merge completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MergeResult'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: 'Conflict
+
+            Deprecated: content schema will return Error format and not an empty MergeResult
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MergeResult'
+        412:
+          description: precondition failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    StagingLocation:
+      type: object
+      description: location for placing an object when staging it
+      properties:
+        physical_address:
+          type: string
+        presigned_url:
+          type: string
+          nullable: true
+          description: if presign=true is passed in the request, this field will contain a pre-signed URL to use when uploading
+        presigned_url_expiry:
+          type: integer
+          format: int64
+          description: 'If present and nonzero, physical_address is a pre-signed URL and
+
+            will expire at this Unix Epoch time.  This will be shorter than
+
+            the pre-signed URL lifetime if an authentication token is about
+
+            to expire.
+
+
+            This field is *optional*.
+
+            '
+    StsAuthRequest:
+      type: object
+      required:
+      - code
+      - state
+      - redirect_uri
+      properties:
+        code:
+          type: string
+        state:
+          type: string
+        redirect_uri:
+          type: string
+        ttl_seconds:
+          type: integer
+          format: int64
+          description: 'The time-to-live for the generated token in seconds.  The default
+
+            value is 3600 seconds (1 hour) maximum time allowed is 12 hours.
+
+            '
+    ObjectStats:
+      type: object
+      required:
+      - checksum
+      - physical_address
+      - path
+      - path_type
+      - mtime
+      properties:
+        path:
+          type: string
+        path_type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+        physical_address:
+          type: string
+          description: 'The location of the object on the underlying object store.
+
+            Formatted as a native URI with the object store type as scheme ("s3://...", "gs://...", etc.)
+
+            Or, in the case of presign=true, will be an HTTP URL to be consumed via regular HTTP GET
+
+            '
+        physical_address_expiry:
+          type: integer
+          format: int64
+          description: 'If present and nonzero, physical_address is a pre-signed URL and
+
+            will expire at this Unix Epoch time.  This will be shorter than
+
+            the pre-signed URL lifetime if an authentication token is about
+
+            to expire.
+
+
+            This field is *optional*.
+
+            '
+        checksum:
+          type: string
+        size_bytes:
+          type: integer
+          format: int64
+          description: 'The number of bytes in the object.  lakeFS always populates this
+
+            field when returning ObjectStats.  This field is optional _for
+
+            the client_ to supply, for instance on upload.
+
+            '
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+        content_type:
+          type: string
+          description: Object media type
+    ExternalPrincipal:
+      type: object
+      required:
+      - user_id
+      - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
+        user_id:
+          type: string
+          description: 'lakeFS user ID to associate with an external principal.
+
+            '
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    AbortPresignMultipartUpload:
+      type: object
+      properties:
+        physical_address:
+          type: string
+      required:
+      - physical_address
+    PullRequest:
+      allOf:
+      - $ref: '#/components/schemas/PullRequestBasic'
+      - required:
+        - status
+        - title
+        - description
+      - type: object
+        required:
+        - id
+        - creation_date
+        - author
+        - source_branch
+        - destination_branch
+        properties:
+          id:
+            type: string
+          creation_date:
+            type: string
+            format: date-time
+          author:
+            type: string
+          source_branch:
+            type: string
+          destination_branch:
+            type: string
+          merged_commit_id:
+            type: string
+            description: the commit id of merged PRs
+          closed_date:
+            type: string
+            format: date-time
+    PullRequestsList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PullRequest'
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    CopyPartSource:
+      type: object
+      properties:
+        repository:
+          type: string
+        ref:
+          type: string
+        path:
+          type: string
+        range:
+          description: Range of bytes to copy
+          type: string
+          pattern: ^bytes=((\d*-\d*,? ?)+)$
+      required:
+      - repository
+      - ref
+      - path
+    UpdateObjectUserMetadata:
+      type: object
+      required:
+      - set
+      properties:
+        set:
+          description: Set this object user metadata
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    PresignMultipartUpload:
+      type: object
+      properties:
+        upload_id:
+          type: string
+        physical_address:
+          type: string
+        presigned_urls:
+          type: array
+          items:
+            type: string
+      required:
+      - upload_id
+      - physical_address
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    ExternalPrincipalCreation:
+      type: object
+      properties:
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
+          type: string
+    PullRequestBasic:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - open
+          - closed
+          - merged
+        title:
+          type: string
+        description:
+          type: string
+    ExternalPrincipalList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalPrincipal'
+    PullRequestCreationResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: ID of the pull request
+    AuthenticationToken:
+      type: object
+      required:
+      - token
+      properties:
+        token:
+          description: a JWT token that could be used to authenticate requests
+          type: string
+        token_expiration:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    ExternalLoginInformation:
+      type: object
+      required:
+      - identityRequest
+      properties:
+        token_expiration_duration:
+          type: integer
+        identityRequest:
+          type: object
+    UploadPartFrom:
+      type: object
+      properties:
+        physical_address:
+          description: 'The physical address (of the entire intended object) returned from
+
+            createPresignMultipartUpload.
+
+            '
+          type: string
+      required:
+      - physical_address
+    PullRequestCreation:
+      type: object
+      required:
+      - title
+      - source_branch
+      - destination_branch
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        source_branch:
+          type: string
+        destination_branch:
+          type: string
+    UploadPart:
+      type: object
+      properties:
+        part_number:
+          type: integer
+        etag:
+          type: string
+      required:
+      - part_number
+      - etag
+    UploadPartCopyFrom:
+      allOf:
+      - $ref: '#/components/schemas/UploadPartFrom'
+      - type: object
+        properties:
+          copy_source:
+            description: Source of copy
+            $ref: '#/components/schemas/CopyPartSource'
+        required:
+        - copy_source
+    ExternalPrincipalSettings:
+      type: object
+      additionalProperties:
+        type: string
+      description: Additional settings to be consumed by the remote authenticator
+    UploadTo:
+      type: object
+      properties:
+        presigned_url:
+          type: string
+      required:
+      - presigned_url
+    CompletePresignMultipartUpload:
+      type: object
+      properties:
+        physical_address:
+          type: string
+        parts:
+          type: array
+          description: List of uploaded parts, should be ordered by ascending part number
+          items:
+            $ref: '#/components/schemas/UploadPart'
+        user_metadata:
+          type: object
+          additionalProperties:
+            type: string
+        content_type:
+          type: string
+          description: Object media type
+      required:
+      - physical_address
+      - parts
+  parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session

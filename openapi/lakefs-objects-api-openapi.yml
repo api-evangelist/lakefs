@@ -1,0 +1,884 @@
+openapi: 3.0.0
+info:
+  description: lakeFS HTTP API
+  title: lakeFS actions objects API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1
+  description: lakeFS server endpoint
+security:
+- jwt_token: []
+- basic_auth: []
+- cookie_auth: []
+- oidc_auth: []
+- saml_auth: []
+tags:
+- name: objects
+paths:
+  /repositories/{repository}/refs/{ref}/objects:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: ref
+      required: true
+      schema:
+        type: string
+      description: a reference (could be either a branch or a commit ID)
+    - in: query
+      name: path
+      description: relative to the ref
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - objects
+      operationId: getObject
+      summary: get object content
+      parameters:
+      - in: header
+        name: Range
+        description: Byte range to retrieve
+        example: bytes=0-1023
+        required: false
+        schema:
+          type: string
+          pattern: ^bytes=((\d*-\d*,? ?)+)$
+      - in: header
+        name: If-None-Match
+        description: Returns response only if the object does not have a matching ETag
+        example: 33a64df551425fcc55e4d42a148795d9f25f89d4
+        required: false
+        schema:
+          type: string
+      - in: query
+        name: presign
+        required: false
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: object content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Length:
+              schema:
+                type: integer
+                format: int64
+            Last-Modified:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+        206:
+          description: partial object content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Length:
+              schema:
+                type: integer
+                format: int64
+            Content-Range:
+              schema:
+                type: string
+                pattern: ^bytes=((\d*-\d*,? ?)+)$
+            Last-Modified:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+        302:
+          description: Redirect to a pre-signed URL for the object
+          headers:
+            Location:
+              schema:
+                type: string
+        304:
+          description: Content not modified
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        410:
+          description: object expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        416:
+          description: Requested Range Not Satisfiable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+    head:
+      tags:
+      - objects
+      operationId: headObject
+      summary: check if object exists
+      parameters:
+      - in: header
+        name: Range
+        description: Byte range to retrieve
+        example: bytes=0-1023
+        required: false
+        schema:
+          type: string
+          pattern: ^bytes=((\d*-\d*,? ?)+)$
+      responses:
+        200:
+          description: object exists
+          headers:
+            Content-Length:
+              schema:
+                type: integer
+                format: int64
+            Last-Modified:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+        206:
+          description: partial object content info
+          headers:
+            Content-Length:
+              schema:
+                type: integer
+                format: int64
+            Content-Range:
+              schema:
+                type: string
+                pattern: ^bytes=((\d*-\d*,? ?)+)$
+            Last-Modified:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+        400:
+          description: Bad Request
+        401:
+          description: Unauthorized
+        404:
+          description: object not found
+        410:
+          description: object expired
+        416:
+          description: Requested Range Not Satisfiable
+        429:
+          description: too many requests
+        default:
+          description: internal server error
+  /repositories/{repository}/branches/{branch}/objects:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: path
+      description: relative to the branch
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - objects
+      operationId: uploadObject
+      x-validation-exclude-body: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  description: Only a single file per upload which must be named "content".
+                  type: string
+                  format: binary
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      parameters:
+      - $ref: '#/components/parameters/IfNoneMatch'
+      - $ref: '#/components/parameters/IfMatch'
+      - in: query
+        name: storageClass
+        description: Deprecated, this capability will not be supported in future releases.
+        required: false
+        deprecated: true
+        schema:
+          type: string
+      - in: query
+        name: force
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        201:
+          description: object metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectStats'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        412:
+          $ref: '#/components/responses/PreconditionFailed'
+        429:
+          description: too many requests
+        501:
+          $ref: '#/components/responses/NotImplemented'
+        default:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+      - objects
+      operationId: deleteObject
+      summary: delete object. Missing objects will not return a NotFound error.
+      parameters:
+      - in: query
+        name: force
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - $ref: '#/components/parameters/NoTombstone'
+      responses:
+        204:
+          description: object deleted successfully
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/objects/delete:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: force
+      required: false
+      schema:
+        type: boolean
+        default: false
+    - $ref: '#/components/parameters/NoTombstone'
+    post:
+      tags:
+      - objects
+      operationId: deleteObjects
+      summary: delete objects. Missing objects will not return a NotFound error.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PathList'
+      responses:
+        200:
+          description: Delete objects response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectErrorList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/objects/copy:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+      description: destination branch for the copy
+    - in: query
+      name: dest_path
+      description: destination path relative to the branch
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - objects
+      operationId: copyObject
+      summary: create a copy of an object
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectCopyCreation'
+      responses:
+        201:
+          description: Copy object response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectStats'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/refs/{ref}/objects/stat:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: ref
+      required: true
+      schema:
+        type: string
+      description: a reference (could be either a branch or a commit ID)
+    - in: query
+      name: path
+      description: relative to the branch
+      required: true
+      schema:
+        type: string
+    - in: query
+      name: user_metadata
+      required: false
+      schema:
+        type: boolean
+        default: true
+    - in: query
+      name: presign
+      required: false
+      schema:
+        type: boolean
+    get:
+      tags:
+      - objects
+      operationId: statObject
+      summary: get object metadata
+      responses:
+        200:
+          description: object metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectStats'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        410:
+          description: object gone (but partial metadata may be available)
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/branches/{branch}/objects/stat/user_metadata:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: branch
+      required: true
+      schema:
+        type: string
+      description: branch to update
+    - in: query
+      name: path
+      description: path to object relative to the branch
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - objects
+      operationId: updateObjectUserMetadata
+      summary: rewrite (all) object metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateObjectUserMetadata'
+      responses:
+        201:
+          description: User metadata updated
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/refs/{ref}/objects/underlyingProperties:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: ref
+      required: true
+      schema:
+        type: string
+      description: a reference (could be either a branch or a commit ID)
+    - in: query
+      name: path
+      description: relative to the branch
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - objects
+      operationId: getUnderlyingProperties
+      summary: get object properties on underlying storage
+      responses:
+        200:
+          description: object metadata on underlying storage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnderlyingObjectProperties'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+  /repositories/{repository}/refs/{ref}/objects/ls:
+    parameters:
+    - in: path
+      name: repository
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: ref
+      required: true
+      schema:
+        type: string
+      description: a reference (could be either a branch or a commit ID)
+    - in: query
+      name: user_metadata
+      required: false
+      schema:
+        type: boolean
+        default: true
+    - in: query
+      name: presign
+      required: false
+      schema:
+        type: boolean
+    - $ref: '#/components/parameters/PaginationAfter'
+    - $ref: '#/components/parameters/PaginationAmount'
+    - $ref: '#/components/parameters/PaginationDelimiter'
+    - $ref: '#/components/parameters/PaginationPrefix'
+    get:
+      tags:
+      - objects
+      operationId: listObjects
+      summary: list objects under a given prefix
+      responses:
+        200:
+          description: object listing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectStatsList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          description: too many requests
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    UnderlyingObjectProperties:
+      type: object
+      properties:
+        storage_class:
+          type: string
+          nullable: true
+    ObjectStats:
+      type: object
+      required:
+      - checksum
+      - physical_address
+      - path
+      - path_type
+      - mtime
+      properties:
+        path:
+          type: string
+        path_type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+        physical_address:
+          type: string
+          description: 'The location of the object on the underlying object store.
+
+            Formatted as a native URI with the object store type as scheme ("s3://...", "gs://...", etc.)
+
+            Or, in the case of presign=true, will be an HTTP URL to be consumed via regular HTTP GET
+
+            '
+        physical_address_expiry:
+          type: integer
+          format: int64
+          description: 'If present and nonzero, physical_address is a pre-signed URL and
+
+            will expire at this Unix Epoch time.  This will be shorter than
+
+            the pre-signed URL lifetime if an authentication token is about
+
+            to expire.
+
+
+            This field is *optional*.
+
+            '
+        checksum:
+          type: string
+        size_bytes:
+          type: integer
+          format: int64
+          description: 'The number of bytes in the object.  lakeFS always populates this
+
+            field when returning ObjectStats.  This field is optional _for
+
+            the client_ to supply, for instance on upload.
+
+            '
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+        content_type:
+          type: string
+          description: Object media type
+    ObjectCopyCreation:
+      type: object
+      required:
+      - src_path
+      properties:
+        src_path:
+          type: string
+          description: path of the copied object relative to the ref
+        src_ref:
+          type: string
+          description: a reference, if empty uses the provided branch as ref
+        force:
+          type: boolean
+          default: false
+        shallow:
+          description: "Create a shallow copy of the object (without copying the actual data). At the moment shallow copy only works for same repository and branch. \nPlease note that shallow copied objects might be in contention with garbage collection and branch retention policies - use with caution.\n"
+          type: boolean
+          default: false
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    ObjectStatsList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectStats'
+    UpdateObjectUserMetadata:
+      type: object
+      required:
+      - set
+      properties:
+        set:
+          description: Set this object user metadata
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    ObjectErrorList:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectError'
+    ObjectError:
+      type: object
+      required:
+      - status_code
+      - message
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code associated for operation on path
+        message:
+          type: string
+          description: short message explaining status_code
+        path:
+          type: string
+          description: affected path
+    PathList:
+      type: object
+      required:
+      - paths
+      properties:
+        paths:
+          type: array
+          items:
+            type: string
+            description: Object path
+  parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+    IfNoneMatch:
+      in: header
+      name: If-None-Match
+      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
+      example: '*'
+      required: false
+      schema:
+        type: string
+    NoTombstone:
+      in: query
+      name: no_tombstone
+      required: false
+      schema:
+        type: boolean
+        default: false
+      description: delete entry without tombstone when possible *EXPERIMENTAL*
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    IfMatch:
+      in: header
+      name: If-Match
+      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
+      example: 2e9ec317e197e02e4264d128c2e7e681
+      required: false
+      schema:
+        type: string
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+    jwt_token:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookie_auth:
+      type: apiKey
+      in: cookie
+      name: internal_auth_session
+    oidc_auth:
+      type: apiKey
+      in: cookie
+      name: oidc_auth_session
+    saml_auth:
+      type: apiKey
+      in: cookie
+      name: saml_auth_session
