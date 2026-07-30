@@ -4,9 +4,22 @@ description: >-
   Manage your data as code using Git-like operations and achieve reproducible, high-quality data pipelines. Start
   locally, run on-prem or in the cloud.
 type: Index
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 position: Consumer
 access: 3rd-Party
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/lakefs.png
 tags:
   - Data Version Control
   - Data Lake
@@ -17,21 +30,193 @@ modified: '2026-05-19'
 url: https://raw.githubusercontent.com/api-evangelist/lakefs/refs/heads/main/apis.yml
 specificationVersion: '0.19'
 apis:
-  - aid: lakefs:lakefs
-    name: lakeFS
-    description: >-
-      Manage your data as code using Git-like operations and achieve reproducible, high-quality data pipelines. Start
-      locally, run on-prem or in the cloud.
-    humanURL: https://lakefs.io/
-    tags:
-      - Data Version Control
-      - Data Lake
-      - Git-like
-    properties:
-      - type: Documentation
-        url: https://docs.lakefs.io/
-      - type: OpenAPI
-        url: https://raw.githubusercontent.com/api-evangelist/lakefs/refs/heads/main/openapi/lakefs-openapi.yml
+- aid: lakefs:lakefs-actions-api
+  name: lakeFS actions API
+  description: The actions API from lakeFS — 4 operation(s) for actions.
+  humanURL: https://lakefs.io/
+  tags:
+  - actions
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-actions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-auth-api
+  name: lakeFS auth API
+  description: The auth API from lakeFS — 23 operation(s) for auth.
+  humanURL: https://lakefs.io/
+  tags:
+  - auth
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-auth-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-branches-api
+  name: lakeFS branches API
+  description: The branches API from lakeFS — 5 operation(s) for branches.
+  humanURL: https://lakefs.io/
+  tags:
+  - branches
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-branches-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-commits-api
+  name: lakeFS commits API
+  description: The commits API from lakeFS — 2 operation(s) for commits.
+  humanURL: https://lakefs.io/
+  tags:
+  - commits
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-commits-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-config-api
+  name: lakeFS config API
+  description: The config API from lakeFS — 1 operation(s) for config.
+  humanURL: https://lakefs.io/
+  tags:
+  - config
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-config-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-experimental-api
+  name: lakeFS experimental API
+  description: The experimental API from lakeFS — 14 operation(s) for experimental.
+  humanURL: https://lakefs.io/
+  tags:
+  - experimental
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-experimental-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-external-api
+  name: lakeFS external API
+  description: The external API from lakeFS — 4 operation(s) for external.
+  humanURL: https://lakefs.io/
+  tags:
+  - external
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-external-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-healthcheck-api
+  name: lakeFS healthCheck API
+  description: The healthCheck API from lakeFS — 1 operation(s) for healthcheck.
+  humanURL: https://lakefs.io/
+  tags:
+  - healthCheck
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-healthcheck-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-import-api
+  name: lakeFS import API
+  description: The import API from lakeFS — 1 operation(s) for import.
+  humanURL: https://lakefs.io/
+  tags:
+  - import
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-import-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-internal-api
+  name: lakeFS internal API
+  description: The internal API from lakeFS — 24 operation(s) for internal.
+  humanURL: https://lakefs.io/
+  tags:
+  - internal
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-internal-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-metadata-api
+  name: lakeFS metadata API
+  description: The metadata API from lakeFS — 2 operation(s) for metadata.
+  humanURL: https://lakefs.io/
+  tags:
+  - metadata
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-metadata-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-objects-api
+  name: lakeFS objects API
+  description: The objects API from lakeFS — 8 operation(s) for objects.
+  humanURL: https://lakefs.io/
+  tags:
+  - objects
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-objects-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-pulls-api
+  name: lakeFS pulls API
+  description: The pulls API from lakeFS — 3 operation(s) for pulls.
+  humanURL: https://lakefs.io/
+  tags:
+  - pulls
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-pulls-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-refs-api
+  name: lakeFS refs API
+  description: The refs API from lakeFS — 3 operation(s) for refs.
+  humanURL: https://lakefs.io/
+  tags:
+  - refs
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-refs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-repositories-api
+  name: lakeFS repositories API
+  description: The repositories API from lakeFS — 7 operation(s) for repositories.
+  humanURL: https://lakefs.io/
+  tags:
+  - repositories
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-repositories-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-staging-api
+  name: lakeFS staging API
+  description: The staging API from lakeFS — 1 operation(s) for staging.
+  humanURL: https://lakefs.io/
+  tags:
+  - staging
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-staging-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-tags-api
+  name: lakeFS tags API
+  description: The tags API from lakeFS — 2 operation(s) for tags.
+  humanURL: https://lakefs.io/
+  tags:
+  - tags
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-tags-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
 common:
   - type: AgenticAccess
     url: agentic-access/lakefs-agentic-access.yml
