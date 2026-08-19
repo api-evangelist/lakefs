@@ -1,0 +1,560 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions experimental API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "experimental",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "perform a login using an external authenticator",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/external/principal/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login using an external authenticator"
+        },
+        {
+          "info": {
+            "name": "perform a login with STS",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/sts/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login with STS"
+        },
+        {
+          "info": {
+            "name": "attach external principal to user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "attach external principal to user"
+        },
+        {
+          "info": {
+            "name": "delete external principal from user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete external principal from user"
+        },
+        {
+          "info": {
+            "name": "list user external policies attached to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/external/principals/ls",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user external policies attached to a user"
+        },
+        {
+          "info": {
+            "name": "describe external principal by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/external/principals",
+            "params": [
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "describe external principal by id"
+        },
+        {
+          "info": {
+            "name": "hard reset branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/hard_reset",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "query",
+                "description": "After reset, branch will point at this reference."
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Relocate branch to refer to ref.  Branch must not contain uncommitted data."
+        },
+        {
+          "info": {
+            "name": "Initiate a multipart upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "parts",
+                "value": "",
+                "type": "query",
+                "description": "number of presigned URL parts required to upload"
+              }
+            ]
+          },
+          "docs": "Initiates a multipart upload and returns an upload ID with presigned URLs for each part (optional).\nPart numbers starts with 1. Each part except the last one has minimum size depends on the underlying blockstore implementation.\nFor example working with S3 blockstore, minimum size is 5MB (excluding the last part).\n"
+        },
+        {
+          "info": {
+            "name": "Complete a presign multipart upload request",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Completes a presign multipart upload by assembling the uploaded parts."
+        },
+        {
+          "info": {
+            "name": "Abort a presign multipart upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Aborts a presign multipart upload."
+        },
+        {
+          "info": {
+            "name": "uploadPart",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId/parts/:partNumber",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "partNumber",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Return a presigned URL to upload into a presigned multipart upload."
+        },
+        {
+          "info": {
+            "name": "uploadPartCopy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/staging/pmpu/:uploadId/parts/:partNumber/copy",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "partNumber",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Upload a part by copying part of another object."
+        },
+        {
+          "info": {
+            "name": "rewrite (all) object metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/stat/user_metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path",
+                "description": "branch to update"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "path to object relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "rewrite (all) object metadata"
+        },
+        {
+          "info": {
+            "name": "list pull requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/pulls",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "list pull requests"
+        },
+        {
+          "info": {
+            "name": "create pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/pulls",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create pull request"
+        },
+        {
+          "info": {
+            "name": "get pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/pulls/:pull_request",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pull_request",
+                "value": "",
+                "type": "path",
+                "description": "pull request id"
+              }
+            ]
+          },
+          "docs": "get pull request"
+        },
+        {
+          "info": {
+            "name": "update pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v1/repositories/:repository/pulls/:pull_request",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pull_request",
+                "value": "",
+                "type": "path",
+                "description": "pull request id"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "update pull request"
+        },
+        {
+          "info": {
+            "name": "merge pull request",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/pulls/:pull_request/merge",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pull_request",
+                "value": "",
+                "type": "path",
+                "description": "pull request id"
+              }
+            ]
+          },
+          "docs": "merge pull request"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

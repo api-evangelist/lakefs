@@ -1,0 +1,266 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions branches API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "branches",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list branches",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "show_hidden",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "list branches"
+        },
+        {
+          "info": {
+            "name": "create branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create branch"
+        },
+        {
+          "info": {
+            "name": "get branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get branch"
+        },
+        {
+          "info": {
+            "name": "reset branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "reset branch"
+        },
+        {
+          "info": {
+            "name": "delete branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branches/:branch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete branch"
+        },
+        {
+          "info": {
+            "name": "revert",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/revert",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "revert"
+        },
+        {
+          "info": {
+            "name": "Replay the changes from the given commit on the branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/cherry-pick",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replay the changes from the given commit on the branch"
+        },
+        {
+          "info": {
+            "name": "diff branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch/diff",
+            "params": [
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query",
+                "description": "delimiter used to group common prefixes by"
+              },
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "diff branch"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

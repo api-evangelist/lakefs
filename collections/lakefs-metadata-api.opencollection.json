@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions metadata API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "metadata",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "return URI to a meta-range file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/metadata/meta_range/:meta_range",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "meta_range",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "return URI to a meta-range file"
+        },
+        {
+          "info": {
+            "name": "return URI to a range file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/metadata/range/:range",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "range",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "return URI to a range file"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

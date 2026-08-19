@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions healthCheck API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "healthCheck",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "healthCheck",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/healthcheck"
+          },
+          "docs": "check that the API server is up and running"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

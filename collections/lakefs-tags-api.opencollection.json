@@ -1,0 +1,133 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions tags API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "tags",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/tags",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list tags"
+        },
+        {
+          "info": {
+            "name": "create tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/tags",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create tag"
+        },
+        {
+          "info": {
+            "name": "get tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/tags/:tag",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get tag"
+        },
+        {
+          "info": {
+            "name": "delete tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/tags/:tag",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete tag"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,598 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions internal API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "internal",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "setup communications preferences",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/setup_comm_prefs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "setup communications preferences"
+        },
+        {
+          "info": {
+            "name": "check if the lakeFS installation is already set up",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/setup_lakefs"
+          },
+          "docs": "check if the lakeFS installation is already set up"
+        },
+        {
+          "info": {
+            "name": "setup lakeFS and create a first user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/setup_lakefs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "setup lakeFS and create a first user"
+        },
+        {
+          "info": {
+            "name": "list authentication capabilities supported",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/capabilities"
+          },
+          "docs": "list authentication capabilities supported"
+        },
+        {
+          "info": {
+            "name": "set repository metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set repository metadata. This will only add or update the provided keys, and will not remove any existing keys.\n"
+        },
+        {
+          "info": {
+            "name": "delete repository metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Delete specified keys from the repository's metadata.\n"
+        },
+        {
+          "info": {
+            "name": "Dump repository refs (tags, commits, branches) to object store\nDeprecated: a new API will introduce long running operations\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/refs/dump",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Dump repository refs (tags, commits, branches) to object store\nDeprecated: a new API will introduce long running operations\n"
+        },
+        {
+          "info": {
+            "name": "Restore repository refs (tags, commits, branches) from object store.\nDeprecated: a new API will introduce long running operations\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/refs/restore",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Restore repository refs (tags, commits, branches) from object store.\nDeprecated: a new API will introduce long running operations\n"
+        },
+        {
+          "info": {
+            "name": "create commit record",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create commit record"
+        },
+        {
+          "info": {
+            "name": "uploadObjectPreflight",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/stage_allowed",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "stage an object's metadata for the given branch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "stage an object's metadata for the given branch"
+        },
+        {
+          "info": {
+            "name": "creates symlink files corresponding to the given directory",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/refs/:branch/symlink",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "location",
+                "value": "",
+                "type": "query",
+                "description": "path to the table data"
+              }
+            ]
+          },
+          "docs": "creates symlink files corresponding to the given directory"
+        },
+        {
+          "info": {
+            "name": "return a lakeFS metadata object by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/metadata/object/:type/:object_id",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "object_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "return a lakeFS metadata object by ID"
+        },
+        {
+          "info": {
+            "name": "setGarbageCollectionRulesPreflight",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/gc/rules/set_allowed",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "internalGetGarbageCollectionRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/gc/rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deprecated; use getGCRules."
+        },
+        {
+          "info": {
+            "name": "internalSetGarbageCollectionRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deprecated; use setGCRules."
+        },
+        {
+          "info": {
+            "name": "internalDeleteGarbageCollectionRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/gc/rules",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deprecated; use deleteGCRules."
+        },
+        {
+          "info": {
+            "name": "save lists of active commits for garbage collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/prepare_commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "save lists of active commits for garbage collection"
+        },
+        {
+          "info": {
+            "name": "prepare gc commits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/prepare_commits/async",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "prepare gc commits"
+        },
+        {
+          "info": {
+            "name": "get status of prepare gc commits operation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/gc/prepare_commits/status",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Unique identifier of the prepare GC commits task"
+              }
+            ]
+          },
+          "docs": "get status of prepare gc commits operation"
+        },
+        {
+          "info": {
+            "name": "save repository uncommitted metadata for garbage collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/gc/prepare_uncommited",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "save repository uncommitted metadata for garbage collection"
+        },
+        {
+          "info": {
+            "name": "createBranchProtectionRulePreflight",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branch_protection/set_allowed",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "get branch protection rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/branch_protection",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get branch protection rules"
+        },
+        {
+          "info": {
+            "name": "internalCreateBranchProtectionRule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branch_protection",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "internalDeleteBranchProtectionRule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branch_protection",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "getLakeFSVersion",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/config/version"
+          },
+          "docs": "get version of lakeFS server"
+        },
+        {
+          "info": {
+            "name": "getStorageConfig",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/config/storage"
+          },
+          "docs": "retrieve lakeFS storage configuration"
+        },
+        {
+          "info": {
+            "name": "getGarbageCollectionConfig",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/config/garbage-collection"
+          },
+          "docs": "get information of gc settings"
+        },
+        {
+          "info": {
+            "name": "post stats events, this endpoint is meant for internal use only",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/statistics",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "post stats events, this endpoint is meant for internal use only"
+        },
+        {
+          "info": {
+            "name": "get usage report summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/usage-report/summary"
+          },
+          "docs": "get usage report summary"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

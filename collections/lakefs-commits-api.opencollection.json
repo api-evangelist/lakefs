@@ -1,0 +1,80 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions commits API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "commits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "create commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "source_metarange",
+                "value": "",
+                "type": "query",
+                "description": "The source metarange to commit. Branch must not have uncommitted changes."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create commit"
+        },
+        {
+          "info": {
+            "name": "get commit",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/commits/:commitId",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "commitId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get commit"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

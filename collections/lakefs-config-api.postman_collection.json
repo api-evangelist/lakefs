@@ -1,0 +1,162 @@
+{
+  "item": [
+    {
+      "id": "2ddad38b-a1a4-4e75-a337-7da67b5e557e",
+      "name": "config",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "87361dc3-e154-4ca1-8616-ef2788d742e9",
+          "name": "get Config",
+          "request": {
+            "name": "get Config",
+            "description": {
+              "content": "retrieve lakeFS configuration",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "config"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c4520ff0-82cb-4c3f-ab05-27ba4746691b",
+              "name": "lakeFS configuration",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "config"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"version_config\": {\n    \"version\": \"string\",\n    \"version_context\": \"string\",\n    \"latest_version\": \"string\",\n    \"upgrade_recommended\": false,\n    \"upgrade_url\": \"string\"\n  },\n  \"storage_config\": {\n    \"blockstore_type\": \"string\",\n    \"blockstore_namespace_example\": \"string\",\n    \"blockstore_namespace_ValidityRegex\": \"string\",\n    \"pre_sign_support\": true,\n    \"pre_sign_support_ui\": true,\n    \"import_support\": false,\n    \"import_validity_regex\": \"string\",\n    \"default_namespace_prefix\": \"string\",\n    \"pre_sign_multipart_upload\": false,\n    \"blockstore_id\": \"string\",\n    \"blockstore_description\": \"string\"\n  },\n  \"storage_config_list\": [\n    {\n      \"blockstore_type\": \"string\",\n      \"blockstore_namespace_example\": \"string\",\n      \"blockstore_namespace_ValidityRegex\": \"string\",\n      \"pre_sign_support\": false,\n      \"pre_sign_support_ui\": false,\n      \"import_support\": false,\n      \"import_validity_regex\": \"string\",\n      \"default_namespace_prefix\": \"string\",\n      \"pre_sign_multipart_upload\": false,\n      \"blockstore_id\": \"string\",\n      \"blockstore_description\": \"string\"\n    },\n    {\n      \"blockstore_type\": \"string\",\n      \"blockstore_namespace_example\": \"string\",\n      \"blockstore_namespace_ValidityRegex\": \"string\",\n      \"pre_sign_support\": true,\n      \"pre_sign_support_ui\": true,\n      \"import_support\": true,\n      \"import_validity_regex\": \"string\",\n      \"default_namespace_prefix\": \"string\",\n      \"pre_sign_multipart_upload\": false,\n      \"blockstore_id\": \"string\",\n      \"blockstore_description\": \"string\"\n    }\n  ],\n  \"ui_config\": {\n    \"custom_viewers\": [\n      {\n        \"name\": \"string\",\n        \"url\": \"string\",\n        \"extensions\": [\n          \"string\",\n          \"string\"\n        ],\n        \"content_types\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      {\n        \"name\": \"string\",\n        \"url\": \"string\",\n        \"extensions\": [\n          \"string\",\n          \"string\"\n        ],\n        \"content_types\": [\n          \"string\",\n          \"string\"\n        ]\n      }\n    ]\n  },\n  \"capabilities_config\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b52d7ed0-f8fb-4215-af44-69feab5f2109",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "config"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3fead184-aeb3-49da-9692-38b2edc3c248",
+    "name": "lakeFS actions config API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "lakeFS HTTP API",
+      "type": "text/plain"
+    }
+  }
+}

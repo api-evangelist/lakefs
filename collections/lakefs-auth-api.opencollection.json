@@ -1,0 +1,875 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions auth API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get current user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/user"
+          },
+          "docs": "get current user"
+        },
+        {
+          "info": {
+            "name": "perform a login",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login"
+        },
+        {
+          "info": {
+            "name": "perform a login using an external authenticator",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/external/principal/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login using an external authenticator"
+        },
+        {
+          "info": {
+            "name": "list users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users",
+            "params": [
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list users"
+        },
+        {
+          "info": {
+            "name": "create user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create user"
+        },
+        {
+          "info": {
+            "name": "get user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get user"
+        },
+        {
+          "info": {
+            "name": "delete user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete user"
+        },
+        {
+          "info": {
+            "name": "list groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups",
+            "params": [
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list groups"
+        },
+        {
+          "info": {
+            "name": "create group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/groups",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create group"
+        },
+        {
+          "info": {
+            "name": "get group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get group"
+        },
+        {
+          "info": {
+            "name": "delete group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/groups/:groupId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete group"
+        },
+        {
+          "info": {
+            "name": "list policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/policies",
+            "params": [
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list policies"
+        },
+        {
+          "info": {
+            "name": "create policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/policies",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create policy"
+        },
+        {
+          "info": {
+            "name": "get policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get policy"
+        },
+        {
+          "info": {
+            "name": "update policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "update policy"
+        },
+        {
+          "info": {
+            "name": "delete policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/policies/:policyId",
+            "params": [
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete policy"
+        },
+        {
+          "info": {
+            "name": "list group members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId/members",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list group members"
+        },
+        {
+          "info": {
+            "name": "add group membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/groups/:groupId/members/:userId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "add group membership"
+        },
+        {
+          "info": {
+            "name": "delete group membership",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/groups/:groupId/members/:userId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete group membership"
+        },
+        {
+          "info": {
+            "name": "list user credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/credentials",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user credentials"
+        },
+        {
+          "info": {
+            "name": "create credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users/:userId/credentials",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "create credentials"
+        },
+        {
+          "info": {
+            "name": "get credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/credentials/:accessKeyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "accessKeyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get credentials"
+        },
+        {
+          "info": {
+            "name": "delete credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/credentials/:accessKeyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "accessKeyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "delete credentials"
+        },
+        {
+          "info": {
+            "name": "list user groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/groups",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user groups"
+        },
+        {
+          "info": {
+            "name": "list user policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/policies",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "effective",
+                "value": "",
+                "type": "query",
+                "description": "will return all distinct policies attached to the user or any of its groups"
+              }
+            ]
+          },
+          "docs": "list user policies"
+        },
+        {
+          "info": {
+            "name": "attach policy to user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/users/:userId/policies/:policyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "attach policy to user"
+        },
+        {
+          "info": {
+            "name": "detach policy from user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/policies/:policyId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "detach policy from user"
+        },
+        {
+          "info": {
+            "name": "attach external principal to user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "attach external principal to user"
+        },
+        {
+          "info": {
+            "name": "delete external principal from user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete external principal from user"
+        },
+        {
+          "info": {
+            "name": "list user external policies attached to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/external/principals/ls",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user external policies attached to a user"
+        },
+        {
+          "info": {
+            "name": "describe external principal by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/external/principals",
+            "params": [
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "describe external principal by id"
+        },
+        {
+          "info": {
+            "name": "list group policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId/policies",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list group policies"
+        },
+        {
+          "info": {
+            "name": "attach policy to group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/auth/groups/:groupId/policies/:policyId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "attach policy to group"
+        },
+        {
+          "info": {
+            "name": "detach policy from group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/groups/:groupId/policies/:policyId",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "policyId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "detach policy from group"
+        },
+        {
+          "info": {
+            "name": "get ACL of group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/groups/:groupId/acl",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "get ACL of group"
+        },
+        {
+          "info": {
+            "name": "set ACL of group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/groups/:groupId/acl",
+            "params": [
+              {
+                "name": "groupId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "set ACL of group"
+        },
+        {
+          "info": {
+            "name": "oauthCallback",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/oidc/callback"
+          }
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

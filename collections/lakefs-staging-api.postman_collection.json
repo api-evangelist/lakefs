@@ -1,0 +1,1496 @@
+{
+  "item": [
+    {
+      "id": "32397340-caa6-499b-aa40-34ea84c2ac7a",
+      "name": "staging",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6818b879-b655-491b-8175-147cf4f301ef",
+          "name": "generate an address to which the client can upload an object",
+          "request": {
+            "name": "generate an address to which the client can upload an object",
+            "description": {},
+            "url": {
+              "path": [
+                "repositories",
+                ":repository",
+                "branches",
+                ":branch",
+                "staging",
+                "backing"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "presign",
+                  "value": "<boolean>"
+                },
+                {
+                  "disabled": false,
+                  "key": "path",
+                  "value": "<string>",
+                  "description": "(Required) relative to the branch"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "repository",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "branch",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "95e78b35-d5aa-41f8-8798-2d8b02522587",
+              "name": "physical address for staging area",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "presign",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"physical_address\": \"string\",\n  \"presigned_url\": \"string\",\n  \"presigned_url_expiry\": 5409\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f6884a27-5c6c-49a0-92b1-04d882a3f893",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "presign",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4991d1e-1b60-46f6-97d4-30ec0b50fdd4",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "presign",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "62155e82-d5b3-4e33-931b-c92636e83776",
+              "name": "Resource Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "presign",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3245a779-9d57-4e9f-8bb4-f923d78d2330",
+              "name": "too many requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "presign",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "00651b1f-cc83-414b-b655-63516ebf9a96",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "presign",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3a9b9dae-6a8c-4e19-b06a-ff3f1c8b9392",
+          "name": "associate staging on this physical address with a path",
+          "request": {
+            "name": "associate staging on this physical address with a path",
+            "description": {
+              "content": "Link the physical address with the path in lakeFS, creating an uncommitted change.\nThe given address can be one generated by getPhysicalAddress, or an address outside the repository's storage namespace.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "repositories",
+                ":repository",
+                "branches",
+                ":branch",
+                "staging",
+                "backing"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "path",
+                  "value": "<string>",
+                  "description": "(Required) relative to the branch"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "repository",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "branch",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                "key": "If-None-Match",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                "key": "If-Match",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c4a3f4f7-15c4-45bf-bb2b-28489c8c8d80",
+              "name": "object metadata",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checksum\": \"string\",\n  \"physical_address\": \"string\",\n  \"path\": \"string\",\n  \"path_type\": \"common_prefix\",\n  \"mtime\": 5535,\n  \"physical_address_expiry\": 2605,\n  \"size_bytes\": 2342,\n  \"metadata\": {\n    \"key_0\": \"string\"\n  },\n  \"content_type\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd034a44-7a80-4aa8-8005-1e6979a1fab2",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "044f661b-b32c-4bcf-95ff-48b2eaf6413e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3b9603a5-64df-4d38-a265-46c454a3c4e7",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d0774f22-5865-4d31-bccd-dffaaf9ff6b7",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3efb3560-80e7-486c-b50e-157dfab30b69",
+              "name": "conflict with a commit, try here",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"physical_address\": \"<string>\",\n  \"presigned_url\": \"<string>\",\n  \"presigned_url_expiry\": \"<long>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0279d631-0472-4a14-bfba-eb56c70e0ce8",
+              "name": "Precondition Failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a9c56fe2-cab4-4a46-b29e-9b321516b80c",
+              "name": "too many requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cb6353a4-9864-45b7-8c61-fc1e4d49f780",
+              "name": "Not Implemented",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "62d3ec69-e35e-408c-b096-0b2280e5501e",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "repositories",
+                    ":repository",
+                    "branches",
+                    ":branch",
+                    "staging",
+                    "backing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "repository",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "branch",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to \"*\" to atomically allow the upload only if the key has no object yet. Other values are not supported.",
+                    "key": "If-None-Match",
+                    "value": "*"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.",
+                    "key": "If-Match",
+                    "value": "2e9ec317e197e02e4264d128c2e7e681"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"staging\": {\n    \"physical_address\": \"<string>\",\n    \"presigned_url\": \"<string>\",\n    \"presigned_url_expiry\": \"<long>\"\n  },\n  \"checksum\": \"<string>\",\n  \"size_bytes\": \"<long>\",\n  \"user_metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"content_type\": \"<string>\",\n  \"mtime\": \"<long>\",\n  \"force\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b16d9826-0c29-4408-a7d6-a3d22af5704d",
+    "name": "lakeFS actions staging API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "lakeFS HTTP API",
+      "type": "text/plain"
+    }
+  }
+}

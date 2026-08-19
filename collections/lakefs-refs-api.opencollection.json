@@ -1,0 +1,224 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions refs API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "refs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get commit log from ref. If both objects and prefixes are empty, return all commits.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/commits",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "objects",
+                "value": "",
+                "type": "query",
+                "description": "list of paths, each element is a path of a specific object"
+              },
+              {
+                "name": "prefixes",
+                "value": "",
+                "type": "query",
+                "description": "list of paths, each element is a path of a prefix"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "limit the number of items in return to 'amount'. Without further indication on actual number of items."
+              },
+              {
+                "name": "first_parent",
+                "value": "",
+                "type": "query",
+                "description": "if set to true, follow only the first parent upon reaching a merge commit"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Show commits more recent than a specific date-time. In case used with stop_at parameter, will stop at the first commit that meets any of the conditions."
+              },
+              {
+                "name": "stop_at",
+                "value": "",
+                "type": "query",
+                "description": "A reference to stop at. In case used with since parameter, will stop at the first commit that meets any of the conditions."
+              }
+            ]
+          },
+          "docs": "get commit log from ref. If both objects and prefixes are empty, return all commits."
+        },
+        {
+          "info": {
+            "name": "find the merge base for 2 references",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:sourceRef/merge/:destinationBranch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "sourceRef",
+                "value": "",
+                "type": "path",
+                "description": "source ref"
+              },
+              {
+                "name": "destinationBranch",
+                "value": "",
+                "type": "path",
+                "description": "destination branch name"
+              }
+            ]
+          },
+          "docs": "find the merge base for 2 references"
+        },
+        {
+          "info": {
+            "name": "merge references",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/refs/:sourceRef/merge/:destinationBranch",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "sourceRef",
+                "value": "",
+                "type": "path",
+                "description": "source ref"
+              },
+              {
+                "name": "destinationBranch",
+                "value": "",
+                "type": "path",
+                "description": "destination branch name"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "merge references"
+        },
+        {
+          "info": {
+            "name": "diff references",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:leftRef/diff/:rightRef",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "leftRef",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "rightRef",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID) to compare against"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query",
+                "description": "delimiter used to group common prefixes by"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "include_right_stats",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the diff will include right-side object stats. *EXPERIMENTAL*"
+              }
+            ]
+          },
+          "docs": "diff references"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

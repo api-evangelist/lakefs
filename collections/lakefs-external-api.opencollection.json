@@ -1,0 +1,143 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions external API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "external",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "perform a login using an external authenticator",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/external/principal/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "perform a login using an external authenticator"
+        },
+        {
+          "info": {
+            "name": "attach external principal to user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "attach external principal to user"
+        },
+        {
+          "info": {
+            "name": "delete external principal from user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/auth/users/:userId/external/principals",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "delete external principal from user"
+        },
+        {
+          "info": {
+            "name": "list user external policies attached to a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/users/:userId/external/principals/ls",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              }
+            ]
+          },
+          "docs": "list user external policies attached to a user"
+        },
+        {
+          "info": {
+            "name": "describe external principal by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/auth/external/principals",
+            "params": [
+              {
+                "name": "principalId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "describe external principal by id"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

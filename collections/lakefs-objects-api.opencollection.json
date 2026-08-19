@@ -1,0 +1,438 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "lakeFS actions objects API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "objects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "get object content",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects",
+            "headers": [
+              {
+                "name": "Range",
+                "value": "bytes=0-1023"
+              },
+              {
+                "name": "If-None-Match",
+                "value": "33a64df551425fcc55e4d42a148795d9f25f89d4"
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the ref"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "get object content"
+        },
+        {
+          "info": {
+            "name": "check if object exists",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects",
+            "headers": [
+              {
+                "name": "Range",
+                "value": "bytes=0-1023"
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the ref"
+              }
+            ]
+          },
+          "docs": "check if object exists"
+        },
+        {
+          "info": {
+            "name": "uploadObject",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": "*"
+              },
+              {
+                "name": "If-Match",
+                "value": "2e9ec317e197e02e4264d128c2e7e681"
+              }
+            ],
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "storageClass",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated, this capability will not be supported in future releases."
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "content",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "delete object. Missing objects will not return a NotFound error.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "no_tombstone",
+                "value": "",
+                "type": "query",
+                "description": "delete entry without tombstone when possible *EXPERIMENTAL*"
+              }
+            ]
+          },
+          "docs": "delete object. Missing objects will not return a NotFound error."
+        },
+        {
+          "info": {
+            "name": "delete objects. Missing objects will not return a NotFound error.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/delete",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "no_tombstone",
+                "value": "",
+                "type": "query",
+                "description": "delete entry without tombstone when possible *EXPERIMENTAL*"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "delete objects. Missing objects will not return a NotFound error."
+        },
+        {
+          "info": {
+            "name": "create a copy of an object",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/copy",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path",
+                "description": "destination branch for the copy"
+              },
+              {
+                "name": "dest_path",
+                "value": "",
+                "type": "query",
+                "description": "destination path relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "create a copy of an object"
+        },
+        {
+          "info": {
+            "name": "get object metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects/stat",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              },
+              {
+                "name": "user_metadata",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "get object metadata"
+        },
+        {
+          "info": {
+            "name": "rewrite (all) object metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v1/repositories/:repository/branches/:branch/objects/stat/user_metadata",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "branch",
+                "value": "",
+                "type": "path",
+                "description": "branch to update"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "path to object relative to the branch"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "rewrite (all) object metadata"
+        },
+        {
+          "info": {
+            "name": "get object properties on underlying storage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects/underlyingProperties",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "path",
+                "value": "",
+                "type": "query",
+                "description": "relative to the branch"
+              }
+            ]
+          },
+          "docs": "get object properties on underlying storage"
+        },
+        {
+          "info": {
+            "name": "list objects under a given prefix",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v1/repositories/:repository/refs/:ref/objects/ls",
+            "params": [
+              {
+                "name": "repository",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "ref",
+                "value": "",
+                "type": "path",
+                "description": "a reference (could be either a branch or a commit ID)"
+              },
+              {
+                "name": "user_metadata",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "presign",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "return items after this value"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "how many items to return"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query",
+                "description": "delimiter used to group common prefixes by"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "return items prefixed with this value"
+              }
+            ]
+          },
+          "docs": "list objects under a given prefix"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
