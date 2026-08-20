@@ -24,6 +24,11 @@ tags:
   - Data Version Control
   - Data Lake
   - Git-like
+  - Open-Source
+tags_raw:
+  - Data Version Control
+  - Data Lake
+  - Git-like
   - Open Source
 created: '2025-02-08'
 modified: '2026-05-19'
@@ -35,6 +40,8 @@ apis:
   description: The actions API from lakeFS — 4 operation(s) for actions.
   humanURL: https://lakefs.io/
   tags:
+  - Actions
+  tags_raw:
   - actions
   properties:
   - type: OpenAPI
@@ -46,6 +53,8 @@ apis:
   description: The auth API from lakeFS — 23 operation(s) for auth.
   humanURL: https://lakefs.io/
   tags:
+  - Authentication
+  tags_raw:
   - auth
   properties:
   - type: OpenAPI
@@ -57,6 +66,8 @@ apis:
   description: The branches API from lakeFS — 5 operation(s) for branches.
   humanURL: https://lakefs.io/
   tags:
+  - Branches
+  tags_raw:
   - branches
   properties:
   - type: OpenAPI
@@ -68,6 +79,8 @@ apis:
   description: The commits API from lakeFS — 2 operation(s) for commits.
   humanURL: https://lakefs.io/
   tags:
+  - Commits
+  tags_raw:
   - commits
   properties:
   - type: OpenAPI
@@ -79,6 +92,8 @@ apis:
   description: The config API from lakeFS — 1 operation(s) for config.
   humanURL: https://lakefs.io/
   tags:
+  - Config
+  tags_raw:
   - config
   properties:
   - type: OpenAPI
@@ -90,6 +105,8 @@ apis:
   description: The experimental API from lakeFS — 14 operation(s) for experimental.
   humanURL: https://lakefs.io/
   tags:
+  - Experimental
+  tags_raw:
   - experimental
   properties:
   - type: OpenAPI
@@ -101,6 +118,8 @@ apis:
   description: The external API from lakeFS — 4 operation(s) for external.
   humanURL: https://lakefs.io/
   tags:
+  - External
+  tags_raw:
   - external
   properties:
   - type: OpenAPI
@@ -112,6 +131,8 @@ apis:
   description: The healthCheck API from lakeFS — 1 operation(s) for healthcheck.
   humanURL: https://lakefs.io/
   tags:
+  - Health Check
+  tags_raw:
   - healthCheck
   properties:
   - type: OpenAPI
@@ -123,6 +144,8 @@ apis:
   description: The import API from lakeFS — 1 operation(s) for import.
   humanURL: https://lakefs.io/
   tags:
+  - Import
+  tags_raw:
   - import
   properties:
   - type: OpenAPI
@@ -134,6 +157,8 @@ apis:
   description: The internal API from lakeFS — 24 operation(s) for internal.
   humanURL: https://lakefs.io/
   tags:
+  - Internal
+  tags_raw:
   - internal
   properties:
   - type: OpenAPI
@@ -145,6 +170,8 @@ apis:
   description: The metadata API from lakeFS — 2 operation(s) for metadata.
   humanURL: https://lakefs.io/
   tags:
+  - Metadata
+  tags_raw:
   - metadata
   properties:
   - type: OpenAPI
@@ -156,6 +183,8 @@ apis:
   description: The objects API from lakeFS — 8 operation(s) for objects.
   humanURL: https://lakefs.io/
   tags:
+  - Objects
+  tags_raw:
   - objects
   properties:
   - type: OpenAPI
@@ -167,6 +196,8 @@ apis:
   description: The pulls API from lakeFS — 3 operation(s) for pulls.
   humanURL: https://lakefs.io/
   tags:
+  - Pulls
+  tags_raw:
   - pulls
   properties:
   - type: OpenAPI
@@ -178,6 +209,8 @@ apis:
   description: The refs API from lakeFS — 3 operation(s) for refs.
   humanURL: https://lakefs.io/
   tags:
+  - Refs
+  tags_raw:
   - refs
   properties:
   - type: OpenAPI
@@ -189,6 +222,8 @@ apis:
   description: The repositories API from lakeFS — 7 operation(s) for repositories.
   humanURL: https://lakefs.io/
   tags:
+  - Repositories
+  tags_raw:
   - repositories
   properties:
   - type: OpenAPI
@@ -200,6 +235,8 @@ apis:
   description: The staging API from lakeFS — 1 operation(s) for staging.
   humanURL: https://lakefs.io/
   tags:
+  - Staging
+  tags_raw:
   - staging
   properties:
   - type: OpenAPI
@@ -211,6 +248,8 @@ apis:
   description: The tags API from lakeFS — 2 operation(s) for tags.
   humanURL: https://lakefs.io/
   tags:
+  - Tags
+  tags_raw:
   - tags
   properties:
   - type: OpenAPI
