@@ -77,7 +77,7 @@ apis:
   description: The branches API from lakeFS — 5 operation(s) for branches.
   humanURL: https://lakefs.io/
   tags:
-  - Branches
+  - branches
   tags_raw:
   - branches
   properties:
@@ -90,7 +90,7 @@ apis:
   description: The commits API from lakeFS — 2 operation(s) for commits.
   humanURL: https://lakefs.io/
   tags:
-  - Commits
+  - commits
   tags_raw:
   - commits
   properties:
@@ -141,8 +141,7 @@ apis:
   name: lakeFS healthCheck API
   description: The healthCheck API from lakeFS — 1 operation(s) for healthcheck.
   humanURL: https://lakefs.io/
-  tags:
-  - Health Check
+  tags: []
   tags_raw:
   - healthCheck
   properties:
@@ -207,7 +206,7 @@ apis:
   description: The pulls API from lakeFS — 3 operation(s) for pulls.
   humanURL: https://lakefs.io/
   tags:
-  - Pulls
+  - pulls
   tags_raw:
   - pulls
   properties:
@@ -220,7 +219,7 @@ apis:
   description: The refs API from lakeFS — 3 operation(s) for refs.
   humanURL: https://lakefs.io/
   tags:
-  - Refs
+  - refs
   tags_raw:
   - refs
   properties:
@@ -233,7 +232,7 @@ apis:
   description: The repositories API from lakeFS — 7 operation(s) for repositories.
   humanURL: https://lakefs.io/
   tags:
-  - Repositories
+  - repositories
   tags_raw:
   - repositories
   properties:
@@ -246,7 +245,7 @@ apis:
   description: The staging API from lakeFS — 1 operation(s) for staging.
   humanURL: https://lakefs.io/
   tags:
-  - Staging
+  - staging
   tags_raw:
   - staging
   properties:
