@@ -138,19 +138,6 @@ apis:
     url: openapi/lakefs-external-api-openapi.yml
   - type: Documentation
     url: https://docs.lakefs.io/
-- aid: lakefs:lakefs-healthcheck-api
-  name: lakeFS healthCheck API
-  description: The healthCheck API from lakeFS — 1 operation(s) for healthcheck.
-  humanURL: https://lakefs.io/
-  tags:
-  - Health Check
-  tags_raw:
-  - healthCheck
-  properties:
-  - type: OpenAPI
-    url: openapi/lakefs-healthcheck-api-openapi.yml
-  - type: Documentation
-    url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-import-api
   name: lakeFS import API
   description: The import API from lakeFS — 1 operation(s) for import.
@@ -266,6 +253,17 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/lakefs-tags-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lakefs.io/
+- aid: lakefs:lakefs-health-check-api
+  name: lakeFS Health Check API
+  description: The Health Check API from lakeFS — 1 operation(s) for health check.
+  humanURL: https://lakefs.io/
+  tags:
+  - Health Check
+  properties:
+  - type: OpenAPI
+    url: openapi/lakefs-health-check-api-openapi.yml
   - type: Documentation
     url: https://docs.lakefs.io/
 common:
