@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions metadata API
+  title: lakeFS Metadata API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,7 +16,7 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: metadata
+- name: Metadata
 paths:
   /repositories/{repository}/metadata/meta_range/{meta_range}:
     parameters:
@@ -32,7 +32,7 @@ paths:
         type: string
     get:
       tags:
-      - metadata
+      - Metadata
       operationId: getMetaRange
       summary: return URI to a meta-range file
       responses:
@@ -71,7 +71,7 @@ paths:
         type: string
     get:
       tags:
-      - metadata
+      - Metadata
       operationId: getRange
       summary: return URI to a range file
       responses:
@@ -98,6 +98,12 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Unauthorized
       content:
@@ -106,12 +112,6 @@ components:
             $ref: '#/components/schemas/Error'
     ServerError:
       description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
       content:
         application/json:
           schema:

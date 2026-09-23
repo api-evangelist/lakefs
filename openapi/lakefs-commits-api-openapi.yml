@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions commits API
+  title: lakeFS Commits API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,7 +16,7 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: commits
+- name: Commits
 paths:
   /repositories/{repository}/branches/{branch}/commits:
     parameters:
@@ -39,7 +39,7 @@ paths:
         schema:
           type: string
       tags:
-      - commits
+      - Commits
       operationId: commit
       summary: create commit
       requestBody:
@@ -85,7 +85,7 @@ paths:
         type: string
     get:
       tags:
-      - commits
+      - Commits
       operationId: getCommit
       summary: get commit
       responses:
@@ -107,14 +107,20 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
       content:
         application/json:
           schema:
@@ -131,14 +137,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
+    Forbidden:
+      description: Forbidden
       content:
         application/json:
           schema:
@@ -149,35 +149,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
+    ValidationError:
+      description: Validation Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
-    CommitCreation:
+    Error:
       type: object
       required:
       - message
       properties:
         message:
+          description: short message explaining the error
           type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        date:
-          description: set date to override creation date in the commit (Unix Epoch in seconds)
-          type: integer
-          format: int64
-        allow_empty:
-          description: sets whether a commit can contain no changes
-          type: boolean
-          default: false
-        force:
-          type: boolean
-          default: false
     Commit:
       type: object
       required:
@@ -215,14 +201,28 @@ components:
           type: integer
           minimum: 0
           maximum: 1
-    Error:
+    CommitCreation:
       type: object
       required:
       - message
       properties:
         message:
-          description: short message explaining the error
           type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        date:
+          description: set date to override creation date in the commit (Unix Epoch in seconds)
+          type: integer
+          format: int64
+        allow_empty:
+          description: sets whether a commit can contain no changes
+          type: boolean
+          default: false
+        force:
+          type: boolean
+          default: false
   securitySchemes:
     basic_auth:
       type: http

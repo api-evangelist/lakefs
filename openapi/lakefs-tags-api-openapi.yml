@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions tags API
+  title: lakeFS Tags API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,7 +16,7 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: tags
+- name: Tags
 paths:
   /repositories/{repository}/tags:
     parameters:
@@ -27,7 +27,7 @@ paths:
         type: string
     get:
       tags:
-      - tags
+      - Tags
       operationId: listTags
       summary: list tags
       parameters:
@@ -53,7 +53,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - tags
+      - Tags
       operationId: createTag
       summary: create tag
       requestBody:
@@ -97,7 +97,7 @@ paths:
         type: string
     get:
       tags:
-      - tags
+      - Tags
       operationId: getTag
       summary: get tag
       responses:
@@ -119,7 +119,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - tags
+      - Tags
       operationId: deleteTag
       summary: delete tag
       parameters:
@@ -145,14 +145,14 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
+    Conflict:
+      description: Resource Conflicts With Target
       content:
         application/json:
           schema:
@@ -169,8 +169,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
+    Forbidden:
+      description: Forbidden
       content:
         application/json:
           schema:
@@ -181,49 +181,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
+    ValidationError:
+      description: Validation Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
   schemas:
-    RefList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ref'
     Pagination:
       type: object
       required:
@@ -246,24 +210,6 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
-    Ref:
-      type: object
-      required:
-      - id
-      - commit_id
-      properties:
-        id:
-          type: string
-        commit_id:
-          type: string
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
     TagCreation:
       type: object
       description: Make tag ID point at this REF.
@@ -280,6 +226,60 @@ components:
         force:
           type: boolean
           default: false
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    Ref:
+      type: object
+      required:
+      - id
+      - commit_id
+      properties:
+        id:
+          type: string
+        commit_id:
+          type: string
+    RefList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ref'
+  parameters:
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
   securitySchemes:
     basic_auth:
       type: http

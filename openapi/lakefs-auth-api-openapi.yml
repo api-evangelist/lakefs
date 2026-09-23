@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions auth API
+  title: lakeFS Auth API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,12 +16,12 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: auth
+- name: Auth
 paths:
   /user:
     get:
       tags:
-      - auth
+      - Auth
       operationId: getCurrentUser
       summary: get current user
       responses:
@@ -34,7 +34,7 @@ paths:
   /auth/login:
     post:
       tags:
-      - auth
+      - Auth
       operationId: login
       summary: perform a login
       security: []
@@ -66,7 +66,7 @@ paths:
   /auth/external/principal/login:
     post:
       tags:
-      - auth
+      - Auth
       operationId: externalPrincipalLogin
       summary: perform a login using an external authenticator
       security: []
@@ -97,7 +97,7 @@ paths:
   /auth/users:
     get:
       tags:
-      - auth
+      - Auth
       operationId: listUsers
       summary: list users
       parameters:
@@ -121,7 +121,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - auth
+      - Auth
       operationId: createUser
       summary: create user
       requestBody:
@@ -159,7 +159,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       operationId: getUser
       summary: get user
       responses:
@@ -181,7 +181,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - auth
+      - Auth
       operationId: deleteUser
       summary: delete user
       responses:
@@ -200,7 +200,7 @@ paths:
   /auth/groups:
     get:
       tags:
-      - auth
+      - Auth
       operationId: listGroups
       summary: list groups
       parameters:
@@ -224,7 +224,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - auth
+      - Auth
       operationId: createGroup
       summary: create group
       requestBody:
@@ -258,7 +258,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       operationId: getGroup
       summary: get group
       responses:
@@ -280,7 +280,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - auth
+      - Auth
       operationId: deleteGroup
       summary: delete group
       responses:
@@ -299,7 +299,7 @@ paths:
   /auth/policies:
     get:
       tags:
-      - auth
+      - Auth
       operationId: listPolicies
       summary: list policies
       parameters:
@@ -323,7 +323,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - auth
+      - Auth
       operationId: createPolicy
       summary: create policy
       requestBody:
@@ -358,7 +358,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       operationId: getPolicy
       summary: get policy
       responses:
@@ -380,7 +380,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     put:
       tags:
-      - auth
+      - Auth
       operationId: updatePolicy
       summary: update policy
       requestBody:
@@ -408,7 +408,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - auth
+      - Auth
       operationId: deletePolicy
       summary: delete policy
       responses:
@@ -433,7 +433,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       operationId: listGroupMembers
       summary: list group members
       parameters:
@@ -469,7 +469,7 @@ paths:
         type: string
     put:
       tags:
-      - auth
+      - Auth
       operationId: addGroupMembership
       summary: add group membership
       responses:
@@ -487,7 +487,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - auth
+      - Auth
       operationId: deleteGroupMembership
       summary: delete group membership
       responses:
@@ -512,7 +512,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       parameters:
       - $ref: '#/components/parameters/PaginationPrefix'
       - $ref: '#/components/parameters/PaginationAfter'
@@ -538,7 +538,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - auth
+      - Auth
       operationId: createCredentials
       summary: create credentials
       responses:
@@ -572,7 +572,7 @@ paths:
         type: string
     delete:
       tags:
-      - auth
+      - Auth
       operationId: deleteCredentials
       summary: delete credentials
       responses:
@@ -590,7 +590,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     get:
       tags:
-      - auth
+      - Auth
       operationId: getCredentials
       summary: get credentials
       responses:
@@ -619,7 +619,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       parameters:
       - $ref: '#/components/parameters/PaginationPrefix'
       - $ref: '#/components/parameters/PaginationAfter'
@@ -652,7 +652,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       parameters:
       - $ref: '#/components/parameters/PaginationPrefix'
       - $ref: '#/components/parameters/PaginationAfter'
@@ -696,7 +696,7 @@ paths:
         type: string
     put:
       tags:
-      - auth
+      - Auth
       operationId: attachPolicyToUser
       summary: attach policy to user
       responses:
@@ -714,7 +714,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - auth
+      - Auth
       operationId: detachPolicyFromUser
       summary: detach policy from user
       responses:
@@ -744,7 +744,7 @@ paths:
         type: string
     post:
       tags:
-      - auth
+      - Auth
       operationId: createUserExternalPrincipal
       summary: attach external principal to user
       requestBody:
@@ -770,7 +770,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - auth
+      - Auth
       operationId: deleteUserExternalPrincipal
       summary: delete external principal from user
       responses:
@@ -795,7 +795,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       parameters:
       - $ref: '#/components/parameters/PaginationPrefix'
       - $ref: '#/components/parameters/PaginationAfter'
@@ -828,7 +828,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       operationId: getExternalPrincipal
       summary: describe external principal by id
       responses:
@@ -857,7 +857,7 @@ paths:
         type: string
     get:
       tags:
-      - auth
+      - Auth
       parameters:
       - $ref: '#/components/parameters/PaginationPrefix'
       - $ref: '#/components/parameters/PaginationAfter'
@@ -895,7 +895,7 @@ paths:
         type: string
     put:
       tags:
-      - auth
+      - Auth
       operationId: attachPolicyToGroup
       summary: attach policy to group
       responses:
@@ -913,7 +913,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - auth
+      - Auth
       operationId: detachPolicyFromGroup
       summary: detach policy from group
       responses:
@@ -938,7 +938,7 @@ paths:
         type: string
     post:
       tags:
-      - auth
+      - Auth
       operationId: setGroupACL
       summary: set ACL of group
       requestBody:
@@ -962,7 +962,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     get:
       tags:
-      - auth
+      - Auth
       operationId: getGroupACL
       summary: get ACL of group
       responses:
@@ -985,7 +985,7 @@ paths:
   /oidc/callback:
     get:
       tags:
-      - auth
+      - Auth
       operationId: oauthCallback
       security: []
       responses:
@@ -995,22 +995,12 @@ paths:
           description: failed to exchange authorization code for token
         default:
           $ref: '#/components/responses/ServerError'
+      summary: Oauth callback
+      x-summary-source: derived
 components:
   responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFoundOrNoACL:
-      description: Group not found, or group found but has no ACL
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorNoACL'
-    ServerError:
-      description: Internal Server Error
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -1021,14 +1011,32 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundOrNoACL:
+      description: Group not found, or group found but has no ACL
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorNoACL'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Conflict:
       description: Resource Conflicts With Target
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
+    ServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -1039,58 +1047,35 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
-        type: string
   schemas:
-    Credentials:
+    ExternalPrincipalList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalPrincipal'
+    Group:
       type: object
       required:
       - creation_date
-      - access_key_id
+      - id
       properties:
-        access_key_id:
+        id:
+          type: string
+        name:
+          type: string
+        description:
           type: string
         creation_date:
           type: integer
           format: int64
           description: Unix Epoch in seconds
-    GroupCreation:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-        description:
-          type: string
     CurrentUser:
       type: object
       required:
@@ -1098,45 +1083,64 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
-    ExternalPrincipal:
+    GroupList:
       type: object
       required:
-      - user_id
-      - id
+      - results
+      - pagination
       properties:
-        id:
-          type: string
-          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
-        user_id:
-          type: string
-          description: 'lakeFS user ID to associate with an external principal.
-
-            '
-        settings:
-          type: object
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
           items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
-    UserCreation:
+            $ref: '#/components/schemas/Group'
+    ErrorNoACL:
       type: object
-      properties:
-        id:
-          type: string
-          description: a unique identifier for the user.
-        invite_user:
-          type: boolean
       required:
-      - id
-    PolicyCondition:
-      type: object
-      description: Condition operator (e.g., IpAddress)
-      additionalProperties:
-        type: array
-        items:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
           type: string
-      example:
-        IpAddress:
-        - 192.168.0.1/32
-        - 192.168.0.2/32
+        no_acl:
+          description: true if the group exists but has no ACL
+          type: boolean
+    ExternalPrincipalSettings:
+      type: object
+      additionalProperties:
+        type: string
+      description: Additional settings to be consumed by the remote authenticator
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     PolicyList:
       type: object
       required:
@@ -1149,6 +1153,35 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Policy'
+    Policy:
+      type: object
+      required:
+      - id
+      - statement
+      properties:
+        id:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        statement:
+          type: array
+          items:
+            $ref: '#/components/schemas/Statement'
+          minItems: 1
+    ACL:
+      type: object
+      required:
+      - permission
+      properties:
+        permission:
+          type: string
+          description: 'Permission level to give this ACL.  "Read", "Write", "Super" and
+
+            "Admin" are all supported.
+
+            '
     User:
       type: object
       required:
@@ -1172,71 +1205,15 @@ components:
         email:
           type: string
           description: "The email address of the user. If API authentication is enabled, this field is mandatory and will be invited to login.\nIf API authentication is disabled, this field will be ignored. All current APIAuthenticators require the email to be \nlowercase and unique, although custom authenticators may not enforce this.\n"
-    UserList:
+    ExternalLoginInformation:
       type: object
       required:
-      - pagination
-      - results
+      - identityRequest
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
+        token_expiration_duration:
           type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
-    ExternalPrincipalCreation:
-      type: object
-      properties:
-        settings:
+        identityRequest:
           type: object
-          items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    Group:
-      type: object
-      required:
-      - creation_date
-      - id
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
     Statement:
       type: object
       required:
@@ -1261,6 +1238,57 @@ components:
           description: Optional conditions for when this statement applies.
           additionalProperties:
             $ref: '#/components/schemas/PolicyCondition'
+    PolicyCondition:
+      type: object
+      description: Condition operator (e.g., IpAddress)
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      example:
+        IpAddress:
+        - 192.168.0.1/32
+        - 192.168.0.2/32
+    LoginInformation:
+      type: object
+      required:
+      - access_key_id
+      - secret_access_key
+      properties:
+        access_key_id:
+          type: string
+        secret_access_key:
+          type: string
+    Credentials:
+      type: object
+      required:
+      - creation_date
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    ExternalPrincipal:
+      type: object
+      required:
+      - user_id
+      - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
+        user_id:
+          type: string
+          description: 'lakeFS user ID to associate with an external principal.
+
+            '
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
     CredentialsWithSecret:
       type: object
       required:
@@ -1276,90 +1304,44 @@ components:
           type: integer
           format: int64
           description: Unix Epoch in seconds
-    LoginInformation:
+    ExternalPrincipalCreation:
       type: object
-      required:
-      - access_key_id
-      - secret_access_key
       properties:
-        access_key_id:
-          type: string
-        secret_access_key:
-          type: string
-    ACL:
-      type: object
-      required:
-      - permission
-      properties:
-        permission:
-          type: string
-          description: 'Permission level to give this ACL.  "Read", "Write", "Super" and
-
-            "Admin" are all supported.
-
-            '
-    ExternalPrincipalList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalPrincipal'
-    ExternalLoginInformation:
-      type: object
-      required:
-      - identityRequest
-      properties:
-        token_expiration_duration:
-          type: integer
-        identityRequest:
+        settings:
           type: object
-    AuthenticationToken:
-      type: object
-      required:
-      - token
-      properties:
-        token:
-          description: a JWT token that could be used to authenticate requests
-          type: string
-        token_expiration:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-    GroupList:
-      type: object
-      required:
-      - results
-      - pagination
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
           items:
-            $ref: '#/components/schemas/Group'
-    Policy:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    GroupCreation:
       type: object
       required:
       - id
-      - statement
       properties:
         id:
           type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        statement:
+        description:
+          type: string
+    UserCreation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: a unique identifier for the user.
+        invite_user:
+          type: boolean
+      required:
+      - id
+    UserList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/Statement'
-          minItems: 1
+            $ref: '#/components/schemas/User'
     CredentialsList:
       type: object
       required:
@@ -1372,22 +1354,42 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Credentials'
-    ErrorNoACL:
+    AuthenticationToken:
       type: object
       required:
-      - message
+      - token
       properties:
-        message:
-          description: short message explaining the error
+        token:
+          description: a JWT token that could be used to authenticate requests
           type: string
-        no_acl:
-          description: true if the group exists but has no ACL
-          type: boolean
-    ExternalPrincipalSettings:
-      type: object
-      additionalProperties:
+        token_expiration:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+  parameters:
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
         type: string
-      description: Additional settings to be consumed by the remote authenticator
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
   securitySchemes:
     basic_auth:
       type: http

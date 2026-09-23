@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions healthCheck API
+  title: lakeFS Health Check API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,18 +16,20 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: healthCheck
+- name: Health Check
 paths:
   /healthcheck:
     get:
       operationId: healthCheck
       security: []
       tags:
-      - healthCheck
+      - Health Check
       description: check that the API server is up and running
       responses:
         204:
           description: NoContent
+      summary: Health check
+      x-summary-source: derived
 components:
   securitySchemes:
     basic_auth:

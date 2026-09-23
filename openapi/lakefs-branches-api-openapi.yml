@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions branches API
+  title: lakeFS Branches API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,7 +16,7 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: branches
+- name: Branches
 paths:
   /repositories/{repository}/branches:
     parameters:
@@ -27,7 +27,7 @@ paths:
         type: string
     get:
       tags:
-      - branches
+      - Branches
       operationId: listBranches
       summary: list branches
       parameters:
@@ -59,7 +59,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - branches
+      - Branches
       operationId: createBranch
       summary: create branch
       requestBody:
@@ -103,7 +103,7 @@ paths:
         type: string
     get:
       tags:
-      - branches
+      - Branches
       operationId: getBranch
       summary: get branch
       responses:
@@ -125,7 +125,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - branches
+      - Branches
       operationId: deleteBranch
       summary: delete branch
       parameters:
@@ -152,7 +152,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     put:
       tags:
-      - branches
+      - Branches
       operationId: resetBranch
       summary: reset branch
       requestBody:
@@ -190,7 +190,7 @@ paths:
         type: string
     post:
       tags:
-      - branches
+      - Branches
       operationId: revertBranch
       summary: revert
       requestBody:
@@ -234,7 +234,7 @@ paths:
         type: string
     post:
       tags:
-      - branches
+      - Branches
       operationId: cherryPick
       summary: Replay the changes from the given commit on the branch
       requestBody:
@@ -286,7 +286,7 @@ paths:
         type: string
     get:
       tags:
-      - branches
+      - Branches
       operationId: diffBranch
       summary: diff branch
       responses:
@@ -308,14 +308,8 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -326,8 +320,26 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Conflict:
       description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -338,59 +350,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Diff:
-      type: object
-      required:
-      - type
-      - path
-      - path_type
-      properties:
-        type:
-          type: string
-          enum:
-          - added
-          - removed
-          - changed
-          - conflict
-          - prefix_changed
-        path:
-          type: string
-        path_type:
-          type: string
-          enum:
-          - common_prefix
-          - object
-        size_bytes:
-          type: integer
-          description: represents the size of the added/changed/deleted entry
-          format: int64
-        right:
-          $ref: '#/components/schemas/DiffObjectStat'
-          description: ObjectStats of the right side of the diff.
-    CommitOverrides:
-      type: object
-      properties:
-        message:
-          type: string
-          description: replace the commit message
-        metadata:
-          type: object
-          description: replace the metadata of the commit
-          additionalProperties:
-            type: string
     ResetCreation:
       type: object
       required:
@@ -408,10 +368,27 @@ components:
         force:
           type: boolean
           default: false
-    ObjectUserMetadata:
+    RevertCreation:
       type: object
-      additionalProperties:
-        type: string
+      required:
+      - parent_number
+      - ref
+      properties:
+        ref:
+          type: string
+          description: the commit to revert, given by a ref
+        commit_overrides:
+          $ref: '#/components/schemas/CommitOverrides'
+        parent_number:
+          type: integer
+          description: when reverting a merge commit, the parent number (starting from 1) relative to which to perform the revert.
+        force:
+          type: boolean
+          default: false
+        allow_empty:
+          type: boolean
+          default: false
+          description: allow empty commit (revert without changes)
     DiffList:
       type: object
       required:
@@ -424,35 +401,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Diff'
-    RefList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ref'
-    BranchCreation:
-      type: object
-      required:
-      - name
-      - source
-      properties:
-        name:
-          type: string
-        source:
-          type: string
-        force:
-          type: boolean
-          default: false
-        hidden:
-          type: boolean
-          description: When set, branch will not show up when listing branches by default. *EXPERIMENTAL*
-          default: false
     Pagination:
       type: object
       required:
@@ -483,55 +431,6 @@ components:
         message:
           description: short message explaining the error
           type: string
-    DiffObjectStat:
-      type: object
-      required:
-      - checksum
-      - mtime
-      - content_type
-      properties:
-        checksum:
-          type: string
-        mtime:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        content_type:
-          type: string
-          description: Object media type
-        metadata:
-          $ref: '#/components/schemas/ObjectUserMetadata'
-    Ref:
-      type: object
-      required:
-      - id
-      - commit_id
-      properties:
-        id:
-          type: string
-        commit_id:
-          type: string
-    RevertCreation:
-      type: object
-      required:
-      - parent_number
-      - ref
-      properties:
-        ref:
-          type: string
-          description: the commit to revert, given by a ref
-        commit_overrides:
-          $ref: '#/components/schemas/CommitOverrides'
-        parent_number:
-          type: integer
-          description: when reverting a merge commit, the parent number (starting from 1) relative to which to perform the revert.
-        force:
-          type: boolean
-          default: false
-        allow_empty:
-          type: boolean
-          default: false
-          description: allow empty commit (revert without changes)
     Commit:
       type: object
       required:
@@ -589,12 +488,113 @@ components:
         force:
           type: boolean
           default: false
+    RefList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ref'
+    CommitOverrides:
+      type: object
+      properties:
+        message:
+          type: string
+          description: replace the commit message
+        metadata:
+          type: object
+          description: replace the metadata of the commit
+          additionalProperties:
+            type: string
+    BranchCreation:
+      type: object
+      required:
+      - name
+      - source
+      properties:
+        name:
+          type: string
+        source:
+          type: string
+        force:
+          type: boolean
+          default: false
+        hidden:
+          type: boolean
+          description: When set, branch will not show up when listing branches by default. *EXPERIMENTAL*
+          default: false
+    DiffObjectStat:
+      type: object
+      required:
+      - checksum
+      - mtime
+      - content_type
+      properties:
+        checksum:
+          type: string
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        content_type:
+          type: string
+          description: Object media type
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    Diff:
+      type: object
+      required:
+      - type
+      - path
+      - path_type
+      properties:
+        type:
+          type: string
+          enum:
+          - added
+          - removed
+          - changed
+          - conflict
+          - prefix_changed
+        path:
+          type: string
+        path_type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+        size_bytes:
+          type: integer
+          description: represents the size of the added/changed/deleted entry
+          format: int64
+        right:
+          $ref: '#/components/schemas/DiffObjectStat'
+          description: ObjectStats of the right side of the diff.
+    Ref:
+      type: object
+      required:
+      - id
+      - commit_id
+      properties:
+        id:
+          type: string
+        commit_id:
+          type: string
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
   parameters:
-    PaginationAfter:
+    PaginationPrefix:
       in: query
-      name: after
-      description: return items after this value
+      name: prefix
       allowEmptyValue: true
+      description: return items prefixed with this value
       schema:
         type: string
     PaginationDelimiter:
@@ -613,11 +613,11 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
-    PaginationPrefix:
+    PaginationAfter:
       in: query
-      name: prefix
+      name: after
+      description: return items after this value
       allowEmptyValue: true
-      description: return items prefixed with this value
       schema:
         type: string
   securitySchemes:

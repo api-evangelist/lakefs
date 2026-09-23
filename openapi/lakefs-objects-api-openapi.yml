@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions objects API
+  title: lakeFS Objects API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,7 +16,7 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: objects
+- name: Objects
 paths:
   /repositories/{repository}/refs/{ref}/objects:
     parameters:
@@ -39,7 +39,7 @@ paths:
         type: string
     get:
       tags:
-      - objects
+      - Objects
       operationId: getObject
       summary: get object content
       parameters:
@@ -136,7 +136,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     head:
       tags:
-      - objects
+      - Objects
       operationId: headObject
       summary: check if object exists
       parameters:
@@ -213,7 +213,7 @@ paths:
         type: string
     post:
       tags:
-      - objects
+      - Objects
       operationId: uploadObject
       x-validation-exclude-body: true
       requestBody:
@@ -269,11 +269,13 @@ paths:
           $ref: '#/components/responses/NotImplemented'
         default:
           $ref: '#/components/responses/ServerError'
+      summary: Upload object
+      x-summary-source: derived
     delete:
       tags:
-      - objects
+      - Objects
       operationId: deleteObject
-      summary: delete object. Missing objects will not return a NotFound error.
+      summary: delete object. Missing objects will not return a NotFound error
       parameters:
       - in: query
         name: force
@@ -318,9 +320,9 @@ paths:
     - $ref: '#/components/parameters/NoTombstone'
     post:
       tags:
-      - objects
+      - Objects
       operationId: deleteObjects
-      summary: delete objects. Missing objects will not return a NotFound error.
+      summary: delete objects. Missing objects will not return a NotFound error
       requestBody:
         required: true
         content:
@@ -367,7 +369,7 @@ paths:
         type: string
     post:
       tags:
-      - objects
+      - Objects
       operationId: copyObject
       summary: create a copy of an object
       requestBody:
@@ -427,7 +429,7 @@ paths:
         type: boolean
     get:
       tags:
-      - objects
+      - Objects
       operationId: statObject
       summary: get object metadata
       responses:
@@ -470,7 +472,7 @@ paths:
         type: string
     put:
       tags:
-      - objects
+      - Objects
       operationId: updateObjectUserMetadata
       summary: rewrite (all) object metadata
       requestBody:
@@ -513,7 +515,7 @@ paths:
         type: string
     get:
       tags:
-      - objects
+      - Objects
       operationId: getUnderlyingProperties
       summary: get object properties on underlying storage
       responses:
@@ -563,7 +565,7 @@ paths:
     - $ref: '#/components/parameters/PaginationPrefix'
     get:
       tags:
-      - objects
+      - Objects
       operationId: listObjects
       summary: list objects under a given prefix
       responses:
@@ -584,45 +586,64 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
+  parameters:
+    IfMatch:
+      in: header
+      name: If-Match
+      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
+      example: 2e9ec317e197e02e4264d128c2e7e681
+      required: false
+      schema:
+        type: string
+    IfNoneMatch:
+      in: header
+      name: If-None-Match
+      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
+      example: '*'
+      required: false
+      schema:
+        type: string
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    NoTombstone:
+      in: query
+      name: no_tombstone
+      required: false
+      schema:
+        type: boolean
+        default: false
+      description: delete entry without tombstone when possible *EXPERIMENTAL*
   responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotImplemented:
-      description: Not Implemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     PreconditionFailed:
       description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
       content:
         application/json:
           schema:
@@ -633,13 +654,43 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    UnderlyingObjectProperties:
-      type: object
-      properties:
-        storage_class:
-          type: string
-          nullable: true
     ObjectStats:
       type: object
       required:
@@ -719,30 +770,15 @@ components:
           description: "Create a shallow copy of the object (without copying the actual data). At the moment shallow copy only works for same repository and branch. \nPlease note that shallow copied objects might be in contention with garbage collection and branch retention policies - use with caution.\n"
           type: boolean
           default: false
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
-    ObjectStatsList:
+    ObjectErrorList:
       type: object
       required:
-      - pagination
-      - results
+      - errors
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/ObjectStats'
-    UpdateObjectUserMetadata:
-      type: object
-      required:
-      - set
-      properties:
-        set:
-          description: Set this object user metadata
-          $ref: '#/components/schemas/ObjectUserMetadata'
+            $ref: '#/components/schemas/ObjectError'
     Pagination:
       type: object
       required:
@@ -773,15 +809,18 @@ components:
         message:
           description: short message explaining the error
           type: string
-    ObjectErrorList:
+    ObjectStatsList:
       type: object
       required:
-      - errors
+      - pagination
+      - results
       properties:
-        errors:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/ObjectError'
+            $ref: '#/components/schemas/ObjectStats'
     ObjectError:
       type: object
       required:
@@ -797,6 +836,13 @@ components:
         path:
           type: string
           description: affected path
+    UnderlyingObjectProperties:
+      type: object
+      properties:
+        storage_class:
+          type:
+          - string
+          - 'null'
     PathList:
       type: object
       required:
@@ -807,60 +853,17 @@ components:
           items:
             type: string
             description: Object path
-  parameters:
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    PaginationDelimiter:
-      in: query
-      name: delimiter
-      allowEmptyValue: true
-      description: delimiter used to group common prefixes by
-      schema:
-        type: string
-    IfNoneMatch:
-      in: header
-      name: If-None-Match
-      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
-      example: '*'
-      required: false
-      schema:
-        type: string
-    NoTombstone:
-      in: query
-      name: no_tombstone
-      required: false
-      schema:
-        type: boolean
-        default: false
-      description: delete entry without tombstone when possible *EXPERIMENTAL*
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    IfMatch:
-      in: header
-      name: If-Match
-      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
-      example: 2e9ec317e197e02e4264d128c2e7e681
-      required: false
-      schema:
-        type: string
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
+    UpdateObjectUserMetadata:
+      type: object
+      required:
+      - set
+      properties:
+        set:
+          description: Set this object user metadata
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
         type: string
   securitySchemes:
     basic_auth:

@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions experimental API
+  title: lakeFS Experimental API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,12 +16,12 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: experimental
+- name: Experimental
 paths:
   /auth/external/principal/login:
     post:
       tags:
-      - experimental
+      - Experimental
       operationId: externalPrincipalLogin
       summary: perform a login using an external authenticator
       security: []
@@ -52,7 +52,7 @@ paths:
   /sts/login:
     post:
       tags:
-      - experimental
+      - Experimental
       operationId: stsLogin
       summary: perform a login with STS
       security: []
@@ -91,7 +91,7 @@ paths:
         type: string
     post:
       tags:
-      - experimental
+      - Experimental
       operationId: createUserExternalPrincipal
       summary: attach external principal to user
       requestBody:
@@ -117,7 +117,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - experimental
+      - Experimental
       operationId: deleteUserExternalPrincipal
       summary: delete external principal from user
       responses:
@@ -142,7 +142,7 @@ paths:
         type: string
     get:
       tags:
-      - experimental
+      - Experimental
       parameters:
       - $ref: '#/components/parameters/PaginationPrefix'
       - $ref: '#/components/parameters/PaginationAfter'
@@ -175,7 +175,7 @@ paths:
         type: string
     get:
       tags:
-      - experimental
+      - Experimental
       operationId: getExternalPrincipal
       summary: describe external principal by id
       responses:
@@ -209,10 +209,10 @@ paths:
         type: string
     put:
       tags:
-      - experimental
+      - Experimental
       operationId: hardResetBranch
       summary: hard reset branch
-      description: Relocate branch to refer to ref.  Branch must not contain uncommitted data.
+      description: Relocate branch to refer to ref. Branch must not contain uncommitted data.
       parameters:
       - in: query
         name: ref
@@ -266,16 +266,14 @@ paths:
         type: integer
     post:
       tags:
-      - experimental
+      - Experimental
       operationId: createPresignMultipartUpload
       summary: Initiate a multipart upload
       description: 'Initiates a multipart upload and returns an upload ID with presigned URLs for each part (optional).
 
         Part numbers starts with 1. Each part except the last one has minimum size depends on the underlying blockstore implementation.
 
-        For example working with S3 blockstore, minimum size is 5MB (excluding the last part).
-
-        '
+        For example working with S3 blockstore, minimum size is 5MB (excluding the last part).'
       responses:
         201:
           description: Presign multipart upload initiated
@@ -318,7 +316,7 @@ paths:
         type: string
     put:
       tags:
-      - experimental
+      - Experimental
       operationId: completePresignMultipartUpload
       summary: Complete a presign multipart upload request
       description: Completes a presign multipart upload by assembling the uploaded parts.
@@ -352,7 +350,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     delete:
       tags:
-      - experimental
+      - Experimental
       operationId: abortPresignMultipartUpload
       summary: Abort a presign multipart upload
       description: Aborts a presign multipart upload.
@@ -405,7 +403,7 @@ paths:
         minimum: 1
     put:
       tags:
-      - experimental
+      - Experimental
       operationId: uploadPart
       description: Return a presigned URL to upload into a presigned multipart upload.
       requestBody:
@@ -431,6 +429,8 @@ paths:
           description: too many requests
         default:
           $ref: '#/components/responses/ServerError'
+      summary: Upload part
+      x-summary-source: derived
   /repositories/{repository}/branches/{branch}/staging/pmpu/{uploadId}/parts/{partNumber}/copy:
     parameters:
     - in: path
@@ -462,7 +462,7 @@ paths:
         minimum: 1
     put:
       tags:
-      - experimental
+      - Experimental
       operationId: uploadPartCopy
       description: Upload a part by copying part of another object.
       requestBody:
@@ -489,6 +489,8 @@ paths:
           description: too many requests
         default:
           $ref: '#/components/responses/ServerError'
+      summary: Upload part copy
+      x-summary-source: derived
   /repositories/{repository}/branches/{branch}/objects/stat/user_metadata:
     parameters:
     - in: path
@@ -510,7 +512,7 @@ paths:
         type: string
     put:
       tags:
-      - experimental
+      - Experimental
       operationId: updateObjectUserMetadata
       summary: rewrite (all) object metadata
       requestBody:
@@ -541,7 +543,7 @@ paths:
         type: string
     get:
       tags:
-      - experimental
+      - Experimental
       operationId: listPullRequests
       summary: list pull requests
       parameters:
@@ -577,7 +579,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - experimental
+      - Experimental
       operationId: createPullRequest
       summary: create pull request
       requestBody:
@@ -622,7 +624,7 @@ paths:
         type: string
     get:
       tags:
-      - experimental
+      - Experimental
       operationId: getPullRequest
       summary: get pull request
       responses:
@@ -644,7 +646,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     patch:
       tags:
-      - experimental
+      - Experimental
       operationId: updatePullRequest
       summary: update pull request
       requestBody:
@@ -683,7 +685,7 @@ paths:
         type: string
     put:
       tags:
-      - experimental
+      - Experimental
       operationId: mergePullRequest
       summary: merge pull request
       responses:
@@ -723,14 +725,8 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -741,8 +737,26 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Conflict:
       description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -753,65 +767,63 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    StagingLocation:
-      type: object
-      description: location for placing an object when staging it
-      properties:
-        physical_address:
-          type: string
-        presigned_url:
-          type: string
-          nullable: true
-          description: if presign=true is passed in the request, this field will contain a pre-signed URL to use when uploading
-        presigned_url_expiry:
-          type: integer
-          format: int64
-          description: 'If present and nonzero, physical_address is a pre-signed URL and
-
-            will expire at this Unix Epoch time.  This will be shorter than
-
-            the pre-signed URL lifetime if an authentication token is about
-
-            to expire.
-
-
-            This field is *optional*.
-
-            '
-    StsAuthRequest:
+    ExternalPrincipalList:
       type: object
       required:
-      - code
-      - state
-      - redirect_uri
+      - pagination
+      - results
       properties:
-        code:
-          type: string
-        state:
-          type: string
-        redirect_uri:
-          type: string
-        ttl_seconds:
-          type: integer
-          format: int64
-          description: 'The time-to-live for the generated token in seconds.  The default
-
-            value is 3600 seconds (1 hour) maximum time allowed is 12 hours.
-
-            '
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalPrincipal'
+    PullRequestsList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PullRequest'
+    PullRequest:
+      allOf:
+      - $ref: '#/components/schemas/PullRequestBasic'
+      - required:
+        - status
+        - title
+        - description
+      - type: object
+        required:
+        - id
+        - creation_date
+        - author
+        - source_branch
+        - destination_branch
+        properties:
+          id:
+            type: string
+          creation_date:
+            type: string
+            format: date-time
+          author:
+            type: string
+          source_branch:
+            type: string
+          destination_branch:
+            type: string
+          merged_commit_id:
+            type: string
+            description: the commit id of merged PRs
+          closed_date:
+            type: string
+            format: date-time
     ObjectStats:
       type: object
       required:
@@ -873,118 +885,64 @@ components:
         content_type:
           type: string
           description: Object media type
-    ExternalPrincipal:
+    PullRequestCreationResponse:
       type: object
       required:
-      - user_id
       - id
       properties:
         id:
           type: string
-          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
-        user_id:
-          type: string
-          description: 'lakeFS user ID to associate with an external principal.
-
-            '
-        settings:
-          type: object
-          items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
-    AbortPresignMultipartUpload:
-      type: object
-      properties:
-        physical_address:
-          type: string
-      required:
-      - physical_address
-    PullRequest:
-      allOf:
-      - $ref: '#/components/schemas/PullRequestBasic'
-      - required:
-        - status
-        - title
-        - description
-      - type: object
-        required:
-        - id
-        - creation_date
-        - author
-        - source_branch
-        - destination_branch
-        properties:
-          id:
-            type: string
-          creation_date:
-            type: string
-            format: date-time
-          author:
-            type: string
-          source_branch:
-            type: string
-          destination_branch:
-            type: string
-          merged_commit_id:
-            type: string
-            description: the commit id of merged PRs
-          closed_date:
-            type: string
-            format: date-time
-    PullRequestsList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PullRequest'
-    ObjectUserMetadata:
+          description: ID of the pull request
+    ExternalPrincipalSettings:
       type: object
       additionalProperties:
         type: string
-    CopyPartSource:
+      description: Additional settings to be consumed by the remote authenticator
+    UploadTo:
       type: object
       properties:
-        repository:
+        presigned_url:
           type: string
-        ref:
-          type: string
-        path:
-          type: string
-        range:
-          description: Range of bytes to copy
-          type: string
-          pattern: ^bytes=((\d*-\d*,? ?)+)$
       required:
-      - repository
-      - ref
-      - path
-    UpdateObjectUserMetadata:
-      type: object
-      required:
-      - set
-      properties:
-        set:
-          description: Set this object user metadata
-          $ref: '#/components/schemas/ObjectUserMetadata'
-    PresignMultipartUpload:
+      - presigned_url
+    UploadPart:
       type: object
       properties:
-        upload_id:
+        part_number:
+          type: integer
+        etag:
           type: string
-        physical_address:
-          type: string
-        presigned_urls:
-          type: array
-          items:
-            type: string
       required:
-      - upload_id
-      - physical_address
+      - part_number
+      - etag
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
+          type: string
+    StsAuthRequest:
+      type: object
+      required:
+      - code
+      - state
+      - redirect_uri
+      properties:
+        code:
+          type: string
+        state:
+          type: string
+        redirect_uri:
+          type: string
+        ttl_seconds:
+          type: integer
+          format: int64
+          description: 'The time-to-live for the generated token in seconds.  The default
+
+            value is 3600 seconds (1 hour) maximum time allowed is 12 hours.
+
+            '
     Pagination:
       type: object
       required:
@@ -1007,13 +965,6 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
-    ExternalPrincipalCreation:
-      type: object
-      properties:
-        settings:
-          type: object
-          items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
     Error:
       type: object
       required:
@@ -1022,126 +973,6 @@ components:
         message:
           description: short message explaining the error
           type: string
-    MergeResult:
-      type: object
-      required:
-      - reference
-      properties:
-        reference:
-          type: string
-    PullRequestBasic:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - open
-          - closed
-          - merged
-        title:
-          type: string
-        description:
-          type: string
-    ExternalPrincipalList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExternalPrincipal'
-    PullRequestCreationResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: ID of the pull request
-    AuthenticationToken:
-      type: object
-      required:
-      - token
-      properties:
-        token:
-          description: a JWT token that could be used to authenticate requests
-          type: string
-        token_expiration:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-    ExternalLoginInformation:
-      type: object
-      required:
-      - identityRequest
-      properties:
-        token_expiration_duration:
-          type: integer
-        identityRequest:
-          type: object
-    UploadPartFrom:
-      type: object
-      properties:
-        physical_address:
-          description: 'The physical address (of the entire intended object) returned from
-
-            createPresignMultipartUpload.
-
-            '
-          type: string
-      required:
-      - physical_address
-    PullRequestCreation:
-      type: object
-      required:
-      - title
-      - source_branch
-      - destination_branch
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        source_branch:
-          type: string
-        destination_branch:
-          type: string
-    UploadPart:
-      type: object
-      properties:
-        part_number:
-          type: integer
-        etag:
-          type: string
-      required:
-      - part_number
-      - etag
-    UploadPartCopyFrom:
-      allOf:
-      - $ref: '#/components/schemas/UploadPartFrom'
-      - type: object
-        properties:
-          copy_source:
-            description: Source of copy
-            $ref: '#/components/schemas/CopyPartSource'
-        required:
-        - copy_source
-    ExternalPrincipalSettings:
-      type: object
-      additionalProperties:
-        type: string
-      description: Additional settings to be consumed by the remote authenticator
-    UploadTo:
-      type: object
-      properties:
-        presigned_url:
-          type: string
-      required:
-      - presigned_url
     CompletePresignMultipartUpload:
       type: object
       properties:
@@ -1162,12 +993,184 @@ components:
       required:
       - physical_address
       - parts
+    PullRequestBasic:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - open
+          - closed
+          - merged
+        title:
+          type: string
+        description:
+          type: string
+    ExternalLoginInformation:
+      type: object
+      required:
+      - identityRequest
+      properties:
+        token_expiration_duration:
+          type: integer
+        identityRequest:
+          type: object
+    StagingLocation:
+      type: object
+      description: location for placing an object when staging it
+      properties:
+        physical_address:
+          type: string
+        presigned_url:
+          type:
+          - string
+          - 'null'
+          description: if presign=true is passed in the request, this field will contain a pre-signed URL to use when uploading
+        presigned_url_expiry:
+          type: integer
+          format: int64
+          description: 'If present and nonzero, physical_address is a pre-signed URL and
+
+            will expire at this Unix Epoch time.  This will be shorter than
+
+            the pre-signed URL lifetime if an authentication token is about
+
+            to expire.
+
+
+            This field is *optional*.
+
+            '
+    UploadPartFrom:
+      type: object
+      properties:
+        physical_address:
+          description: 'The physical address (of the entire intended object) returned from
+
+            createPresignMultipartUpload.
+
+            '
+          type: string
+      required:
+      - physical_address
+    PresignMultipartUpload:
+      type: object
+      properties:
+        upload_id:
+          type: string
+        physical_address:
+          type: string
+        presigned_urls:
+          type: array
+          items:
+            type: string
+      required:
+      - upload_id
+      - physical_address
+    CopyPartSource:
+      type: object
+      properties:
+        repository:
+          type: string
+        ref:
+          type: string
+        path:
+          type: string
+        range:
+          description: Range of bytes to copy
+          type: string
+          pattern: ^bytes=((\d*-\d*,? ?)+)$
+      required:
+      - repository
+      - ref
+      - path
+    ExternalPrincipal:
+      type: object
+      required:
+      - user_id
+      - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
+        user_id:
+          type: string
+          description: 'lakeFS user ID to associate with an external principal.
+
+            '
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    ExternalPrincipalCreation:
+      type: object
+      properties:
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    UpdateObjectUserMetadata:
+      type: object
+      required:
+      - set
+      properties:
+        set:
+          description: Set this object user metadata
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    UploadPartCopyFrom:
+      allOf:
+      - $ref: '#/components/schemas/UploadPartFrom'
+      - type: object
+        properties:
+          copy_source:
+            description: Source of copy
+            $ref: '#/components/schemas/CopyPartSource'
+        required:
+        - copy_source
+    PullRequestCreation:
+      type: object
+      required:
+      - title
+      - source_branch
+      - destination_branch
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        source_branch:
+          type: string
+        destination_branch:
+          type: string
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    AuthenticationToken:
+      type: object
+      required:
+      - token
+      properties:
+        token:
+          description: a JWT token that could be used to authenticate requests
+          type: string
+        token_expiration:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    AbortPresignMultipartUpload:
+      type: object
+      properties:
+        physical_address:
+          type: string
+      required:
+      - physical_address
   parameters:
-    PaginationAfter:
+    PaginationPrefix:
       in: query
-      name: after
-      description: return items after this value
+      name: prefix
       allowEmptyValue: true
+      description: return items prefixed with this value
       schema:
         type: string
     PaginationAmount:
@@ -1179,11 +1182,11 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
-    PaginationPrefix:
+    PaginationAfter:
       in: query
-      name: prefix
+      name: after
+      description: return items after this value
       allowEmptyValue: true
-      description: return items prefixed with this value
       schema:
         type: string
   securitySchemes:

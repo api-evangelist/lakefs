@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions refs API
+  title: lakeFS Refs API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,7 +16,7 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: refs
+- name: Refs
 paths:
   /repositories/{repository}/refs/{ref}/commits:
     parameters:
@@ -32,9 +32,9 @@ paths:
         type: string
     get:
       tags:
-      - refs
+      - Refs
       operationId: logCommits
-      summary: get commit log from ref. If both objects and prefixes are empty, return all commits.
+      summary: get commit log from ref.
       parameters:
       - $ref: '#/components/parameters/PaginationAfter'
       - $ref: '#/components/parameters/PaginationAmount'
@@ -113,7 +113,7 @@ paths:
       description: destination branch name
     post:
       tags:
-      - refs
+      - Refs
       operationId: mergeIntoBranch
       summary: merge references
       requestBody:
@@ -158,7 +158,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     get:
       tags:
-      - refs
+      - Refs
       operationId: findMergeBase
       summary: find the merge base for 2 references
       responses:
@@ -218,7 +218,7 @@ paths:
         default: false
     get:
       tags:
-      - refs
+      - Refs
       operationId: diffRefs
       summary: diff references
       responses:
@@ -240,6 +240,24 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Forbidden:
       description: Forbidden
       content:
@@ -252,64 +270,51 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     ValidationError:
       description: Validation Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  parameters:
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
   schemas:
-    Diff:
+    MergeResult:
       type: object
       required:
-      - type
-      - path
-      - path_type
+      - reference
       properties:
-        type:
+        reference:
           type: string
-          enum:
-          - added
-          - removed
-          - changed
-          - conflict
-          - prefix_changed
-        path:
-          type: string
-        path_type:
-          type: string
-          enum:
-          - common_prefix
-          - object
-        size_bytes:
-          type: integer
-          description: represents the size of the added/changed/deleted entry
-          format: int64
-        right:
-          $ref: '#/components/schemas/DiffObjectStat'
-          description: ObjectStats of the right side of the diff.
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
     DiffList:
       type: object
       required:
@@ -352,31 +357,18 @@ components:
         message:
           description: short message explaining the error
           type: string
-    MergeResult:
+    CommitList:
       type: object
       required:
-      - reference
+      - pagination
+      - results
       properties:
-        reference:
-          type: string
-    DiffObjectStat:
-      type: object
-      required:
-      - checksum
-      - mtime
-      - content_type
-      properties:
-        checksum:
-          type: string
-        mtime:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        content_type:
-          type: string
-          description: Object media type
-        metadata:
-          $ref: '#/components/schemas/ObjectUserMetadata'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Commit'
     Merge:
       type: object
       properties:
@@ -411,18 +403,6 @@ components:
             merge --squash; git commit ...''.
 
             '
-    CommitList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Commit'
     FindMergeBaseResult:
       type: object
       required:
@@ -476,36 +456,56 @@ components:
           type: integer
           minimum: 0
           maximum: 1
-  parameters:
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    PaginationDelimiter:
-      in: query
-      name: delimiter
-      allowEmptyValue: true
-      description: delimiter used to group common prefixes by
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
+    DiffObjectStat:
+      type: object
+      required:
+      - checksum
+      - mtime
+      - content_type
+      properties:
+        checksum:
+          type: string
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        content_type:
+          type: string
+          description: Object media type
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    Diff:
+      type: object
+      required:
+      - type
+      - path
+      - path_type
+      properties:
+        type:
+          type: string
+          enum:
+          - added
+          - removed
+          - changed
+          - conflict
+          - prefix_changed
+        path:
+          type: string
+        path_type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+        size_bytes:
+          type: integer
+          description: represents the size of the added/changed/deleted entry
+          format: int64
+        right:
+          $ref: '#/components/schemas/DiffObjectStat'
+          description: ObjectStats of the right side of the diff.
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
         type: string
   securitySchemes:
     basic_auth:

@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   description: lakeFS HTTP API
-  title: lakeFS actions pulls API
+  title: lakeFS Pulls API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
@@ -16,7 +16,7 @@ security:
 - oidc_auth: []
 - saml_auth: []
 tags:
-- name: pulls
+- name: Pulls
 paths:
   /repositories/{repository}/pulls:
     parameters:
@@ -27,7 +27,7 @@ paths:
         type: string
     get:
       tags:
-      - pulls
+      - Pulls
       operationId: listPullRequests
       summary: list pull requests
       parameters:
@@ -63,7 +63,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     post:
       tags:
-      - pulls
+      - Pulls
       operationId: createPullRequest
       summary: create pull request
       requestBody:
@@ -108,7 +108,7 @@ paths:
         type: string
     get:
       tags:
-      - pulls
+      - Pulls
       operationId: getPullRequest
       summary: get pull request
       responses:
@@ -130,7 +130,7 @@ paths:
           $ref: '#/components/responses/ServerError'
     patch:
       tags:
-      - pulls
+      - Pulls
       operationId: updatePullRequest
       summary: update pull request
       requestBody:
@@ -169,7 +169,7 @@ paths:
         type: string
     put:
       tags:
-      - pulls
+      - Pulls
       operationId: mergePullRequest
       summary: merge pull request
       responses:
@@ -209,38 +209,8 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
       content:
         application/json:
           schema:
@@ -251,7 +221,80 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    PullRequestBasic:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - open
+          - closed
+          - merged
+        title:
+          type: string
+        description:
+          type: string
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     PullRequest:
       allOf:
       - $ref: '#/components/schemas/PullRequestBasic'
@@ -296,26 +339,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PullRequest'
-    MergeResult:
-      type: object
-      required:
-      - reference
-      properties:
-        reference:
-          type: string
-    PullRequestBasic:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - open
-          - closed
-          - merged
-        title:
-          type: string
-        description:
-          type: string
     PullRequestCreationResponse:
       type: object
       required:
@@ -324,28 +347,6 @@ components:
         id:
           type: string
           description: ID of the pull request
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
     PullRequestCreation:
       type: object
       required:
@@ -361,29 +362,14 @@ components:
           type: string
         destination_branch:
           type: string
-    Error:
+    MergeResult:
       type: object
       required:
-      - message
+      - reference
       properties:
-        message:
-          description: short message explaining the error
+        reference:
           type: string
   parameters:
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
-        type: string
     PaginationAmount:
       in: query
       name: amount
@@ -393,6 +379,20 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
   securitySchemes:
     basic_auth:
       type: http

@@ -1,23 +1,7 @@
 {
   "provider": "lakefs",
   "sources": [
-    "lakefs-actions-api-openapi.yml",
-    "lakefs-auth-api-openapi.yml",
-    "lakefs-branches-api-openapi.yml",
-    "lakefs-commits-api-openapi.yml",
-    "lakefs-config-api-openapi.yml",
-    "lakefs-experimental-api-openapi.yml",
-    "lakefs-external-api-openapi.yml",
-    "lakefs-healthcheck-api-openapi.yml",
-    "lakefs-import-api-openapi.yml",
-    "lakefs-internal-api-openapi.yml",
-    "lakefs-metadata-api-openapi.yml",
-    "lakefs-objects-api-openapi.yml",
-    "lakefs-pulls-api-openapi.yml",
-    "lakefs-refs-api-openapi.yml",
-    "lakefs-repositories-api-openapi.yml",
-    "lakefs-staging-api-openapi.yml",
-    "lakefs-tags-api-openapi.yml"
+    "_original/lakefs-openapi.yml"
   ],
   "outputs": [
     "lakefs-actions-api-openapi.yml",
@@ -41,6 +25,45 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "lakefs-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "lakefs-openapi.yml: declared missing tag: actions",
+    "lakefs-openapi.yml: declared missing tag: auth",
+    "lakefs-openapi.yml: declared missing tag: branches",
+    "lakefs-openapi.yml: declared missing tag: commits",
+    "lakefs-openapi.yml: declared missing tag: config",
+    "lakefs-openapi.yml: declared missing tag: experimental",
+    "lakefs-openapi.yml: declared missing tag: external",
+    "lakefs-openapi.yml: declared missing tag: healthCheck",
+    "lakefs-openapi.yml: declared missing tag: import",
+    "lakefs-openapi.yml: declared missing tag: internal",
+    "lakefs-openapi.yml: declared missing tag: metadata",
+    "lakefs-openapi.yml: declared missing tag: objects",
+    "lakefs-openapi.yml: declared missing tag: pulls",
+    "lakefs-openapi.yml: declared missing tag: refs",
+    "lakefs-openapi.yml: declared missing tag: repositories",
+    "lakefs-openapi.yml: declared missing tag: staging",
+    "lakefs-openapi.yml: declared missing tag: tags",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "lakefs-actions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-auth-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-branches-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-commits-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-config-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-experimental-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-external-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-healthcheck-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-import-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-internal-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-metadata-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-objects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-pulls-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-refs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-repositories-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-staging-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-tags-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
