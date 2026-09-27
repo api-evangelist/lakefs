@@ -107,36 +107,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     Forbidden:
       description: Forbidden
       content:
@@ -155,7 +125,59 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    CommitCreation:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        date:
+          description: set date to override creation date in the commit (Unix Epoch in seconds)
+          type: integer
+          format: int64
+        allow_empty:
+          description: sets whether a commit can contain no changes
+          type: boolean
+          default: false
+        force:
+          type: boolean
+          default: false
     Error:
       type: object
       required:
@@ -201,28 +223,6 @@ components:
           type: integer
           minimum: 0
           maximum: 1
-    CommitCreation:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        date:
-          description: set date to override creation date in the commit (Unix Epoch in seconds)
-          type: integer
-          format: int64
-        allow_empty:
-          description: sets whether a commit can contain no changes
-          type: boolean
-          default: false
-        force:
-          type: boolean
-          default: false
   securitySchemes:
     basic_auth:
       type: http

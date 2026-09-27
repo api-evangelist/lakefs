@@ -208,49 +208,6 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Pagination:
       type: object
@@ -274,6 +231,13 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
+          type: string
     PullRequestBasic:
       type: object
       properties:
@@ -286,14 +250,6 @@ components:
         title:
           type: string
         description:
-          type: string
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
           type: string
     PullRequest:
       allOf:
@@ -327,6 +283,14 @@ components:
           closed_date:
             type: string
             format: date-time
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     PullRequestsList:
       type: object
       required:
@@ -339,14 +303,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PullRequest'
-    PullRequestCreationResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: ID of the pull request
     PullRequestCreation:
       type: object
       required:
@@ -362,14 +318,65 @@ components:
           type: string
         destination_branch:
           type: string
-    MergeResult:
+    PullRequestCreationResponse:
       type: object
       required:
-      - reference
+      - id
       properties:
-        reference:
+        id:
           type: string
+          description: ID of the pull request
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
     PaginationAmount:
       in: query
       name: amount
@@ -384,13 +391,6 @@ components:
       name: prefix
       allowEmptyValue: true
       description: return items prefixed with this value
-      schema:
-        type: string
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
       schema:
         type: string
   securitySchemes:

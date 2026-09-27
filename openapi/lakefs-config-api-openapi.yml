@@ -37,17 +37,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    CapabilitiesConfig:
-      type: object
-      properties: {}
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
     Config:
       type: object
       properties:
@@ -61,6 +50,59 @@ components:
           $ref: '#/components/schemas/UIConfig'
         capabilities_config:
           $ref: '#/components/schemas/CapabilitiesConfig'
+    VersionConfig:
+      type: object
+      properties:
+        version:
+          type: string
+        version_context:
+          type: string
+        latest_version:
+          type: string
+        upgrade_recommended:
+          type: boolean
+        upgrade_url:
+          type: string
+    StorageConfigList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StorageConfig'
+    CapabilitiesConfig:
+      type: object
+      properties: {}
+    UIConfig:
+      type: object
+      properties:
+        custom_viewers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomViewer'
+    CustomViewer:
+      type: object
+      required:
+      - name
+      - url
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        extensions:
+          type: array
+          items:
+            type: string
+        content_types:
+          type: array
+          items:
+            type: string
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     StorageConfig:
       type: object
       required:
@@ -94,48 +136,6 @@ components:
           type: string
         blockstore_description:
           type: string
-    CustomViewer:
-      type: object
-      required:
-      - name
-      - url
-      properties:
-        name:
-          type: string
-        url:
-          type: string
-        extensions:
-          type: array
-          items:
-            type: string
-        content_types:
-          type: array
-          items:
-            type: string
-    UIConfig:
-      type: object
-      properties:
-        custom_viewers:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomViewer'
-    VersionConfig:
-      type: object
-      properties:
-        version:
-          type: string
-        version_context:
-          type: string
-        latest_version:
-          type: string
-        upgrade_recommended:
-          type: boolean
-        upgrade_url:
-          type: string
-    StorageConfigList:
-      type: array
-      items:
-        $ref: '#/components/schemas/StorageConfig'
   responses:
     Unauthorized:
       description: Unauthorized

@@ -120,14 +120,32 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    BadRequest:
-      description: Bad Request
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
     Conflict:
       description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -144,116 +162,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    ImportStatus:
-      type: object
-      properties:
-        completed:
-          type: boolean
-        update_time:
-          type: string
-          format: date-time
-        ingested_objects:
-          description: Number of objects processed so far
-          type: integer
-          format: int64
-        metarange_id:
-          type: string
-        commit:
-          $ref: '#/components/schemas/Commit'
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - update_time
-      - completed
-    ImportCreation:
-      type: object
-      required:
-      - paths
-      - commit
-      properties:
-        paths:
-          type: array
-          items:
-            $ref: '#/components/schemas/ImportLocation'
-        commit:
-          $ref: '#/components/schemas/CommitCreation'
-        force:
-          type: boolean
-          default: false
-      example:
-        commit:
-          message: Importing collections from S3
-        paths:
-        - path: s3://my-bucket/production/collections/
-          destination: collections/
-          type: common_prefix
-        - path: s3://my-bucket/production/collections/file1
-          destination: collections/file1
-          type: object
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    Commit:
-      type: object
-      required:
-      - id
-      - parents
-      - committer
-      - message
-      - creation_date
-      - meta_range_id
-      properties:
-        id:
-          type: string
-        parents:
-          type: array
-          items:
-            type: string
-        committer:
-          type: string
-        message:
-          type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        meta_range_id:
-          type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        generation:
-          type: integer
-          format: int64
-        version:
-          type: integer
-          minimum: 0
-          maximum: 1
     ImportCreationResponse:
       type: object
       properties:
@@ -311,6 +220,97 @@ components:
 
             '
           example: collections/
+    Commit:
+      type: object
+      required:
+      - id
+      - parents
+      - committer
+      - message
+      - creation_date
+      - meta_range_id
+      properties:
+        id:
+          type: string
+        parents:
+          type: array
+          items:
+            type: string
+        committer:
+          type: string
+        message:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        meta_range_id:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        generation:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          minimum: 0
+          maximum: 1
+    ImportCreation:
+      type: object
+      required:
+      - paths
+      - commit
+      properties:
+        paths:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportLocation'
+        commit:
+          $ref: '#/components/schemas/CommitCreation'
+        force:
+          type: boolean
+          default: false
+      example:
+        commit:
+          message: Importing collections from S3
+        paths:
+        - path: s3://my-bucket/production/collections/
+          destination: collections/
+          type: common_prefix
+        - path: s3://my-bucket/production/collections/file1
+          destination: collections/file1
+          type: object
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    ImportStatus:
+      type: object
+      properties:
+        completed:
+          type: boolean
+        update_time:
+          type: string
+          format: date-time
+        ingested_objects:
+          description: Number of objects processed so far
+          type: integer
+          format: int64
+        metarange_id:
+          type: string
+        commit:
+          $ref: '#/components/schemas/Commit'
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - update_time
+      - completed
   securitySchemes:
     basic_auth:
       type: http

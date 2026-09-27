@@ -36,19 +36,20 @@ tags:
   - Data Version Control
   - Data Lake
   - Git-like
-  - Open-Source
+  - Open Source
 tags_raw:
   - Data Version Control
   - Data Lake
   - Git-like
   - Open Source
+  - Open-Source
 created: '2025-02-08'
 modified: '2026-05-19'
 url: https://raw.githubusercontent.com/api-evangelist/lakefs/refs/heads/main/apis.yml
 specificationVersion: '0.23'
 apis:
 - aid: lakefs:lakefs-actions-api
-  name: lakeFS actions API
+  name: lakeFS Actions API
   description: The actions API from lakeFS — 4 operation(s) for actions.
   humanURL: https://lakefs.io/
   tags:
@@ -61,7 +62,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-auth-api
-  name: lakeFS auth API
+  name: lakeFS Auth API
   description: The auth API from lakeFS — 23 operation(s) for auth.
   humanURL: https://lakefs.io/
   tags:
@@ -74,7 +75,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-branches-api
-  name: lakeFS branches API
+  name: lakeFS Branches API
   description: The branches API from lakeFS — 5 operation(s) for branches.
   humanURL: https://lakefs.io/
   tags:
@@ -87,7 +88,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-commits-api
-  name: lakeFS commits API
+  name: lakeFS Commits API
   description: The commits API from lakeFS — 2 operation(s) for commits.
   humanURL: https://lakefs.io/
   tags:
@@ -100,7 +101,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-config-api
-  name: lakeFS config API
+  name: lakeFS Config API
   description: The config API from lakeFS — 1 operation(s) for config.
   humanURL: https://lakefs.io/
   tags:
@@ -113,7 +114,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-experimental-api
-  name: lakeFS experimental API
+  name: lakeFS Experimental API
   description: The experimental API from lakeFS — 14 operation(s) for experimental.
   humanURL: https://lakefs.io/
   tags:
@@ -126,7 +127,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-external-api
-  name: lakeFS external API
+  name: lakeFS External API
   description: The external API from lakeFS — 4 operation(s) for external.
   humanURL: https://lakefs.io/
   tags:
@@ -139,7 +140,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-import-api
-  name: lakeFS import API
+  name: lakeFS Import API
   description: The import API from lakeFS — 1 operation(s) for import.
   humanURL: https://lakefs.io/
   tags:
@@ -152,7 +153,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-internal-api
-  name: lakeFS internal API
+  name: lakeFS Internal API
   description: The internal API from lakeFS — 24 operation(s) for internal.
   humanURL: https://lakefs.io/
   tags:
@@ -165,7 +166,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-metadata-api
-  name: lakeFS metadata API
+  name: lakeFS Metadata API
   description: The metadata API from lakeFS — 2 operation(s) for metadata.
   humanURL: https://lakefs.io/
   tags:
@@ -178,7 +179,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-objects-api
-  name: lakeFS objects API
+  name: lakeFS Objects API
   description: The objects API from lakeFS — 8 operation(s) for objects.
   humanURL: https://lakefs.io/
   tags:
@@ -191,7 +192,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-pulls-api
-  name: lakeFS pulls API
+  name: lakeFS Pulls API
   description: The pulls API from lakeFS — 3 operation(s) for pulls.
   humanURL: https://lakefs.io/
   tags:
@@ -204,7 +205,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-refs-api
-  name: lakeFS refs API
+  name: lakeFS Refs API
   description: The refs API from lakeFS — 3 operation(s) for refs.
   humanURL: https://lakefs.io/
   tags:
@@ -217,7 +218,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-repositories-api
-  name: lakeFS repositories API
+  name: lakeFS Repositories API
   description: The repositories API from lakeFS — 7 operation(s) for repositories.
   humanURL: https://lakefs.io/
   tags:
@@ -230,7 +231,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-staging-api
-  name: lakeFS staging API
+  name: lakeFS Staging API
   description: The staging API from lakeFS — 1 operation(s) for staging.
   humanURL: https://lakefs.io/
   tags:
@@ -243,7 +244,7 @@ apis:
   - type: Documentation
     url: https://docs.lakefs.io/
 - aid: lakefs:lakefs-tags-api
-  name: lakeFS tags API
+  name: lakeFS Tags API
   description: The tags API from lakeFS — 2 operation(s) for tags.
   humanURL: https://lakefs.io/
   tags:

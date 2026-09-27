@@ -111,54 +111,7 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    IfMatch:
-      in: header
-      name: If-Match
-      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
-      example: 2e9ec317e197e02e4264d128c2e7e681
-      required: false
-      schema:
-        type: string
-    IfNoneMatch:
-      in: header
-      name: If-None-Match
-      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
-      example: '*'
-      required: false
-      schema:
-        type: string
   responses:
-    PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotImplemented:
-      description: Not Implemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     Forbidden:
       description: Forbidden
       content:
@@ -177,15 +130,41 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
+    ObjectUserMetadata:
       type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
+      additionalProperties:
+        type: string
     ObjectStats:
       type: object
       required:
@@ -303,9 +282,30 @@ components:
       - staging
       - checksum
       - size_bytes
-    ObjectUserMetadata:
+    Error:
       type: object
-      additionalProperties:
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+  parameters:
+    IfMatch:
+      in: header
+      name: If-Match
+      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
+      example: 2e9ec317e197e02e4264d128c2e7e681
+      required: false
+      schema:
+        type: string
+    IfNoneMatch:
+      in: header
+      name: If-None-Match
+      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
+      example: '*'
+      required: false
+      schema:
         type: string
   securitySchemes:
     basic_auth:

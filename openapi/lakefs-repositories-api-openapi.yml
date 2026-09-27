@@ -433,6 +433,18 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Bad Request
       content:
@@ -445,8 +457,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
+    ServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -457,41 +469,123 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     Conflict:
       description: Resource Conflicts With Target
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
+    NotFound:
+      description: Resource Not Found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  parameters:
+    SearchString:
+      in: query
+      name: search
+      allowEmptyValue: true
+      description: string for searching relevant entries
+      schema:
+        type: string
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
   schemas:
-    BranchProtectionRule:
+    RefsDump:
+      type: object
+      required:
+      - branches_meta_range_id
+      - tags_meta_range_id
+      - commits_meta_range_id
+      properties:
+        commits_meta_range_id:
+          type: string
+        tags_meta_range_id:
+          type: string
+        branches_meta_range_id:
+          type: string
+    RepositoryDumpStatus:
+      type: object
+      required:
+      - id
+      - done
+      - update_time
+      properties:
+        id:
+          type: string
+          description: ID of the task
+        done:
+          type: boolean
+        update_time:
+          type: string
+          format: date-time
+        error:
+          type: string
+        refs:
+          $ref: '#/components/schemas/RefsDump'
+    Repository:
+      type: object
+      required:
+      - creation_date
+      - id
+      - default_branch
+      - storage_namespace
+      properties:
+        id:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        default_branch:
+          type: string
+        storage_id:
+          type: string
+          description: Unique identifier of the underlying data store. *EXPERIMENTAL*
+        storage_namespace:
+          type: string
+          description: Filesystem URI to store the underlying data in (e.g. "s3://my-bucket/some/path/")
+        read_only:
+          type: boolean
+          description: Whether the repository is a read-only repository- not relevant for bare repositories
+    GarbageCollectionRules:
       type: object
       properties:
-        pattern:
-          type: string
-          description: fnmatch pattern for the branch name, supporting * and ? wildcards
-          example: stable_*
-          minLength: 1
+        default_retention_days:
+          type: integer
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/GarbageCollectionRule'
       required:
-      - pattern
+      - default_retention_days
+      - branches
+    RepositoryMetadata:
+      type: object
+      additionalProperties:
+        type: string
     GarbageCollectionRule:
       type: object
       properties:
@@ -502,6 +596,16 @@ components:
       required:
       - branch_id
       - retention_days
+    BranchProtectionRule:
+      type: object
+      properties:
+        pattern:
+          type: string
+          description: fnmatch pattern for the branch name, supporting * and ? wildcards
+          example: stable_*
+          minLength: 1
+      required:
+      - pattern
     Pagination:
       type: object
       required:
@@ -524,46 +628,6 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
-    RefsDump:
-      type: object
-      required:
-      - branches_meta_range_id
-      - tags_meta_range_id
-      - commits_meta_range_id
-      properties:
-        commits_meta_range_id:
-          type: string
-        tags_meta_range_id:
-          type: string
-        branches_meta_range_id:
-          type: string
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    RepositoryDumpStatus:
-      type: object
-      required:
-      - id
-      - done
-      - update_time
-      properties:
-        id:
-          type: string
-          description: ID of the task
-        done:
-          type: boolean
-        update_time:
-          type: string
-          format: date-time
-        error:
-          type: string
-        refs:
-          $ref: '#/components/schemas/RefsDump'
     RepositoryRestoreStatus:
       type: object
       required:
@@ -581,6 +645,42 @@ components:
           format: date-time
         error:
           type: string
+    RepositoryList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Repository'
+    RefsRestore:
+      type: object
+      required:
+      - branches_meta_range_id
+      - tags_meta_range_id
+      - commits_meta_range_id
+      properties:
+        commits_meta_range_id:
+          type: string
+        tags_meta_range_id:
+          type: string
+        branches_meta_range_id:
+          type: string
+        force:
+          type: boolean
+          default: false
+    TaskInfo:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: ID of the task
     RepositoryCreation:
       type: object
       required:
@@ -609,114 +709,14 @@ components:
           type: boolean
           default: false
           example: true
-    Repository:
+    Error:
       type: object
       required:
-      - creation_date
-      - id
-      - default_branch
-      - storage_namespace
+      - message
       properties:
-        id:
+        message:
+          description: short message explaining the error
           type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        default_branch:
-          type: string
-        storage_id:
-          type: string
-          description: Unique identifier of the underlying data store. *EXPERIMENTAL*
-        storage_namespace:
-          type: string
-          description: Filesystem URI to store the underlying data in (e.g. "s3://my-bucket/some/path/")
-        read_only:
-          type: boolean
-          description: Whether the repository is a read-only repository- not relevant for bare repositories
-    RepositoryList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Repository'
-    GarbageCollectionRules:
-      type: object
-      properties:
-        default_retention_days:
-          type: integer
-        branches:
-          type: array
-          items:
-            $ref: '#/components/schemas/GarbageCollectionRule'
-      required:
-      - default_retention_days
-      - branches
-    TaskInfo:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: ID of the task
-    RepositoryMetadata:
-      type: object
-      additionalProperties:
-        type: string
-    RefsRestore:
-      type: object
-      required:
-      - branches_meta_range_id
-      - tags_meta_range_id
-      - commits_meta_range_id
-      properties:
-        commits_meta_range_id:
-          type: string
-        tags_meta_range_id:
-          type: string
-        branches_meta_range_id:
-          type: string
-        force:
-          type: boolean
-          default: false
-  parameters:
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
-        type: string
-    SearchString:
-      in: query
-      name: search
-      allowEmptyValue: true
-      description: string for searching relevant entries
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
   securitySchemes:
     basic_auth:
       type: http

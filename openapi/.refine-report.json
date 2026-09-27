@@ -22,7 +22,9 @@
     "lakefs-staging-api-openapi.yml",
     "lakefs-tags-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
   "notes": [
@@ -45,7 +47,8 @@
     "lakefs-openapi.yml: declared missing tag: repositories",
     "lakefs-openapi.yml: declared missing tag: staging",
     "lakefs-openapi.yml: declared missing tag: tags",
-    "apis.yml register: already-registered"
+    "superseded outputs removed: lakefs-health-check-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 17 total)"
   ],
   "skipped": [
     "lakefs-actions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
@@ -55,7 +58,7 @@
     "lakefs-config-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "lakefs-experimental-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "lakefs-external-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "lakefs-healthcheck-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lakefs-health-check-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "lakefs-import-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "lakefs-internal-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "lakefs-metadata-api-openapi.yml: previously refined output, superseded by openapi/_original/",
