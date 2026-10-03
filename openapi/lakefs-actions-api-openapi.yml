@@ -170,29 +170,32 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
     HookRun:
       type: object
       required:
@@ -219,6 +222,18 @@ components:
           enum:
           - failed
           - completed
+    HookRunList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HookRun'
     ActionRun:
       type: object
       required:
@@ -248,18 +263,6 @@ components:
           - completed
         commit_id:
           type: string
-    HookRunList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/HookRun'
     Error:
       type: object
       required:
@@ -280,39 +283,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ActionRun'
-  responses:
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
   parameters:
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
     PaginationAmount:
       in: query
       name: amount
@@ -322,6 +315,13 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
   securitySchemes:
     basic_auth:
       type: http

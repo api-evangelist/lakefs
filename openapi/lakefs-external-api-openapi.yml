@@ -168,7 +168,77 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
+  parameters:
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    ExternalLoginInformation:
+      type: object
+      required:
+      - identityRequest
+      properties:
+        token_expiration_duration:
+          type: integer
+        identityRequest:
+          type: object
     Pagination:
       type: object
       required:
@@ -191,15 +261,13 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
-    ExternalLoginInformation:
+    ExternalPrincipalCreation:
       type: object
-      required:
-      - identityRequest
       properties:
-        token_expiration_duration:
-          type: integer
-        identityRequest:
+        settings:
           type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
     AuthenticationToken:
       type: object
       required:
@@ -255,74 +323,6 @@ components:
       additionalProperties:
         type: string
       description: Additional settings to be consumed by the remote authenticator
-    ExternalPrincipalCreation:
-      type: object
-      properties:
-        settings:
-          type: object
-          items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
-        type: string
   securitySchemes:
     basic_auth:
       type: http

@@ -36,20 +36,14 @@ paths:
       summary: Get config
       x-summary-source: derived
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Config:
-      type: object
-      properties:
-        version_config:
-          $ref: '#/components/schemas/VersionConfig'
-        storage_config:
-          $ref: '#/components/schemas/StorageConfig'
-        storage_config_list:
-          $ref: '#/components/schemas/StorageConfigList'
-        ui_config:
-          $ref: '#/components/schemas/UIConfig'
-        capabilities_config:
-          $ref: '#/components/schemas/CapabilitiesConfig'
     VersionConfig:
       type: object
       properties:
@@ -63,13 +57,6 @@ components:
           type: boolean
         upgrade_url:
           type: string
-    StorageConfigList:
-      type: array
-      items:
-        $ref: '#/components/schemas/StorageConfig'
-    CapabilitiesConfig:
-      type: object
-      properties: {}
     UIConfig:
       type: object
       properties:
@@ -103,6 +90,9 @@ components:
         message:
           description: short message explaining the error
           type: string
+    CapabilitiesConfig:
+      type: object
+      properties: {}
     StorageConfig:
       type: object
       required:
@@ -136,13 +126,23 @@ components:
           type: string
         blockstore_description:
           type: string
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    Config:
+      type: object
+      properties:
+        version_config:
+          $ref: '#/components/schemas/VersionConfig'
+        storage_config:
+          $ref: '#/components/schemas/StorageConfig'
+        storage_config_list:
+          $ref: '#/components/schemas/StorageConfigList'
+        ui_config:
+          $ref: '#/components/schemas/UIConfig'
+        capabilities_config:
+          $ref: '#/components/schemas/CapabilitiesConfig'
+    StorageConfigList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StorageConfig'
   securitySchemes:
     basic_auth:
       type: http

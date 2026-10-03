@@ -586,6 +586,61 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
+  parameters:
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    NoTombstone:
+      in: query
+      name: no_tombstone
+      required: false
+      schema:
+        type: boolean
+        default: false
+      description: delete entry without tombstone when possible *EXPERIMENTAL*
+    IfMatch:
+      in: header
+      name: If-Match
+      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
+      example: 2e9ec317e197e02e4264d128c2e7e681
+      required: false
+      schema:
+        type: string
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+    IfNoneMatch:
+      in: header
+      name: If-None-Match
+      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
+      example: '*'
+      required: false
+      schema:
+        type: string
   responses:
     Forbidden:
       description: Forbidden
@@ -599,8 +654,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
+    NotImplemented:
+      description: Not Implemented
       content:
         application/json:
           schema:
@@ -617,14 +672,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotImplemented:
-      description: Not Implemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -635,15 +684,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    UpdateObjectUserMetadata:
-      type: object
-      required:
-      - set
-      properties:
-        set:
-          description: Set this object user metadata
-          $ref: '#/components/schemas/ObjectUserMetadata'
     PathList:
       type: object
       required:
@@ -654,25 +701,6 @@ components:
           items:
             type: string
             description: Object path
-    UnderlyingObjectProperties:
-      type: object
-      properties:
-        storage_class:
-          type:
-          - string
-          - 'null'
-    ObjectStatsList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectStats'
     ObjectError:
       type: object
       required:
@@ -688,50 +716,18 @@ components:
         path:
           type: string
           description: affected path
-    ObjectCopyCreation:
+    ObjectStatsList:
       type: object
       required:
-      - src_path
-      properties:
-        src_path:
-          type: string
-          description: path of the copied object relative to the ref
-        src_ref:
-          type: string
-          description: a reference, if empty uses the provided branch as ref
-        force:
-          type: boolean
-          default: false
-        shallow:
-          description: "Create a shallow copy of the object (without copying the actual data). At the moment shallow copy only works for same repository and branch. \nPlease note that shallow copied objects might be in contention with garbage collection and branch retention policies - use with caution.\n"
-          type: boolean
-          default: false
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
+      - pagination
       - results
-      - next_offset
       properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
+        pagination:
+          $ref: '#/components/schemas/Pagination'
         results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectStats'
     ObjectStats:
       type: object
       required:
@@ -793,6 +789,29 @@ components:
         content_type:
           type: string
           description: Object media type
+    UnderlyingObjectProperties:
+      type: object
+      properties:
+        storage_class:
+          type:
+          - string
+          - 'null'
+    UpdateObjectUserMetadata:
+      type: object
+      required:
+      - set
+      properties:
+        set:
+          description: Set this object user metadata
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     ObjectErrorList:
       type: object
       required:
@@ -802,69 +821,50 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObjectError'
-    Error:
+    ObjectCopyCreation:
       type: object
       required:
-      - message
+      - src_path
       properties:
-        message:
-          description: short message explaining the error
+        src_path:
           type: string
-  parameters:
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
+          description: path of the copied object relative to the ref
+        src_ref:
+          type: string
+          description: a reference, if empty uses the provided branch as ref
+        force:
+          type: boolean
+          default: false
+        shallow:
+          description: "Create a shallow copy of the object (without copying the actual data). At the moment shallow copy only works for same repository and branch. \nPlease note that shallow copied objects might be in contention with garbage collection and branch retention policies - use with caution.\n"
+          type: boolean
+          default: false
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
         type: string
-    IfMatch:
-      in: header
-      name: If-Match
-      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
-      example: 2e9ec317e197e02e4264d128c2e7e681
-      required: false
-      schema:
-        type: string
-    PaginationDelimiter:
-      in: query
-      name: delimiter
-      allowEmptyValue: true
-      description: delimiter used to group common prefixes by
-      schema:
-        type: string
-    IfNoneMatch:
-      in: header
-      name: If-None-Match
-      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
-      example: '*'
-      required: false
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    NoTombstone:
-      in: query
-      name: no_tombstone
-      required: false
-      schema:
-        type: boolean
-        default: false
-      description: delete entry without tombstone when possible *EXPERIMENTAL*
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
   securitySchemes:
     basic_auth:
       type: http

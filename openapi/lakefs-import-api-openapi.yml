@@ -120,8 +120,26 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Forbidden:
       description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -144,33 +162,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    ImportCreationResponse:
-      type: object
-      properties:
-        id:
-          description: The id of the import process
-          type: string
-      required:
-      - id
     CommitCreation:
       type: object
       required:
@@ -257,6 +249,22 @@ components:
           type: integer
           minimum: 0
           maximum: 1
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    ImportCreationResponse:
+      type: object
+      properties:
+        id:
+          description: The id of the import process
+          type: string
+      required:
+      - id
     ImportCreation:
       type: object
       required:
@@ -282,14 +290,6 @@ components:
         - path: s3://my-bucket/production/collections/file1
           destination: collections/file1
           type: object
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
     ImportStatus:
       type: object
       properties:

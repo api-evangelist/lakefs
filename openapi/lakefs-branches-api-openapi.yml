@@ -307,56 +307,81 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
+  parameters:
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    RefList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ref'
-    CherryPickCreation:
-      type: object
-      required:
-      - ref
-      properties:
-        ref:
-          type: string
-          description: the commit to cherry-pick, given by a ref
-        parent_number:
-          type: integer
-          description: 'When cherry-picking a merge commit, the parent number (starting from 1) with which to perform the diff.
-
-            The default branch is parent 1.
-
-            '
-        commit_overrides:
-          $ref: '#/components/schemas/CommitOverrides'
-        force:
-          type: boolean
-          default: false
-    ResetCreation:
-      type: object
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          enum:
-          - object
-          - common_prefix
-          - reset
-          description: What to reset according to path.
-        path:
-          type: string
-        force:
-          type: boolean
-          default: false
     CommitOverrides:
       type: object
       properties:
@@ -368,6 +393,27 @@ components:
           description: replace the metadata of the commit
           additionalProperties:
             type: string
+    RevertCreation:
+      type: object
+      required:
+      - parent_number
+      - ref
+      properties:
+        ref:
+          type: string
+          description: the commit to revert, given by a ref
+        commit_overrides:
+          $ref: '#/components/schemas/CommitOverrides'
+        parent_number:
+          type: integer
+          description: when reverting a merge commit, the parent number (starting from 1) relative to which to perform the revert.
+        force:
+          type: boolean
+          default: false
+        allow_empty:
+          type: boolean
+          default: false
+          description: allow empty commit (revert without changes)
     Commit:
       type: object
       required:
@@ -405,54 +451,7 @@ components:
           type: integer
           minimum: 0
           maximum: 1
-    RevertCreation:
-      type: object
-      required:
-      - parent_number
-      - ref
-      properties:
-        ref:
-          type: string
-          description: the commit to revert, given by a ref
-        commit_overrides:
-          $ref: '#/components/schemas/CommitOverrides'
-        parent_number:
-          type: integer
-          description: when reverting a merge commit, the parent number (starting from 1) relative to which to perform the revert.
-        force:
-          type: boolean
-          default: false
-        allow_empty:
-          type: boolean
-          default: false
-          description: allow empty commit (revert without changes)
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
-    DiffList:
+    RefList:
       type: object
       required:
       - pagination
@@ -463,25 +462,24 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Diff'
-    DiffObjectStat:
+            $ref: '#/components/schemas/Ref'
+    ResetCreation:
       type: object
       required:
-      - checksum
-      - mtime
-      - content_type
+      - type
       properties:
-        checksum:
+        type:
           type: string
-        mtime:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        content_type:
+          enum:
+          - object
+          - common_prefix
+          - reset
+          description: What to reset according to path.
+        path:
           type: string
-          description: Object media type
-        metadata:
-          $ref: '#/components/schemas/ObjectUserMetadata'
+        force:
+          type: boolean
+          default: false
     Diff:
       type: object
       required:
@@ -511,6 +509,62 @@ components:
         right:
           $ref: '#/components/schemas/DiffObjectStat'
           description: ObjectStats of the right side of the diff.
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    Ref:
+      type: object
+      required:
+      - id
+      - commit_id
+      properties:
+        id:
+          type: string
+        commit_id:
+          type: string
+    DiffObjectStat:
+      type: object
+      required:
+      - checksum
+      - mtime
+      - content_type
+      properties:
+        checksum:
+          type: string
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        content_type:
+          type: string
+          description: Object media type
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    CherryPickCreation:
+      type: object
+      required:
+      - ref
+      properties:
+        ref:
+          type: string
+          description: the commit to cherry-pick, given by a ref
+        parent_number:
+          type: integer
+          description: 'When cherry-picking a merge commit, the parent number (starting from 1) with which to perform the diff.
+
+            The default branch is parent 1.
+
+            '
+        commit_overrides:
+          $ref: '#/components/schemas/CommitOverrides'
+        force:
+          type: boolean
+          default: false
     BranchCreation:
       type: object
       required:
@@ -528,98 +582,44 @@ components:
           type: boolean
           description: When set, branch will not show up when listing branches by default. *EXPERIMENTAL*
           default: false
-    Ref:
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    DiffList:
       type: object
       required:
-      - id
-      - commit_id
+      - pagination
+      - results
       properties:
-        id:
-          type: string
-        commit_id:
-          type: string
-    Error:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Diff'
+    Pagination:
       type: object
       required:
-      - message
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
       properties:
-        message:
-          description: short message explaining the error
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
           type: string
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
-        type: string
-    PaginationDelimiter:
-      in: query
-      name: delimiter
-      allowEmptyValue: true
-      description: delimiter used to group common prefixes by
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
   securitySchemes:
     basic_auth:
       type: http

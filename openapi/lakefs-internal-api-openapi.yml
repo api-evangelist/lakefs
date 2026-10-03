@@ -914,109 +914,58 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    CredentialsWithSecret:
-      type: object
-      required:
-      - access_key_id
-      - creation_date
-      - secret_access_key
-      properties:
-        access_key_id:
-          type: string
-        secret_access_key:
-          type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-    Setup:
+    TaskCreation:
       type: object
       properties:
-        username:
-          description: an identifier for the user (e.g. jane.doe)
+        id:
+          description: The id of the new task
           type: string
-        key:
-          $ref: '#/components/schemas/AccessKeyCredentials'
-        firstName:
-          description: the provided first name
-          type: string
-        lastName:
-          description: the provided last name
-          type: string
-        email:
-          description: the provided email
-          type: string
-        companyName:
-          description: the provided company name
-          type: string
-        featureUpdates:
-          description: user preference to receive feature updates
-          type: boolean
-        securityUpdates:
-          description: user preference to receive security updates
-          type: boolean
       required:
-      - username
-    StatsEvent:
+      - id
+    RefsDump:
+      type: object
+      required:
+      - branches_meta_range_id
+      - tags_meta_range_id
+      - commits_meta_range_id
+      properties:
+        commits_meta_range_id:
+          type: string
+        tags_meta_range_id:
+          type: string
+        branches_meta_range_id:
+          type: string
+    GarbageCollectionPrepareResponse:
       type: object
       properties:
-        class:
-          description: stats event class (e.g. "s3_gateway", "openapi_request", "experimental-feature", "ui-event")
+        run_id:
           type: string
-        name:
-          description: stats event name (e.g. "put_object", "create_repository", "<experimental-feature-name>")
+          description: a unique identifier generated for this GC job
+          example: 64eaa103-d726-4a33-bcb8-7c0b4abfe09e
+        gc_commits_location:
           type: string
-        count:
-          description: number of events of the class and name
-          type: integer
+          description: location of the resulting commits csv table (partitioned by run_id)
+          example: s3://my-storage-namespace/_lakefs/retention/commits
+        gc_addresses_location:
+          type: string
+          description: location to use for expired addresses parquet table (partitioned by run_id)
+          example: s3://my-storage-namespace/_lakefs/retention/addresses
+        gc_commits_presigned_url:
+          type: string
+          description: a presigned url to download the commits csv
       required:
-      - class
-      - name
-      - count
+      - run_id
+      - gc_commits_location
+      - gc_addresses_location
+    StorageURI:
+      description: URI to a path in a storage provider (e.g. "s3://bucket1/path/to/object")
+      required:
+      - location
+      type: object
+      properties:
+        location:
+          type: string
     CommitRecordCreation:
       type: object
       required:
@@ -1067,160 +1016,34 @@ components:
         force:
           type: boolean
           default: false
-    StatsEventsList:
-      type: object
-      required:
-      - events
-      properties:
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/StatsEvent'
-    AccessKeyCredentials:
+    Setup:
       type: object
       properties:
-        access_key_id:
-          description: access key ID to set for user for use in integration testing.
-          example: AKIAIOSFODNN7EXAMPLE
+        username:
+          description: an identifier for the user (e.g. jane.doe)
           type: string
-          minLength: 1
-        secret_access_key:
-          description: secret access key to set for user for use in integration testing.
-          example: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+        key:
+          $ref: '#/components/schemas/AccessKeyCredentials'
+        firstName:
+          description: the provided first name
           type: string
-          minLength: 1
-      required:
-      - access_key_id
-      - secret_access_key
-    GarbageCollectionPrepareResponse:
-      type: object
-      properties:
-        run_id:
+        lastName:
+          description: the provided last name
           type: string
-          description: a unique identifier generated for this GC job
-          example: 64eaa103-d726-4a33-bcb8-7c0b4abfe09e
-        gc_commits_location:
+        email:
+          description: the provided email
           type: string
-          description: location of the resulting commits csv table (partitioned by run_id)
-          example: s3://my-storage-namespace/_lakefs/retention/commits
-        gc_addresses_location:
+        companyName:
+          description: the provided company name
           type: string
-          description: location to use for expired addresses parquet table (partitioned by run_id)
-          example: s3://my-storage-namespace/_lakefs/retention/addresses
-        gc_commits_presigned_url:
-          type: string
-          description: a presigned url to download the commits csv
-      required:
-      - run_id
-      - gc_commits_location
-      - gc_addresses_location
-    RefsDump:
-      type: object
-      required:
-      - branches_meta_range_id
-      - tags_meta_range_id
-      - commits_meta_range_id
-      properties:
-        commits_meta_range_id:
-          type: string
-        tags_meta_range_id:
-          type: string
-        branches_meta_range_id:
-          type: string
-    GarbageCollectionConfig:
-      type: object
-      properties:
-        grace_period:
-          description: Duration in seconds. Objects created in the recent grace_period will not be collected.
-          type: integer
-    AuthCapabilities:
-      type: object
-      properties:
-        invite_user:
+        featureUpdates:
+          description: user preference to receive feature updates
           type: boolean
-        forgot_password:
+        securityUpdates:
+          description: user preference to receive security updates
           type: boolean
-    GarbageCollectionRules:
-      type: object
-      properties:
-        default_retention_days:
-          type: integer
-        branches:
-          type: array
-          items:
-            $ref: '#/components/schemas/GarbageCollectionRule'
       required:
-      - default_retention_days
-      - branches
-    ObjectStageCreation:
-      type: object
-      required:
-      - physical_address
-      - checksum
-      - size_bytes
-      properties:
-        physical_address:
-          type: string
-        checksum:
-          type: string
-        size_bytes:
-          type: integer
-          format: int64
-        mtime:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        metadata:
-          $ref: '#/components/schemas/ObjectUserMetadata'
-        content_type:
-          type: string
-          description: Object media type
-        force:
-          type: boolean
-          default: false
-    RepositoryMetadataKeys:
-      type: object
-      required:
-      - keys
-      properties:
-        keys:
-          type: array
-          items:
-            type: string
-            description: metadata key
-    VersionConfig:
-      type: object
-      properties:
-        version:
-          type: string
-        version_context:
-          type: string
-        latest_version:
-          type: string
-        upgrade_recommended:
-          type: boolean
-        upgrade_url:
-          type: string
-    GarbageCollectionRule:
-      type: object
-      properties:
-        branch_id:
-          type: string
-        retention_days:
-          type: integer
-      required:
-      - branch_id
-      - retention_days
-    BranchProtectionRule:
-      type: object
-      properties:
-        pattern:
-          type: string
-          description: fnmatch pattern for the branch name, supporting * and ? wildcards
-          example: stable_*
-          minLength: 1
-      required:
-      - pattern
+      - username
     LoginConfig:
       type: object
       properties:
@@ -1291,47 +1114,152 @@ components:
       - login_url
       - login_cookie_names
       - logout_url
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
-    RefsRestore:
+    RepositoryMetadataSet:
       type: object
       required:
-      - branches_meta_range_id
-      - tags_meta_range_id
-      - commits_meta_range_id
+      - metadata
       properties:
-        commits_meta_range_id:
-          type: string
-        tags_meta_range_id:
-          type: string
-        branches_meta_range_id:
-          type: string
-        force:
-          type: boolean
-          default: false
-    PrepareGarbageCollectionCommitsStatus:
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    GarbageCollectionConfig:
       type: object
       properties:
-        task_id:
-          type: string
-          description: the id of the task preparing the GC commits
-        completed:
-          type: boolean
-          description: true if the task has completed (either successfully or with an error)
-        update_time:
-          type: string
-          format: date-time
-          description: last time the task status was updated
-        result:
-          $ref: '#/components/schemas/GarbageCollectionPrepareResponse'
-        error:
-          $ref: '#/components/schemas/Error'
+        grace_period:
+          description: Duration in seconds. Objects created in the recent grace_period will not be collected.
+          type: integer
+    StorageConfig:
+      type: object
       required:
-      - task_id
-      - completed
-      - update_time
+      - blockstore_type
+      - blockstore_namespace_example
+      - blockstore_namespace_ValidityRegex
+      - pre_sign_support
+      - pre_sign_support_ui
+      - import_support
+      - import_validity_regex
+      properties:
+        blockstore_type:
+          type: string
+        blockstore_namespace_example:
+          type: string
+        blockstore_namespace_ValidityRegex:
+          type: string
+        default_namespace_prefix:
+          type: string
+        pre_sign_support:
+          type: boolean
+        pre_sign_support_ui:
+          type: boolean
+        import_support:
+          type: boolean
+        import_validity_regex:
+          type: string
+        pre_sign_multipart_upload:
+          type: boolean
+        blockstore_id:
+          type: string
+        blockstore_description:
+          type: string
+    PrepareGCUncommittedResponse:
+      type: object
+      properties:
+        run_id:
+          type: string
+        gc_uncommitted_location:
+          type: string
+          description: location of uncommitted information data
+        continuation_token:
+          type: string
+      required:
+      - run_id
+      - gc_uncommitted_location
+    RepositoryMetadataKeys:
+      type: object
+      required:
+      - keys
+      properties:
+        keys:
+          type: array
+          items:
+            type: string
+            description: metadata key
+    GarbageCollectionRules:
+      type: object
+      properties:
+        default_retention_days:
+          type: integer
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/GarbageCollectionRule'
+      required:
+      - default_retention_days
+      - branches
+    VersionConfig:
+      type: object
+      properties:
+        version:
+          type: string
+        version_context:
+          type: string
+        latest_version:
+          type: string
+        upgrade_recommended:
+          type: boolean
+        upgrade_url:
+          type: string
+    StatsEventsList:
+      type: object
+      required:
+      - events
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatsEvent'
+    AccessKeyCredentials:
+      type: object
+      properties:
+        access_key_id:
+          description: access key ID to set for user for use in integration testing.
+          example: AKIAIOSFODNN7EXAMPLE
+          type: string
+          minLength: 1
+        secret_access_key:
+          description: secret access key to set for user for use in integration testing.
+          example: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+          type: string
+          minLength: 1
+      required:
+      - access_key_id
+      - secret_access_key
+    InstallationUsageReport:
+      type: object
+      properties:
+        installation_id:
+          type: string
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageReport'
+      required:
+      - installation_id
+      - reports
+    SetupState:
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+          - initialized
+          - not_initialized
+        comm_prefs_missing:
+          type: boolean
+          description: true if the comm prefs are missing.
+        login_config:
+          $ref: '#/components/schemas/LoginConfig'
     ObjectStats:
       type: object
       required:
@@ -1393,50 +1321,51 @@ components:
         content_type:
           type: string
           description: Object media type
-    InstallationUsageReport:
+    AuthCapabilities:
       type: object
       properties:
-        installation_id:
-          type: string
-        reports:
-          type: array
-          items:
-            $ref: '#/components/schemas/UsageReport'
-      required:
-      - installation_id
-      - reports
-    StorageConfig:
+        invite_user:
+          type: boolean
+        forgot_password:
+          type: boolean
+    RefsRestore:
       type: object
       required:
-      - blockstore_type
-      - blockstore_namespace_example
-      - blockstore_namespace_ValidityRegex
-      - pre_sign_support
-      - pre_sign_support_ui
-      - import_support
-      - import_validity_regex
+      - branches_meta_range_id
+      - tags_meta_range_id
+      - commits_meta_range_id
       properties:
-        blockstore_type:
+        commits_meta_range_id:
           type: string
-        blockstore_namespace_example:
+        tags_meta_range_id:
           type: string
-        blockstore_namespace_ValidityRegex:
+        branches_meta_range_id:
           type: string
-        default_namespace_prefix:
-          type: string
-        pre_sign_support:
+        force:
           type: boolean
-        pre_sign_support_ui:
-          type: boolean
-        import_support:
-          type: boolean
-        import_validity_regex:
+          default: false
+    CredentialsWithSecret:
+      type: object
+      required:
+      - access_key_id
+      - creation_date
+      - secret_access_key
+      properties:
+        access_key_id:
           type: string
-        pre_sign_multipart_upload:
-          type: boolean
-        blockstore_id:
+        secret_access_key:
           type: string
-        blockstore_description:
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
           type: string
     CommPrefsInput:
       type: object
@@ -1462,22 +1391,62 @@ components:
       required:
       - featureUpdates
       - securityUpdates
-    TaskCreation:
+    StatsEvent:
       type: object
       properties:
-        id:
-          description: The id of the new task
+        class:
+          description: stats event class (e.g. "s3_gateway", "openapi_request", "experimental-feature", "ui-event")
           type: string
+        name:
+          description: stats event name (e.g. "put_object", "create_repository", "<experimental-feature-name>")
+          type: string
+        count:
+          description: number of events of the class and name
+          type: integer
       required:
-      - id
-    StorageURI:
-      description: URI to a path in a storage provider (e.g. "s3://bucket1/path/to/object")
+      - class
+      - name
+      - count
+    ObjectStageCreation:
+      type: object
       required:
-      - location
+      - physical_address
+      - checksum
+      - size_bytes
+      properties:
+        physical_address:
+          type: string
+        checksum:
+          type: string
+        size_bytes:
+          type: integer
+          format: int64
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+        content_type:
+          type: string
+          description: Object media type
+        force:
+          type: boolean
+          default: false
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    GarbageCollectionRule:
       type: object
       properties:
-        location:
+        branch_id:
           type: string
+        retention_days:
+          type: integer
+      required:
+      - branch_id
+      - retention_days
     UsageReport:
       type: object
       properties:
@@ -1492,54 +1461,85 @@ components:
       - year
       - month
       - count
+    BranchProtectionRule:
+      type: object
+      properties:
+        pattern:
+          type: string
+          description: fnmatch pattern for the branch name, supporting * and ? wildcards
+          example: stable_*
+          minLength: 1
+      required:
+      - pattern
+    PrepareGarbageCollectionCommitsStatus:
+      type: object
+      properties:
+        task_id:
+          type: string
+          description: the id of the task preparing the GC commits
+        completed:
+          type: boolean
+          description: true if the task has completed (either successfully or with an error)
+        update_time:
+          type: string
+          format: date-time
+          description: last time the task status was updated
+        result:
+          $ref: '#/components/schemas/GarbageCollectionPrepareResponse'
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - task_id
+      - completed
+      - update_time
     PrepareGCUncommittedRequest:
       type: object
       properties:
         continuation_token:
           type: string
-    SetupState:
-      type: object
-      properties:
-        state:
-          type: string
-          enum:
-          - initialized
-          - not_initialized
-        comm_prefs_missing:
-          type: boolean
-          description: true if the comm prefs are missing.
-        login_config:
-          $ref: '#/components/schemas/LoginConfig'
-    RepositoryMetadataSet:
-      type: object
-      required:
-      - metadata
-      properties:
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    PrepareGCUncommittedResponse:
-      type: object
-      properties:
-        run_id:
-          type: string
-        gc_uncommitted_location:
-          type: string
-          description: location of uncommitted information data
-        continuation_token:
-          type: string
-      required:
-      - run_id
-      - gc_uncommitted_location
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

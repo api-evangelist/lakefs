@@ -107,14 +107,14 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    Forbidden:
-      description: Forbidden
+    Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
+    Forbidden:
+      description: Forbidden
       content:
         application/json:
           schema:
@@ -125,8 +125,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
+    ServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -137,14 +137,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
+    PreconditionFailed:
+      description: Precondition Failed
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
+    NotFound:
+      description: Resource Not Found
       content:
         application/json:
           schema:
@@ -178,14 +178,6 @@ components:
         force:
           type: boolean
           default: false
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
     Commit:
       type: object
       required:
@@ -223,6 +215,14 @@ components:
           type: integer
           minimum: 0
           maximum: 1
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
   securitySchemes:
     basic_auth:
       type: http

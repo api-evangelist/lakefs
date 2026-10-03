@@ -432,68 +432,26 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
-    SearchString:
-      in: query
-      name: search
-      allowEmptyValue: true
-      description: string for searching relevant entries
-      schema:
-        type: string
     PaginationPrefix:
       in: query
       name: prefix
       allowEmptyValue: true
       description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
+    SearchString:
+      in: query
+      name: search
+      allowEmptyValue: true
+      description: string for searching relevant entries
       schema:
         type: string
     PaginationAmount:
@@ -505,46 +463,7 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
   schemas:
-    RefsDump:
-      type: object
-      required:
-      - branches_meta_range_id
-      - tags_meta_range_id
-      - commits_meta_range_id
-      properties:
-        commits_meta_range_id:
-          type: string
-        tags_meta_range_id:
-          type: string
-        branches_meta_range_id:
-          type: string
-    RepositoryDumpStatus:
-      type: object
-      required:
-      - id
-      - done
-      - update_time
-      properties:
-        id:
-          type: string
-          description: ID of the task
-        done:
-          type: boolean
-        update_time:
-          type: string
-          format: date-time
-        error:
-          type: string
-        refs:
-          $ref: '#/components/schemas/RefsDump'
     Repository:
       type: object
       required:
@@ -570,6 +489,31 @@ components:
         read_only:
           type: boolean
           description: Whether the repository is a read-only repository- not relevant for bare repositories
+    RefsDump:
+      type: object
+      required:
+      - branches_meta_range_id
+      - tags_meta_range_id
+      - commits_meta_range_id
+      properties:
+        commits_meta_range_id:
+          type: string
+        tags_meta_range_id:
+          type: string
+        branches_meta_range_id:
+          type: string
+    RepositoryList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Repository'
     GarbageCollectionRules:
       type: object
       properties:
@@ -582,30 +526,14 @@ components:
       required:
       - default_retention_days
       - branches
-    RepositoryMetadata:
+    TaskInfo:
       type: object
-      additionalProperties:
-        type: string
-    GarbageCollectionRule:
-      type: object
-      properties:
-        branch_id:
-          type: string
-        retention_days:
-          type: integer
       required:
-      - branch_id
-      - retention_days
-    BranchProtectionRule:
-      type: object
+      - id
       properties:
-        pattern:
+        id:
           type: string
-          description: fnmatch pattern for the branch name, supporting * and ? wildcards
-          example: stable_*
-          minLength: 1
-      required:
-      - pattern
+          description: ID of the task
     Pagination:
       type: object
       required:
@@ -628,6 +556,10 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
+    RepositoryMetadata:
+      type: object
+      additionalProperties:
+        type: string
     RepositoryRestoreStatus:
       type: object
       required:
@@ -645,18 +577,6 @@ components:
           format: date-time
         error:
           type: string
-    RepositoryList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Repository'
     RefsRestore:
       type: object
       required:
@@ -673,14 +593,53 @@ components:
         force:
           type: boolean
           default: false
-    TaskInfo:
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    RepositoryDumpStatus:
       type: object
       required:
       - id
+      - done
+      - update_time
       properties:
         id:
           type: string
           description: ID of the task
+        done:
+          type: boolean
+        update_time:
+          type: string
+          format: date-time
+        error:
+          type: string
+        refs:
+          $ref: '#/components/schemas/RefsDump'
+    GarbageCollectionRule:
+      type: object
+      properties:
+        branch_id:
+          type: string
+        retention_days:
+          type: integer
+      required:
+      - branch_id
+      - retention_days
+    BranchProtectionRule:
+      type: object
+      properties:
+        pattern:
+          type: string
+          description: fnmatch pattern for the branch name, supporting * and ? wildcards
+          example: stable_*
+          minLength: 1
+      required:
+      - pattern
     RepositoryCreation:
       type: object
       required:
@@ -709,14 +668,55 @@ components:
           type: boolean
           default: false
           example: true
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

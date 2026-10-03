@@ -145,6 +145,16 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
+    Ref:
+      type: object
+      required:
+      - id
+      - commit_id
+      properties:
+        id:
+          type: string
+        commit_id:
+          type: string
     Pagination:
       type: object
       required:
@@ -167,6 +177,14 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     RefList:
       type: object
       required:
@@ -179,14 +197,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Ref'
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
     TagCreation:
       type: object
       description: Make tag ID point at this REF.
@@ -203,65 +213,12 @@ components:
         force:
           type: boolean
           default: false
-    Ref:
-      type: object
-      required:
-      - id
-      - commit_id
-      properties:
-        id:
-          type: string
-        commit_id:
-          type: string
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
-    PaginationAfter:
+    PaginationPrefix:
       in: query
-      name: after
-      description: return items after this value
+      name: prefix
       allowEmptyValue: true
+      description: return items prefixed with this value
       schema:
         type: string
     PaginationAmount:
@@ -273,13 +230,56 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
-    PaginationPrefix:
+    PaginationAfter:
       in: query
-      name: prefix
+      name: after
+      description: return items after this value
       allowEmptyValue: true
-      description: return items prefixed with this value
       schema:
         type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http
