@@ -170,58 +170,7 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    HookRun:
-      type: object
-      required:
-      - hook_run_id
-      - action
-      - hook_id
-      - start_time
-      - status
-      properties:
-        hook_run_id:
-          type: string
-        action:
-          type: string
-        hook_id:
-          type: string
-        start_time:
-          type: string
-          format: date-time
-        end_time:
-          type: string
-          format: date-time
-        status:
-          type: string
-          enum:
-          - failed
-          - completed
     HookRunList:
       type: object
       required:
@@ -234,6 +183,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HookRun'
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     ActionRun:
       type: object
       required:
@@ -262,14 +219,6 @@ components:
           - failed
           - completed
         commit_id:
-          type: string
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
           type: string
     ActionRunList:
       type: object
@@ -305,6 +254,57 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
+    HookRun:
+      type: object
+      required:
+      - hook_run_id
+      - action
+      - hook_id
+      - start_time
+      - status
+      properties:
+        hook_run_id:
+          type: string
+        action:
+          type: string
+        hook_id:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+          - failed
+          - completed
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     PaginationAmount:
       in: query

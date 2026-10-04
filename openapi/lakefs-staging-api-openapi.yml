@@ -111,90 +111,32 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotImplemented:
-      description: Not Implemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  schemas:
-    StagingMetadata:
-      type: object
-      description: information about uploaded object
-      properties:
-        staging:
-          $ref: '#/components/schemas/StagingLocation'
-        checksum:
-          type: string
-          description: unique identifier of object content on backing store (typically ETag)
-        size_bytes:
-          type: integer
-          format: int64
-        user_metadata:
-          type: object
-          additionalProperties:
-            type: string
-        content_type:
-          type: string
-          description: Object media type
-        mtime:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds.  May be ignored by server.
-        force:
-          type: boolean
-          default: false
-      required:
-      - staging
-      - checksum
-      - size_bytes
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
+  parameters:
+    IfMatch:
+      in: header
+      name: If-Match
+      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
+      example: 2e9ec317e197e02e4264d128c2e7e681
+      required: false
+      schema:
         type: string
+    IfNoneMatch:
+      in: header
+      name: If-None-Match
+      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
+      example: '*'
+      required: false
+      schema:
+        type: string
+  schemas:
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     ObjectStats:
       type: object
       required:
@@ -256,14 +198,40 @@ components:
         content_type:
           type: string
           description: Object media type
-    Error:
+    StagingMetadata:
       type: object
-      required:
-      - message
+      description: information about uploaded object
       properties:
-        message:
-          description: short message explaining the error
+        staging:
+          $ref: '#/components/schemas/StagingLocation'
+        checksum:
           type: string
+          description: unique identifier of object content on backing store (typically ETag)
+        size_bytes:
+          type: integer
+          format: int64
+        user_metadata:
+          type: object
+          additionalProperties:
+            type: string
+        content_type:
+          type: string
+          description: Object media type
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds.  May be ignored by server.
+        force:
+          type: boolean
+          default: false
+      required:
+      - staging
+      - checksum
+      - size_bytes
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
     StagingLocation:
       type: object
       description: location for placing an object when staging it
@@ -290,23 +258,55 @@ components:
             This field is *optional*.
 
             '
-  parameters:
-    IfMatch:
-      in: header
-      name: If-Match
-      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
-      example: 2e9ec317e197e02e4264d128c2e7e681
-      required: false
-      schema:
-        type: string
-    IfNoneMatch:
-      in: header
-      name: If-None-Match
-      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
-      example: '*'
-      required: false
-      schema:
-        type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

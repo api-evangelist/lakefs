@@ -120,20 +120,14 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -144,47 +138,72 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     NotFound:
       description: Resource Not Found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
-    CommitCreation:
+    ImportCreation:
+      type: object
+      required:
+      - paths
+      - commit
+      properties:
+        paths:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportLocation'
+        commit:
+          $ref: '#/components/schemas/CommitCreation'
+        force:
+          type: boolean
+          default: false
+      example:
+        commit:
+          message: Importing collections from S3
+        paths:
+        - path: s3://my-bucket/production/collections/
+          destination: collections/
+          type: common_prefix
+        - path: s3://my-bucket/production/collections/file1
+          destination: collections/file1
+          type: object
+    Error:
       type: object
       required:
       - message
       properties:
         message:
+          description: short message explaining the error
           type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        date:
-          description: set date to override creation date in the commit (Unix Epoch in seconds)
-          type: integer
-          format: int64
-        allow_empty:
-          description: sets whether a commit can contain no changes
-          type: boolean
-          default: false
-        force:
-          type: boolean
-          default: false
+    ImportCreationResponse:
+      type: object
+      properties:
+        id:
+          description: The id of the import process
+          type: string
+      required:
+      - id
     ImportLocation:
       type: object
       required:
@@ -212,6 +231,28 @@ components:
 
             '
           example: collections/
+    CommitCreation:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        date:
+          description: set date to override creation date in the commit (Unix Epoch in seconds)
+          type: integer
+          format: int64
+        allow_empty:
+          description: sets whether a commit can contain no changes
+          type: boolean
+          default: false
+        force:
+          type: boolean
+          default: false
     Commit:
       type: object
       required:
@@ -249,47 +290,6 @@ components:
           type: integer
           minimum: 0
           maximum: 1
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    ImportCreationResponse:
-      type: object
-      properties:
-        id:
-          description: The id of the import process
-          type: string
-      required:
-      - id
-    ImportCreation:
-      type: object
-      required:
-      - paths
-      - commit
-      properties:
-        paths:
-          type: array
-          items:
-            $ref: '#/components/schemas/ImportLocation'
-        commit:
-          $ref: '#/components/schemas/CommitCreation'
-        force:
-          type: boolean
-          default: false
-      example:
-        commit:
-          message: Importing collections from S3
-        paths:
-        - path: s3://my-bucket/production/collections/
-          destination: collections/
-          type: common_prefix
-        - path: s3://my-bucket/production/collections/file1
-          destination: collections/file1
-          type: object
     ImportStatus:
       type: object
       properties:

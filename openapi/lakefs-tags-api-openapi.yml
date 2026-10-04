@@ -144,75 +144,6 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    Ref:
-      type: object
-      required:
-      - id
-      - commit_id
-      properties:
-        id:
-          type: string
-        commit_id:
-          type: string
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    RefList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ref'
-    TagCreation:
-      type: object
-      description: Make tag ID point at this REF.
-      required:
-      - id
-      - ref
-      properties:
-        id:
-          type: string
-          description: ID of tag to create
-        ref:
-          type: string
-          description: the commit to tag
-        force:
-          type: boolean
-          default: false
   parameters:
     PaginationPrefix:
       in: query
@@ -238,26 +169,14 @@ components:
       schema:
         type: string
   responses:
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -274,12 +193,93 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
+    ServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    TagCreation:
+      type: object
+      description: Make tag ID point at this REF.
+      required:
+      - id
+      - ref
+      properties:
+        id:
+          type: string
+          description: ID of tag to create
+        ref:
+          type: string
+          description: the commit to tag
+        force:
+          type: boolean
+          default: false
+    Ref:
+      type: object
+      required:
+      - id
+      - commit_id
+      properties:
+        id:
+          type: string
+        commit_id:
+          type: string
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    RefList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ref'
   securitySchemes:
     basic_auth:
       type: http

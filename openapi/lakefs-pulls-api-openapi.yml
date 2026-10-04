@@ -232,7 +232,62 @@ components:
       allowEmptyValue: true
       schema:
         type: string
+  responses:
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    PullRequestsList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PullRequest'
     PullRequestBasic:
       type: object
       properties:
@@ -246,18 +301,29 @@ components:
           type: string
         description:
           type: string
-    PullRequestsList:
+    Error:
       type: object
       required:
-      - pagination
-      - results
+      - message
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PullRequest'
+        message:
+          description: short message explaining the error
+          type: string
+    PullRequestCreation:
+      type: object
+      required:
+      - title
+      - source_branch
+      - destination_branch
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        source_branch:
+          type: string
+        destination_branch:
+          type: string
     Pagination:
       type: object
       required:
@@ -280,6 +346,21 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
+    PullRequestCreationResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: ID of the pull request
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
+          type: string
     PullRequest:
       allOf:
       - $ref: '#/components/schemas/PullRequestBasic'
@@ -312,87 +393,6 @@ components:
           closed_date:
             type: string
             format: date-time
-    PullRequestCreation:
-      type: object
-      required:
-      - title
-      - source_branch
-      - destination_branch
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        source_branch:
-          type: string
-        destination_branch:
-          type: string
-    PullRequestCreationResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: ID of the pull request
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    MergeResult:
-      type: object
-      required:
-      - reference
-      properties:
-        reference:
-          type: string
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

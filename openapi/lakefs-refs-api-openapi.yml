@@ -239,75 +239,81 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    PaginationPrefix:
-      in: query
-      name: prefix
-      allowEmptyValue: true
-      description: return items prefixed with this value
-      schema:
-        type: string
-    PaginationAfter:
-      in: query
-      name: after
-      description: return items after this value
-      allowEmptyValue: true
-      schema:
-        type: string
-    PaginationAmount:
-      in: query
-      name: amount
-      description: how many items to return
-      schema:
-        type: integer
-        minimum: -1
-        maximum: 1000
-        default: 100
-    PaginationDelimiter:
-      in: query
-      name: delimiter
-      allowEmptyValue: true
-      description: delimiter used to group common prefixes by
-      schema:
-        type: string
-  responses:
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    DiffObjectStat:
+      type: object
+      required:
+      - checksum
+      - mtime
+      - content_type
+      properties:
+        checksum:
+          type: string
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        content_type:
+          type: string
+          description: Object media type
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    Diff:
+      type: object
+      required:
+      - type
+      - path
+      - path_type
+      properties:
+        type:
+          type: string
+          enum:
+          - added
+          - removed
+          - changed
+          - conflict
+          - prefix_changed
+        path:
+          type: string
+        path_type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+        size_bytes:
+          type: integer
+          description: represents the size of the added/changed/deleted entry
+          format: int64
+        right:
+          $ref: '#/components/schemas/DiffObjectStat'
+          description: ObjectStats of the right side of the diff.
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
+          type: string
+    DiffList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Diff'
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
     CommitList:
       type: object
       required:
@@ -320,13 +326,66 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Commit'
-    MergeResult:
+    Merge:
+      type: object
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        strategy:
+          description: In case of a merge conflict, this option will force the merge process to automatically favor changes from the dest branch ('dest-wins') or from the source branch('source-wins'). In case no selection is made, the merge process will fail in case of a conflict
+          type: string
+        force:
+          type: boolean
+          default: false
+          description: Allow merge into a read-only branch or into a branch with the same content
+        allow_empty:
+          type: boolean
+          default: false
+          description: Allow merge when the branches have the same content
+        squash_merge:
+          type: boolean
+          default: false
+          description: 'If set, set only the destination branch as a parent, which "squashes" the merge to
+
+            appear as a single commit on the destination branch.  The source commit is no longer
+
+            a part of the merge commit; consider adding it to the ''metadata'' or ''message''
+
+            fields.  This behaves like a GitHub or GitLab "squash merge", or in Git terms ''git
+
+            merge --squash; git commit ...''.
+
+            '
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    Pagination:
       type: object
       required:
-      - reference
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
       properties:
-        reference:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
           type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
     Commit:
       type: object
       required:
@@ -364,99 +423,6 @@ components:
           type: integer
           minimum: 0
           maximum: 1
-    Merge:
-      type: object
-      properties:
-        message:
-          type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        strategy:
-          description: In case of a merge conflict, this option will force the merge process to automatically favor changes from the dest branch ('dest-wins') or from the source branch('source-wins'). In case no selection is made, the merge process will fail in case of a conflict
-          type: string
-        force:
-          type: boolean
-          default: false
-          description: Allow merge into a read-only branch or into a branch with the same content
-        allow_empty:
-          type: boolean
-          default: false
-          description: Allow merge when the branches have the same content
-        squash_merge:
-          type: boolean
-          default: false
-          description: 'If set, set only the destination branch as a parent, which "squashes" the merge to
-
-            appear as a single commit on the destination branch.  The source commit is no longer
-
-            a part of the merge commit; consider adding it to the ''metadata'' or ''message''
-
-            fields.  This behaves like a GitHub or GitLab "squash merge", or in Git terms ''git
-
-            merge --squash; git commit ...''.
-
-            '
-    Diff:
-      type: object
-      required:
-      - type
-      - path
-      - path_type
-      properties:
-        type:
-          type: string
-          enum:
-          - added
-          - removed
-          - changed
-          - conflict
-          - prefix_changed
-        path:
-          type: string
-        path_type:
-          type: string
-          enum:
-          - common_prefix
-          - object
-        size_bytes:
-          type: integer
-          description: represents the size of the added/changed/deleted entry
-          format: int64
-        right:
-          $ref: '#/components/schemas/DiffObjectStat'
-          description: ObjectStats of the right side of the diff.
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    DiffObjectStat:
-      type: object
-      required:
-      - checksum
-      - mtime
-      - content_type
-      properties:
-        checksum:
-          type: string
-        mtime:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        content_type:
-          type: string
-          description: Object media type
-        metadata:
-          $ref: '#/components/schemas/ObjectUserMetadata'
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
     FindMergeBaseResult:
       type: object
       required:
@@ -473,40 +439,74 @@ components:
         base_commit_id:
           type: string
           description: The commit ID of the merge base
-    DiffList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Diff'
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
+    PaginationAmount:
+      in: query
+      name: amount
+      description: how many items to return
+      schema:
+        type: integer
+        minimum: -1
+        maximum: 1000
+        default: 100
+    PaginationPrefix:
+      in: query
+      name: prefix
+      allowEmptyValue: true
+      description: return items prefixed with this value
+      schema:
+        type: string
+    PaginationAfter:
+      in: query
+      name: after
+      description: return items after this value
+      allowEmptyValue: true
+      schema:
+        type: string
   securitySchemes:
     basic_auth:
       type: http
