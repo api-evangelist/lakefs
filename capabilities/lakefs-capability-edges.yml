@@ -1,0 +1,35 @@
+slug: lakefs
+provider: lakeFS
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Auth
+  spec_file: lakefs-auth-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.9
+  evidence: POST /auth/login 'perform a login'; 'list users', 'create group', 'list policies'; schemas
+    Credentials, Policy, Group, ACL
+  reason: Operations manage users, groups, policies, credentials and authentication tokens — textbook
+    Identity & Access Management.
+- tag: External
+  spec_file: lakefs-external-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: POST /auth/external/principal/login 'perform a login using an external authenticator'; 'attach
+    external principal to user'; ExternalPrincipal schemas
+  reason: Federation of external identity principals to lakeFS users and login via external authenticators
+    is identity and access management (federation).
