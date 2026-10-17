@@ -115,28 +115,6 @@ components:
         message:
           description: short message explaining the error
           type: string
-    CommitCreation:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        date:
-          description: set date to override creation date in the commit (Unix Epoch in seconds)
-          type: integer
-          format: int64
-        allow_empty:
-          description: sets whether a commit can contain no changes
-          type: boolean
-          default: false
-        force:
-          type: boolean
-          default: false
     Commit:
       type: object
       required:
@@ -174,6 +152,28 @@ components:
           type: integer
           minimum: 0
           maximum: 1
+    CommitCreation:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        date:
+          description: set date to override creation date in the commit (Unix Epoch in seconds)
+          type: integer
+          format: int64
+        allow_empty:
+          description: sets whether a commit can contain no changes
+          type: boolean
+          default: false
+        force:
+          type: boolean
+          default: false
   responses:
     Unauthorized:
       description: Unauthorized
@@ -181,20 +181,26 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
+    Forbidden:
+      description: Forbidden
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
     Conflict:
       description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -211,14 +217,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
+    PreconditionFailed:
+      description: Precondition Failed
       content:
         application/json:
           schema:

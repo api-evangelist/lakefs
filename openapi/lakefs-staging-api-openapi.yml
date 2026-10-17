@@ -228,10 +228,6 @@ components:
       - staging
       - checksum
       - size_bytes
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
     StagingLocation:
       type: object
       description: location for placing an object when staging it
@@ -258,6 +254,10 @@ components:
             This field is *optional*.
 
             '
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
   responses:
     Unauthorized:
       description: Unauthorized
@@ -265,32 +265,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotImplemented:
-      description: Not Implemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
+    ValidationError:
+      description: Validation Error
       content:
         application/json:
           schema:
@@ -301,8 +277,32 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
       content:
         application/json:
           schema:

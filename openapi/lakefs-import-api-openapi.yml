@@ -119,83 +119,7 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    ImportCreation:
-      type: object
-      required:
-      - paths
-      - commit
-      properties:
-        paths:
-          type: array
-          items:
-            $ref: '#/components/schemas/ImportLocation'
-        commit:
-          $ref: '#/components/schemas/CommitCreation'
-        force:
-          type: boolean
-          default: false
-      example:
-        commit:
-          message: Importing collections from S3
-        paths:
-        - path: s3://my-bucket/production/collections/
-          destination: collections/
-          type: common_prefix
-        - path: s3://my-bucket/production/collections/file1
-          destination: collections/file1
-          type: object
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
     ImportCreationResponse:
       type: object
       properties:
@@ -204,55 +128,14 @@ components:
           type: string
       required:
       - id
-    ImportLocation:
-      type: object
-      required:
-      - type
-      - path
-      - destination
-      properties:
-        type:
-          type: string
-          enum:
-          - common_prefix
-          - object
-          description: Path type, can either be 'common_prefix' or 'object'
-        path:
-          type: string
-          description: A source location to a 'common_prefix' or to a single object. Must match the lakeFS installation blockstore type.
-          example: s3://my-bucket/production/collections/
-        destination:
-          type: string
-          description: 'Destination for the imported objects on the branch. Must be a relative path to the branch.
-
-            If the type is an ''object'', the destination is the exact object name under the branch.
-
-            If the type is a ''common_prefix'', the destination is the prefix under the branch.
-
-            '
-          example: collections/
-    CommitCreation:
+    Error:
       type: object
       required:
       - message
       properties:
         message:
+          description: short message explaining the error
           type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        date:
-          description: set date to override creation date in the commit (Unix Epoch in seconds)
-          type: integer
-          format: int64
-        allow_empty:
-          description: sets whether a commit can contain no changes
-          type: boolean
-          default: false
-        force:
-          type: boolean
-          default: false
     Commit:
       type: object
       required:
@@ -290,6 +173,28 @@ components:
           type: integer
           minimum: 0
           maximum: 1
+    CommitCreation:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        date:
+          description: set date to override creation date in the commit (Unix Epoch in seconds)
+          type: integer
+          format: int64
+        allow_empty:
+          description: sets whether a commit can contain no changes
+          type: boolean
+          default: false
+        force:
+          type: boolean
+          default: false
     ImportStatus:
       type: object
       properties:
@@ -311,6 +216,101 @@ components:
       required:
       - update_time
       - completed
+    ImportLocation:
+      type: object
+      required:
+      - type
+      - path
+      - destination
+      properties:
+        type:
+          type: string
+          enum:
+          - common_prefix
+          - object
+          description: Path type, can either be 'common_prefix' or 'object'
+        path:
+          type: string
+          description: A source location to a 'common_prefix' or to a single object. Must match the lakeFS installation blockstore type.
+          example: s3://my-bucket/production/collections/
+        destination:
+          type: string
+          description: 'Destination for the imported objects on the branch. Must be a relative path to the branch.
+
+            If the type is an ''object'', the destination is the exact object name under the branch.
+
+            If the type is a ''common_prefix'', the destination is the prefix under the branch.
+
+            '
+          example: collections/
+    ImportCreation:
+      type: object
+      required:
+      - paths
+      - commit
+      properties:
+        paths:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportLocation'
+        commit:
+          $ref: '#/components/schemas/CommitCreation'
+        force:
+          type: boolean
+          default: false
+      example:
+        commit:
+          message: Importing collections from S3
+        paths:
+        - path: s3://my-bucket/production/collections/
+          destination: collections/
+          type: common_prefix
+        - path: s3://my-bucket/production/collections/file1
+          destination: collections/file1
+          type: object
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

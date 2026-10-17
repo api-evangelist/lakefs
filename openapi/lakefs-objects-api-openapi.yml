@@ -587,14 +587,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   parameters:
-    IfNoneMatch:
-      in: header
-      name: If-None-Match
-      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
-      example: '*'
-      required: false
-      schema:
-        type: string
     NoTombstone:
       in: query
       name: no_tombstone
@@ -603,13 +595,6 @@ components:
         type: boolean
         default: false
       description: delete entry without tombstone when possible *EXPERIMENTAL*
-    PaginationDelimiter:
-      in: query
-      name: delimiter
-      allowEmptyValue: true
-      description: delimiter used to group common prefixes by
-      schema:
-        type: string
     PaginationAmount:
       in: query
       name: amount
@@ -619,12 +604,19 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
-    IfMatch:
+    IfNoneMatch:
       in: header
-      name: If-Match
-      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
-      example: 2e9ec317e197e02e4264d128c2e7e681
+      name: If-None-Match
+      description: Set to "*" to atomically allow the upload only if the key has no object yet. Other values are not supported.
+      example: '*'
       required: false
+      schema:
+        type: string
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
       schema:
         type: string
     PaginationPrefix:
@@ -634,6 +626,14 @@ components:
       description: return items prefixed with this value
       schema:
         type: string
+    IfMatch:
+      in: header
+      name: If-Match
+      description: Set to the object's ETag to atomically allow operations only if the object's current ETag matches the provided value.
+      example: 2e9ec317e197e02e4264d128c2e7e681
+      required: false
+      schema:
+        type: string
     PaginationAfter:
       in: query
       name: after
@@ -641,82 +641,7 @@ components:
       allowEmptyValue: true
       schema:
         type: string
-  responses:
-    NotImplemented:
-      description: Not Implemented
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    PathList:
-      type: object
-      required:
-      - paths
-      properties:
-        paths:
-          type: array
-          items:
-            type: string
-            description: Object path
-    UpdateObjectUserMetadata:
-      type: object
-      required:
-      - set
-      properties:
-        set:
-          description: Set this object user metadata
-          $ref: '#/components/schemas/ObjectUserMetadata'
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
     ObjectErrorList:
       type: object
       required:
@@ -726,59 +651,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObjectError'
-    ObjectError:
-      type: object
-      required:
-      - status_code
-      - message
-      properties:
-        status_code:
-          type: integer
-          description: HTTP status code associated for operation on path
-        message:
-          type: string
-          description: short message explaining status_code
-        path:
-          type: string
-          description: affected path
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
-    ObjectStatsList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectStats'
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
     ObjectStats:
       type: object
       required:
@@ -840,6 +712,28 @@ components:
         content_type:
           type: string
           description: Object media type
+    UnderlyingObjectProperties:
+      type: object
+      properties:
+        storage_class:
+          type:
+          - string
+          - 'null'
+    ObjectError:
+      type: object
+      required:
+      - status_code
+      - message
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code associated for operation on path
+        message:
+          type: string
+          description: short message explaining status_code
+        path:
+          type: string
+          description: affected path
     ObjectCopyCreation:
       type: object
       required:
@@ -858,13 +752,119 @@ components:
           description: "Create a shallow copy of the object (without copying the actual data). At the moment shallow copy only works for same repository and branch. \nPlease note that shallow copied objects might be in contention with garbage collection and branch retention policies - use with caution.\n"
           type: boolean
           default: false
-    UnderlyingObjectProperties:
+    UpdateObjectUserMetadata:
       type: object
+      required:
+      - set
       properties:
-        storage_class:
-          type:
-          - string
-          - 'null'
+        set:
+          description: Set this object user metadata
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    PathList:
+      type: object
+      required:
+      - paths
+      properties:
+        paths:
+          type: array
+          items:
+            type: string
+            description: Object path
+    ObjectStatsList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectStats'
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplemented:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

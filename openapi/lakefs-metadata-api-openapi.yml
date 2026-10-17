@@ -98,14 +98,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    StorageURI:
-      description: URI to a path in a storage provider (e.g. "s3://bucket1/path/to/object")
-      required:
-      - location
-      type: object
-      properties:
-        location:
-          type: string
     Error:
       type: object
       required:
@@ -113,6 +105,14 @@ components:
       properties:
         message:
           description: short message explaining the error
+          type: string
+    StorageURI:
+      description: URI to a path in a storage provider (e.g. "s3://bucket1/path/to/object")
+      required:
+      - location
+      type: object
+      properties:
+        location:
           type: string
   responses:
     Unauthorized:

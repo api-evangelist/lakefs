@@ -240,24 +240,22 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    DiffObjectStat:
+    FindMergeBaseResult:
       type: object
       required:
-      - checksum
-      - mtime
-      - content_type
+      - source_commit_id
+      - destination_commit_id
+      - base_commit_id
       properties:
-        checksum:
+        source_commit_id:
           type: string
-        mtime:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-        content_type:
+          description: The commit ID of the merge source
+        destination_commit_id:
           type: string
-          description: Object media type
-        metadata:
-          $ref: '#/components/schemas/ObjectUserMetadata'
+          description: The commit ID of the merge destination
+        base_commit_id:
+          type: string
+          description: The commit ID of the merge base
     Diff:
       type: object
       required:
@@ -287,105 +285,6 @@ components:
         right:
           $ref: '#/components/schemas/DiffObjectStat'
           description: ObjectStats of the right side of the diff.
-    MergeResult:
-      type: object
-      required:
-      - reference
-      properties:
-        reference:
-          type: string
-    DiffList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Diff'
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    CommitList:
-      type: object
-      required:
-      - pagination
-      - results
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Commit'
-    Merge:
-      type: object
-      properties:
-        message:
-          type: string
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-        strategy:
-          description: In case of a merge conflict, this option will force the merge process to automatically favor changes from the dest branch ('dest-wins') or from the source branch('source-wins'). In case no selection is made, the merge process will fail in case of a conflict
-          type: string
-        force:
-          type: boolean
-          default: false
-          description: Allow merge into a read-only branch or into a branch with the same content
-        allow_empty:
-          type: boolean
-          default: false
-          description: Allow merge when the branches have the same content
-        squash_merge:
-          type: boolean
-          default: false
-          description: 'If set, set only the destination branch as a parent, which "squashes" the merge to
-
-            appear as a single commit on the destination branch.  The source commit is no longer
-
-            a part of the merge commit; consider adding it to the ''metadata'' or ''message''
-
-            fields.  This behaves like a GitHub or GitLab "squash merge", or in Git terms ''git
-
-            merge --squash; git commit ...''.
-
-            '
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
     Commit:
       type: object
       required:
@@ -423,67 +322,124 @@ components:
           type: integer
           minimum: 0
           maximum: 1
-    FindMergeBaseResult:
+    DiffObjectStat:
       type: object
       required:
-      - source_commit_id
-      - destination_commit_id
-      - base_commit_id
+      - checksum
+      - mtime
+      - content_type
       properties:
-        source_commit_id:
+        checksum:
           type: string
-          description: The commit ID of the merge source
-        destination_commit_id:
+        mtime:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+        content_type:
           type: string
-          description: The commit ID of the merge destination
-        base_commit_id:
+          description: Object media type
+        metadata:
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
           type: string
-          description: The commit ID of the merge base
-  responses:
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    PaginationDelimiter:
-      in: query
-      name: delimiter
-      allowEmptyValue: true
-      description: delimiter used to group common prefixes by
-      schema:
+    DiffList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Diff'
+    CommitList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Commit'
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
         type: string
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    Merge:
+      type: object
+      properties:
+        message:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        strategy:
+          description: In case of a merge conflict, this option will force the merge process to automatically favor changes from the dest branch ('dest-wins') or from the source branch('source-wins'). In case no selection is made, the merge process will fail in case of a conflict
+          type: string
+        force:
+          type: boolean
+          default: false
+          description: Allow merge into a read-only branch or into a branch with the same content
+        allow_empty:
+          type: boolean
+          default: false
+          description: Allow merge when the branches have the same content
+        squash_merge:
+          type: boolean
+          default: false
+          description: 'If set, set only the destination branch as a parent, which "squashes" the merge to
+
+            appear as a single commit on the destination branch.  The source commit is no longer
+
+            a part of the merge commit; consider adding it to the ''metadata'' or ''message''
+
+            fields.  This behaves like a GitHub or GitLab "squash merge", or in Git terms ''git
+
+            merge --squash; git commit ...''.
+
+            '
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+  parameters:
     PaginationAmount:
       in: query
       name: amount
@@ -493,6 +449,13 @@ components:
         minimum: -1
         maximum: 1000
         default: 100
+    PaginationDelimiter:
+      in: query
+      name: delimiter
+      allowEmptyValue: true
+      description: delimiter used to group common prefixes by
+      schema:
+        type: string
     PaginationPrefix:
       in: query
       name: prefix
@@ -507,6 +470,43 @@ components:
       allowEmptyValue: true
       schema:
         type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

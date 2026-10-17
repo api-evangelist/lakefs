@@ -725,120 +725,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    UploadTo:
-      type: object
-      properties:
-        presigned_url:
-          type: string
-      required:
-      - presigned_url
-    PullRequestCreation:
-      type: object
-      required:
-      - title
-      - source_branch
-      - destination_branch
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        source_branch:
-          type: string
-        destination_branch:
-          type: string
-    CopyPartSource:
-      type: object
-      properties:
-        repository:
-          type: string
-        ref:
-          type: string
-        path:
-          type: string
-        range:
-          description: Range of bytes to copy
-          type: string
-          pattern: ^bytes=((\d*-\d*,? ?)+)$
-      required:
-      - repository
-      - ref
-      - path
-    PullRequestCreationResponse:
-      type: object
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: ID of the pull request
-    CompletePresignMultipartUpload:
-      type: object
-      properties:
-        physical_address:
-          type: string
-        parts:
-          type: array
-          description: List of uploaded parts, should be ordered by ascending part number
-          items:
-            $ref: '#/components/schemas/UploadPart'
-        user_metadata:
-          type: object
-          additionalProperties:
-            type: string
-        content_type:
-          type: string
-          description: Object media type
-      required:
-      - physical_address
-      - parts
-    MergeResult:
-      type: object
-      required:
-      - reference
-      properties:
-        reference:
-          type: string
-    PullRequest:
-      allOf:
-      - $ref: '#/components/schemas/PullRequestBasic'
-      - required:
-        - status
-        - title
-        - description
-      - type: object
-        required:
-        - id
-        - creation_date
-        - author
-        - source_branch
-        - destination_branch
-        properties:
-          id:
-            type: string
-          creation_date:
-            type: string
-            format: date-time
-          author:
-            type: string
-          source_branch:
-            type: string
-          destination_branch:
-            type: string
-          merged_commit_id:
-            type: string
-            description: the commit id of merged PRs
-          closed_date:
-            type: string
-            format: date-time
-    UpdateObjectUserMetadata:
-      type: object
-      required:
-      - set
-      properties:
-        set:
-          description: Set this object user metadata
-          $ref: '#/components/schemas/ObjectUserMetadata'
     PullRequestsList:
       type: object
       required:
@@ -851,93 +737,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PullRequest'
-    ExternalLoginInformation:
-      type: object
-      required:
-      - identityRequest
-      properties:
-        token_expiration_duration:
-          type: integer
-        identityRequest:
-          type: object
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    PresignMultipartUpload:
-      type: object
-      properties:
-        upload_id:
-          type: string
-        physical_address:
-          type: string
-        presigned_urls:
-          type: array
-          items:
-            type: string
-      required:
-      - upload_id
-      - physical_address
-    ExternalPrincipal:
-      type: object
-      required:
-      - user_id
-      - id
-      properties:
-        id:
-          type: string
-          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
-        user_id:
-          type: string
-          description: 'lakeFS user ID to associate with an external principal.
-
-            '
-        settings:
-          type: object
-          items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
-    ExternalPrincipalSettings:
-      type: object
-      additionalProperties:
-        type: string
-      description: Additional settings to be consumed by the remote authenticator
-    AbortPresignMultipartUpload:
-      type: object
-      properties:
-        physical_address:
-          type: string
-      required:
-      - physical_address
-    UploadPart:
-      type: object
-      properties:
-        part_number:
-          type: integer
-        etag:
-          type: string
-      required:
-      - part_number
-      - etag
-    UploadPartFrom:
-      type: object
-      properties:
-        physical_address:
-          description: 'The physical address (of the entire intended object) returned from
-
-            createPresignMultipartUpload.
-
-            '
-          type: string
-      required:
-      - physical_address
-    ObjectUserMetadata:
-      type: object
-      additionalProperties:
-        type: string
+    UploadPartCopyFrom:
+      allOf:
+      - $ref: '#/components/schemas/UploadPartFrom'
+      - type: object
+        properties:
+          copy_source:
+            description: Source of copy
+            $ref: '#/components/schemas/CopyPartSource'
+        required:
+        - copy_source
     AuthenticationToken:
       type: object
       required:
@@ -950,72 +759,6 @@ components:
           type: integer
           format: int64
           description: Unix Epoch in seconds
-    UploadPartCopyFrom:
-      allOf:
-      - $ref: '#/components/schemas/UploadPartFrom'
-      - type: object
-        properties:
-          copy_source:
-            description: Source of copy
-            $ref: '#/components/schemas/CopyPartSource'
-        required:
-        - copy_source
-    PullRequestBasic:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - open
-          - closed
-          - merged
-        title:
-          type: string
-        description:
-          type: string
-    StsAuthRequest:
-      type: object
-      required:
-      - code
-      - state
-      - redirect_uri
-      properties:
-        code:
-          type: string
-        state:
-          type: string
-        redirect_uri:
-          type: string
-        ttl_seconds:
-          type: integer
-          format: int64
-          description: 'The time-to-live for the generated token in seconds.  The default
-
-            value is 3600 seconds (1 hour) maximum time allowed is 12 hours.
-
-            '
-    Pagination:
-      type: object
-      required:
-      - has_more
-      - max_per_page
-      - results
-      - next_offset
-      properties:
-        has_more:
-          type: boolean
-          description: Next page is available
-        next_offset:
-          type: string
-          description: Token used to retrieve the next page
-        results:
-          type: integer
-          minimum: 0
-          description: Number of values found in the results
-        max_per_page:
-          type: integer
-          minimum: 0
-          description: Maximal number of entries per page
     ObjectStats:
       type: object
       required:
@@ -1077,25 +820,75 @@ components:
         content_type:
           type: string
           description: Object media type
-    ExternalPrincipalList:
+    PresignMultipartUpload:
       type: object
-      required:
-      - pagination
-      - results
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
+        upload_id:
+          type: string
+        physical_address:
+          type: string
+        presigned_urls:
           type: array
           items:
-            $ref: '#/components/schemas/ExternalPrincipal'
-    ExternalPrincipalCreation:
+            type: string
+      required:
+      - upload_id
+      - physical_address
+    ExternalPrincipal:
       type: object
+      required:
+      - user_id
+      - id
       properties:
+        id:
+          type: string
+          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
+        user_id:
+          type: string
+          description: 'lakeFS user ID to associate with an external principal.
+
+            '
         settings:
           type: object
           items:
             $ref: '#/components/schemas/ExternalPrincipalSettings'
+    AbortPresignMultipartUpload:
+      type: object
+      properties:
+        physical_address:
+          type: string
+      required:
+      - physical_address
+    CompletePresignMultipartUpload:
+      type: object
+      properties:
+        physical_address:
+          type: string
+        parts:
+          type: array
+          description: List of uploaded parts, should be ordered by ascending part number
+          items:
+            $ref: '#/components/schemas/UploadPart'
+        user_metadata:
+          type: object
+          additionalProperties:
+            type: string
+        content_type:
+          type: string
+          description: Object media type
+      required:
+      - physical_address
+      - parts
+    UploadPart:
+      type: object
+      properties:
+        part_number:
+          type: integer
+        etag:
+          type: string
+      required:
+      - part_number
+      - etag
     StagingLocation:
       type: object
       description: location for placing an object when staging it
@@ -1122,49 +915,213 @@ components:
             This field is *optional*.
 
             '
-  responses:
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    UpdateObjectUserMetadata:
+      type: object
+      required:
+      - set
+      properties:
+        set:
+          description: Set this object user metadata
+          $ref: '#/components/schemas/ObjectUserMetadata'
+    UploadPartFrom:
+      type: object
+      properties:
+        physical_address:
+          description: 'The physical address (of the entire intended object) returned from
+
+            createPresignMultipartUpload.
+
+            '
+          type: string
+      required:
+      - physical_address
+    MergeResult:
+      type: object
+      required:
+      - reference
+      properties:
+        reference:
+          type: string
+    ExternalPrincipalList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalPrincipal'
+    ExternalPrincipalCreation:
+      type: object
+      properties:
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    ObjectUserMetadata:
+      type: object
+      additionalProperties:
+        type: string
+    StsAuthRequest:
+      type: object
+      required:
+      - code
+      - state
+      - redirect_uri
+      properties:
+        code:
+          type: string
+        state:
+          type: string
+        redirect_uri:
+          type: string
+        ttl_seconds:
+          type: integer
+          format: int64
+          description: 'The time-to-live for the generated token in seconds.  The default
+
+            value is 3600 seconds (1 hour) maximum time allowed is 12 hours.
+
+            '
+    PullRequestCreationResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: ID of the pull request
+    Error:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          description: short message explaining the error
+          type: string
+    PullRequestBasic:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - open
+          - closed
+          - merged
+        title:
+          type: string
+        description:
+          type: string
+    PullRequest:
+      allOf:
+      - $ref: '#/components/schemas/PullRequestBasic'
+      - required:
+        - status
+        - title
+        - description
+      - type: object
+        required:
+        - id
+        - creation_date
+        - author
+        - source_branch
+        - destination_branch
+        properties:
+          id:
+            type: string
+          creation_date:
+            type: string
+            format: date-time
+          author:
+            type: string
+          source_branch:
+            type: string
+          destination_branch:
+            type: string
+          merged_commit_id:
+            type: string
+            description: the commit id of merged PRs
+          closed_date:
+            type: string
+            format: date-time
+    PullRequestCreation:
+      type: object
+      required:
+      - title
+      - source_branch
+      - destination_branch
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        source_branch:
+          type: string
+        destination_branch:
+          type: string
+    Pagination:
+      type: object
+      required:
+      - has_more
+      - max_per_page
+      - results
+      - next_offset
+      properties:
+        has_more:
+          type: boolean
+          description: Next page is available
+        next_offset:
+          type: string
+          description: Token used to retrieve the next page
+        results:
+          type: integer
+          minimum: 0
+          description: Number of values found in the results
+        max_per_page:
+          type: integer
+          minimum: 0
+          description: Maximal number of entries per page
+    ExternalLoginInformation:
+      type: object
+      required:
+      - identityRequest
+      properties:
+        token_expiration_duration:
+          type: integer
+        identityRequest:
+          type: object
+    ExternalPrincipalSettings:
+      type: object
+      additionalProperties:
+        type: string
+      description: Additional settings to be consumed by the remote authenticator
+    CopyPartSource:
+      type: object
+      properties:
+        repository:
+          type: string
+        ref:
+          type: string
+        path:
+          type: string
+        range:
+          description: Range of bytes to copy
+          type: string
+          pattern: ^bytes=((\d*-\d*,? ?)+)$
+      required:
+      - repository
+      - ref
+      - path
+    UploadTo:
+      type: object
+      properties:
+        presigned_url:
+          type: string
+      required:
+      - presigned_url
   parameters:
     PaginationAmount:
       in: query
@@ -1189,6 +1146,49 @@ components:
       allowEmptyValue: true
       schema:
         type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http

@@ -37,6 +37,24 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    CustomViewer:
+      type: object
+      required:
+      - name
+      - url
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        extensions:
+          type: array
+          items:
+            type: string
+        content_types:
+          type: array
+          items:
+            type: string
     StorageConfig:
       type: object
       required:
@@ -70,10 +88,6 @@ components:
           type: string
         blockstore_description:
           type: string
-    StorageConfigList:
-      type: array
-      items:
-        $ref: '#/components/schemas/StorageConfig'
     Error:
       type: object
       required:
@@ -82,24 +96,23 @@ components:
         message:
           description: short message explaining the error
           type: string
-    CustomViewer:
+    StorageConfigList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StorageConfig'
+    Config:
       type: object
-      required:
-      - name
-      - url
       properties:
-        name:
-          type: string
-        url:
-          type: string
-        extensions:
-          type: array
-          items:
-            type: string
-        content_types:
-          type: array
-          items:
-            type: string
+        version_config:
+          $ref: '#/components/schemas/VersionConfig'
+        storage_config:
+          $ref: '#/components/schemas/StorageConfig'
+        storage_config_list:
+          $ref: '#/components/schemas/StorageConfigList'
+        ui_config:
+          $ref: '#/components/schemas/UIConfig'
+        capabilities_config:
+          $ref: '#/components/schemas/CapabilitiesConfig'
     VersionConfig:
       type: object
       properties:
@@ -123,19 +136,6 @@ components:
     CapabilitiesConfig:
       type: object
       properties: {}
-    Config:
-      type: object
-      properties:
-        version_config:
-          $ref: '#/components/schemas/VersionConfig'
-        storage_config:
-          $ref: '#/components/schemas/StorageConfig'
-        storage_config_list:
-          $ref: '#/components/schemas/StorageConfigList'
-        ui_config:
-          $ref: '#/components/schemas/UIConfig'
-        capabilities_config:
-          $ref: '#/components/schemas/CapabilitiesConfig'
   responses:
     Unauthorized:
       description: Unauthorized

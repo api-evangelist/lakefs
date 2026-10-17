@@ -999,6 +999,18 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ACL:
+      type: object
+      required:
+      - permission
+      properties:
+        permission:
+          type: string
+          description: 'Permission level to give this ACL.  "Read", "Write", "Super" and
+
+            "Admin" are all supported.
+
+            '
     User:
       type: object
       required:
@@ -1022,34 +1034,65 @@ components:
         email:
           type: string
           description: "The email address of the user. If API authentication is enabled, this field is mandatory and will be invited to login.\nIf API authentication is disabled, this field will be ignored. All current APIAuthenticators require the email to be \nlowercase and unique, although custom authenticators may not enforce this.\n"
-    ACL:
+    AuthenticationToken:
       type: object
       required:
-      - permission
+      - token
       properties:
-        permission:
+        token:
+          description: a JWT token that could be used to authenticate requests
           type: string
-          description: 'Permission level to give this ACL.  "Read", "Write", "Super" and
-
-            "Admin" are all supported.
-
-            '
-    Group:
+        token_expiration:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    GroupCreation:
       type: object
       required:
-      - creation_date
       - id
       properties:
         id:
           type: string
-        name:
-          type: string
         description:
           type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
+    UserCreation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: a unique identifier for the user.
+        invite_user:
+          type: boolean
+      required:
+      - id
+    ExternalPrincipal:
+      type: object
+      required:
+      - user_id
+      - id
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
+        user_id:
+          type: string
+          description: 'lakeFS user ID to associate with an external principal.
+
+            '
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
+    LoginInformation:
+      type: object
+      required:
+      - access_key_id
+      - secret_access_key
+      properties:
+        access_key_id:
+          type: string
+        secret_access_key:
+          type: string
     Statement:
       type: object
       required:
@@ -1074,85 +1117,7 @@ components:
           description: Optional conditions for when this statement applies.
           additionalProperties:
             $ref: '#/components/schemas/PolicyCondition'
-    CredentialsWithSecret:
-      type: object
-      required:
-      - access_key_id
-      - creation_date
-      - secret_access_key
-      properties:
-        access_key_id:
-          type: string
-        secret_access_key:
-          type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-    ErrorNoACL:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-        no_acl:
-          description: true if the group exists but has no ACL
-          type: boolean
-    Credentials:
-      type: object
-      required:
-      - creation_date
-      - access_key_id
-      properties:
-        access_key_id:
-          type: string
-        creation_date:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-    ExternalLoginInformation:
-      type: object
-      required:
-      - identityRequest
-      properties:
-        token_expiration_duration:
-          type: integer
-        identityRequest:
-          type: object
-    Error:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          description: short message explaining the error
-          type: string
-    ExternalPrincipal:
-      type: object
-      required:
-      - user_id
-      - id
-      properties:
-        id:
-          type: string
-          description: A unique identifier for the external principal i.e aws:sts::123:assumed-role/role-name
-        user_id:
-          type: string
-          description: 'lakeFS user ID to associate with an external principal.
-
-            '
-        settings:
-          type: object
-          items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
-    ExternalPrincipalSettings:
-      type: object
-      additionalProperties:
-        type: string
-      description: Additional settings to be consumed by the remote authenticator
-    UserList:
+    CredentialsList:
       type: object
       required:
       - pagination
@@ -1163,7 +1128,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/Credentials'
     Policy:
       type: object
       required:
@@ -1181,38 +1146,18 @@ components:
           items:
             $ref: '#/components/schemas/Statement'
           minItems: 1
-    GroupCreation:
+    ErrorNoACL:
       type: object
       required:
-      - id
+      - message
       properties:
-        id:
+        message:
+          description: short message explaining the error
           type: string
-        description:
-          type: string
-    AuthenticationToken:
-      type: object
-      required:
-      - token
-      properties:
-        token:
-          description: a JWT token that could be used to authenticate requests
-          type: string
-        token_expiration:
-          type: integer
-          format: int64
-          description: Unix Epoch in seconds
-    UserCreation:
-      type: object
-      properties:
-        id:
-          type: string
-          description: a unique identifier for the user.
-        invite_user:
+        no_acl:
+          description: true if the group exists but has no ACL
           type: boolean
-      required:
-      - id
-    PolicyList:
+    ExternalPrincipalList:
       type: object
       required:
       - pagination
@@ -1223,7 +1168,22 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Policy'
+            $ref: '#/components/schemas/ExternalPrincipal'
+    CredentialsWithSecret:
+      type: object
+      required:
+      - access_key_id
+      - creation_date
+      - secret_access_key
+      properties:
+        access_key_id:
+          type: string
+        secret_access_key:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
     PolicyCondition:
       type: object
       description: Condition operator (e.g., IpAddress)
@@ -1235,6 +1195,25 @@ components:
         IpAddress:
         - 192.168.0.1/32
         - 192.168.0.2/32
+    UserList:
+      type: object
+      required:
+      - pagination
+      - results
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    ExternalPrincipalCreation:
+      type: object
+      properties:
+        settings:
+          type: object
+          items:
+            $ref: '#/components/schemas/ExternalPrincipalSettings'
     CurrentUser:
       type: object
       required:
@@ -1242,28 +1221,30 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
-    LoginInformation:
+    Group:
       type: object
       required:
-      - access_key_id
-      - secret_access_key
+      - creation_date
+      - id
       properties:
-        access_key_id:
+        id:
           type: string
-        secret_access_key:
+        name:
           type: string
-    GroupList:
+        description:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    Error:
       type: object
       required:
-      - results
-      - pagination
+      - message
       properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
+        message:
+          description: short message explaining the error
+          type: string
     Pagination:
       type: object
       required:
@@ -1286,26 +1267,45 @@ components:
           type: integer
           minimum: 0
           description: Maximal number of entries per page
-    ExternalPrincipalList:
+    GroupList:
       type: object
       required:
-      - pagination
       - results
+      - pagination
       properties:
         pagination:
           $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
-            $ref: '#/components/schemas/ExternalPrincipal'
-    ExternalPrincipalCreation:
+            $ref: '#/components/schemas/Group'
+    ExternalLoginInformation:
       type: object
+      required:
+      - identityRequest
       properties:
-        settings:
+        token_expiration_duration:
+          type: integer
+        identityRequest:
           type: object
-          items:
-            $ref: '#/components/schemas/ExternalPrincipalSettings'
-    CredentialsList:
+    ExternalPrincipalSettings:
+      type: object
+      additionalProperties:
+        type: string
+      description: Additional settings to be consumed by the remote authenticator
+    Credentials:
+      type: object
+      required:
+      - creation_date
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+        creation_date:
+          type: integer
+          format: int64
+          description: Unix Epoch in seconds
+    PolicyList:
       type: object
       required:
       - pagination
@@ -1316,56 +1316,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Credentials'
-  responses:
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFoundOrNoACL:
-      description: Group not found, or group found but has no ACL
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorNoACL'
-    ServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Conflict:
-      description: Resource Conflicts With Target
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/Policy'
   parameters:
     PaginationAmount:
       in: query
@@ -1390,6 +1341,55 @@ components:
       allowEmptyValue: true
       schema:
         type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundOrNoACL:
+      description: Group not found, or group found but has no ACL
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorNoACL'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource Conflicts With Target
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basic_auth:
       type: http
